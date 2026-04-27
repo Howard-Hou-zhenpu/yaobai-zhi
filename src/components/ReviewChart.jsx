@@ -1,0 +1,60 @@
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { SATISFACTION_MAP } from '../lib/constants';
+
+const COLORS = { satisfied: '#7a9b6a', neutral: '#c9b896', regret: '#a0522d' };
+
+export default function ReviewChart({ decisions }) {
+  const reviewed = decisions.filter((d) => d.status === 'reviewed' && d.satisfaction);
+  if (reviewed.length === 0) {
+    return (
+      <Card>
+        <CardHeader><CardTitle className="text-base">满意度分析</CardTitle></CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground text-center py-8 italic">暂无复盘数据</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const data = Object.entries(SATISFACTION_MAP).map(([key, val]) => ({
+    name: `${val.emoji} ${val.label}`,
+    value: reviewed.filter((d) => d.satisfaction === key).length,
+    key,
+  })).filter((d) => d.value > 0);
+
+  return (
+    <Card>
+      <CardHeader><CardTitle className="text-base">满意度分析</CardTitle></CardHeader>
+      <CardContent>
+        <ResponsiveContainer width="100%" height={220}>
+          <PieChart>
+            <Pie
+              data={data}
+              cx="50%"
+              cy="50%"
+              innerRadius={50}
+              outerRadius={80}
+              paddingAngle={3}
+              dataKey="value"
+              label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+            >
+              {data.map((entry) => (
+                <Cell key={entry.key} fill={COLORS[entry.key]} />
+              ))}
+            </Pie>
+            <Tooltip />
+          </PieChart>
+        </ResponsiveContainer>
+        <div className="flex justify-center gap-4 mt-2">
+          {data.map((d) => (
+            <div key={d.key} className="flex items-center gap-1 text-sm">
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[d.key] }} />
+              <span>{d.name}: {d.value}</span>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}

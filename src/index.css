@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: #e8e3d8;
+  --foreground: #3d3428;
+  --card: #f5f1e8;
+  --card-foreground: #3d3428;
+  --popover: #f5f1e8;
+  --popover-foreground: #3d3428;
+  --primary: #8b7355;
+  --primary-foreground: #f5f1e8;
+  --secondary: #d4cbb8;
+  --secondary-foreground: #3d3428;
+  --muted: #d4cbb8;
+  --muted-foreground: #6b5d4f;
+  --accent: #c9b896;
+  --accent-foreground: #3d3428;
+  --destructive: #a0522d;
+  --destructive-foreground: #f5f1e8;
+  --border: #d4cbb8;
+  --input: #f5f1e8;
+  --ring: #8b7355;
+  --radius: 0.75rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Iowan Old Style", "Palatino Linotype", "URW Palladio L", P052, serif;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Iowan Old Style", "Palatino Linotype", "URW Palladio L", P052, serif;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+}
+
+@layer utilities {
+  .page-enter {
+    animation: pageIn 0.25s ease-out;
+  }
+}
+
+@keyframes pageIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
