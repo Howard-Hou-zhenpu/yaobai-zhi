@@ -23,7 +23,8 @@ export default function Auth() {
       if (isSignUp) {
         const { error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
-        toast.success('注册成功！请检查邮箱验证链接');
+        toast.success('注册成功');
+        navigate('/');
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
