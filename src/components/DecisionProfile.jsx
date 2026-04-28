@@ -27,41 +27,41 @@ export default function DecisionProfile({ decisions }) {
 
   return (
     <Card className="mt-4">
-      <CardHeader className="pb-2">
+      <CardHeader className="pb-3">
         <CardTitle className="text-sm font-medium text-muted-foreground tracking-wide">决策画像</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-4">
         {topCategories.length > 0 && (
           <div>
-            <p className="text-xs text-muted-foreground mb-1">最常纠结的领域</p>
-            <div className="flex gap-2">
+            <p className="text-xs text-muted-foreground mb-2">最常纠结的领域</p>
+            <div className="flex flex-wrap gap-2">
               {topCategories.map(([cat, count]) => (
-                <span key={cat} className="text-sm">
-                  {cat} <span className="text-muted-foreground text-xs">({count}次)</span>
-                </span>
+                <div key={cat} className="px-2.5 py-1 rounded-lg bg-secondary/50 text-sm">
+                  {cat} <span className="text-muted-foreground text-xs ml-1">({count}次)</span>
+                </div>
               ))}
             </div>
           </div>
         )}
-        <div className="flex gap-6 text-sm">
+        <div className="grid grid-cols-3 gap-3 pt-2">
           {reviewed.length > 0 && (
-            <div>
-              <p className="text-xs text-muted-foreground">后悔率</p>
-              <p className={regretRate > 30 ? 'text-[#a0522d] font-medium' : 'text-[#5a6b4f] font-medium'}>
+            <div className="text-center">
+              <p className="text-xs text-muted-foreground mb-1">后悔率</p>
+              <p className={`text-lg font-medium ${regretRate > 30 ? 'text-[#a0522d]' : 'text-[#5a6b4f]'}`}>
                 {regretRate}%
               </p>
             </div>
           )}
           {avgHesitation && (
-            <div>
-              <p className="text-xs text-muted-foreground">平均纠结度</p>
-              <p className="font-medium">{avgHesitation}/5</p>
+            <div className="text-center">
+              <p className="text-xs text-muted-foreground mb-1">平均纠结度</p>
+              <p className="text-lg font-medium">{avgHesitation}/5</p>
             </div>
           )}
           {avgConfidence && (
-            <div>
-              <p className="text-xs text-muted-foreground">平均信心值</p>
-              <p className="font-medium">{avgConfidence}/5</p>
+            <div className="text-center">
+              <p className="text-xs text-muted-foreground mb-1">平均信心值</p>
+              <p className="text-lg font-medium">{avgConfidence}/5</p>
             </div>
           )}
         </div>
