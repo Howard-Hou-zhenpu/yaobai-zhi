@@ -3,6 +3,7 @@ import { Plus, Scale, LogOut } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { useDecisions } from '../hooks/useDecisions';
 import { supabase } from '../lib/supabase';
+import { getDailyPrompt } from '../lib/prompts';
 import QuickStats from '../components/QuickStats';
 import TrendChart from '../components/TrendChart';
 import DecisionCard from '../components/DecisionCard';
@@ -11,6 +12,7 @@ export default function Index() {
   const navigate = useNavigate();
   const { data: decisions = [] } = useDecisions();
   const recentDecisions = decisions.slice(0, 5);
+  const dailyPrompt = getDailyPrompt();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -30,6 +32,7 @@ export default function Index() {
           </div>
           <p className="text-sm text-muted-foreground italic">记录每一次选择，成就更好的决策</p>
         </div>
+        <p className="text-center text-sm text-muted-foreground/80 mt-3 italic">「{dailyPrompt}」</p>
       </div>
 
       <QuickStats decisions={decisions} />
@@ -61,8 +64,8 @@ export default function Index() {
       {decisions.length === 0 && (
         <div className="text-center py-16 text-muted-foreground">
           <Scale className="w-10 h-10 mx-auto mb-4 opacity-20" strokeWidth={1} />
-          <p className="text-sm italic">还没有决策记录</p>
-          <p className="text-xs mt-2 opacity-70">点击上方按钮开始你的第一个决策</p>
+          <p className="text-sm italic">每一个选择都值得被认真对待</p>
+          <p className="text-xs mt-2 opacity-70">点击上方按钮，开始你的第一次对话</p>
         </div>
       )}
     </div>

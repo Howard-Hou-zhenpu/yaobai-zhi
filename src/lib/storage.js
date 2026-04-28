@@ -20,6 +20,10 @@ function transformDecision(d) {
     completedAt: d.completed_at,
     reviewedAt: d.reviewed_at,
     selectedOption: d.selected_option,
+    hesitation: d.hesitation || 0,
+    confidence: d.confidence || 0,
+    notes: d.notes || '',
+    isFavorite: d.is_favorite || false,
     options: (d.options || [])
       .sort((a, b) => a.position - b.position)
       .map((o) => ({
@@ -84,6 +88,10 @@ export async function addDecision(decision) {
       selected_option: rest.selectedOption || '',
       satisfaction: rest.satisfaction || '',
       review: rest.review || '',
+      hesitation: rest.hesitation || 0,
+      confidence: rest.confidence || 0,
+      notes: rest.notes || '',
+      is_favorite: rest.isFavorite || false,
       completed_at: rest.completedAt || null,
       reviewed_at: rest.reviewedAt || null,
     })
@@ -118,6 +126,10 @@ export async function updateDecision(id, updates) {
   if (updates.selectedOption !== undefined) dbUpdates.selected_option = updates.selectedOption;
   if (updates.satisfaction !== undefined) dbUpdates.satisfaction = updates.satisfaction;
   if (updates.review !== undefined) dbUpdates.review = updates.review;
+  if (updates.hesitation !== undefined) dbUpdates.hesitation = updates.hesitation;
+  if (updates.confidence !== undefined) dbUpdates.confidence = updates.confidence;
+  if (updates.notes !== undefined) dbUpdates.notes = updates.notes;
+  if (updates.isFavorite !== undefined) dbUpdates.is_favorite = updates.isFavorite;
   if (updates.completedAt) dbUpdates.completed_at = updates.completedAt;
   if (updates.reviewedAt) dbUpdates.reviewed_at = updates.reviewedAt;
 

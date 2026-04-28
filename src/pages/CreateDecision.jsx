@@ -21,6 +21,7 @@ export default function CreateDecision() {
   const [customCategory, setCustomCategory] = useState('');
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [showTemplates, setShowTemplates] = useState(false);
+  const [hesitation, setHesitation] = useState(3);
   const [description, setDescription] = useState('');
   const [options, setOptions] = useState([
     { name: '', pros: '', cons: '', risks: '', worstCase: '', solution: '' },
@@ -69,6 +70,7 @@ export default function CreateDecision() {
       selectedOption: '',
       satisfaction: '',
       review: '',
+      hesitation,
       completedAt: '',
       reviewedAt: '',
     };
@@ -210,6 +212,25 @@ export default function CreateDecision() {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </div>
+
+        <div>
+          <Label className="text-muted-foreground tracking-wide text-xs uppercase">纠结程度</Label>
+          <div className="mt-2">
+            <input
+              type="range"
+              min="1"
+              max="5"
+              value={hesitation}
+              onChange={(e) => setHesitation(Number(e.target.value))}
+              className="w-full h-1.5 bg-secondary rounded-full appearance-none cursor-pointer accent-primary"
+            />
+            <div className="flex justify-between text-xs text-muted-foreground mt-1">
+              <span>轻松</span>
+              <span className="font-medium text-foreground">{['', '很轻松', '有点想法', '有些纠结', '很纠结', '极度纠结'][hesitation]}</span>
+              <span>纠结</span>
+            </div>
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Trash2, CheckCircle2, AlertCircle, LayoutList, Columns2, Pencil, Square, CheckSquare } from 'lucide-react';
+import { ArrowLeft, Trash2, CheckCircle2, AlertCircle, LayoutList, Columns2, Pencil, Square, CheckSquare, Star, MessageSquarePlus, RotateCcw, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -8,6 +8,8 @@ import { Textarea } from '../components/ui/textarea';
 import { Label } from '../components/ui/label';
 import { useDecision, useUpdateDecision, useDeleteDecision } from '../hooks/useDecisions';
 import { STATUS_MAP, SATISFACTION_MAP } from '../lib/constants';
+import { getReviewGuide, getCompletionFeedback } from '../lib/prompts';
+import Timeline from '../components/Timeline';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
 
@@ -23,11 +25,15 @@ export default function DecisionDetail() {
   const updateDecision = useUpdateDecision();
   const deleteMutation = useDeleteDecision();
   const [selectedOptions, setSelectedOptions] = useState([]);
+  const [confidence, setConfidence] = useState(3);
   const [satisfaction, setSatisfaction] = useState('');
   const [reviewText, setReviewText] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [viewMode, setViewMode] = useState('list');
   const [editing, setEditing] = useState(false);
+  const [showNotes, setShowNotes] = useState(false);
+  const [notesText, setNotesText] = useState('');
+  const [reviewGuide] = useState(getReviewGuide);
 
   if (!decision) {
     return (
@@ -50,7 +56,15 @@ export default function DecisionDetail() {
   const handleComplete = () => {
     if (selectedOptions.length === 0) { toast.error('请至少选择一个选项'); return; }
     updateDecision.mutate(
-      { id, updates: { status: 'completed', selectedOption: selectedOptions.join(','), completedAt: new Date().toISOString() } },
+      {
+        id,
+        updates: {
+          status: 'completed',
+          selectedOption: selectedOptions.join(','),
+          confidence,
+          completedAt: new Date().toISOString(),
+        },
+      },
       { onSuccess: () => toast.success('决策已完成') }
     );
   };
@@ -58,8 +72,21 @@ export default function DecisionDetail() {
   const handleReview = () => {
     if (!satisfaction) { toast.error('请选择满意度'); return; }
     updateDecision.mutate(
-      { id, updates: { status: 'reviewed', satisfaction, review: reviewText.trim(), reviewedAt: new Date().toISOString() } },
-      { onSuccess: () => { toast.success('复盘已保存'); setEditing(false); } }
+      {
+        id,
+        updates: {
+          status: 'reviewed',
+          satisfaction,
+          review: reviewText.trim(),
+          reviewedAt: new Date().toISOString(),
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.success('复盘已保存', { description: getCompletionFeedback() });
+          setEditing(false);
+        },
+      }
     );
   };
 
@@ -71,6 +98,35 @@ export default function DecisionDetail() {
 
   const handleDelete = () => {
     deleteMutation.mutate(id, { onSuccess: () => { toast.success('已删除'); navigate('/'); } });
+  };
+
+  const toggleFavorite = () => {
+    updateDecision.mutate(
+      { id, updates: { isFavorite: !decision.isFavorite } },
+      { onSuccess: () => toast.success(decision.isFavorite ? '已取消收藏' : '已收藏这条复盘') }
+    );
+  };
+
+  const handleSaveNotes = () => {
+    updateDecision.mutate(
+      { id, updates: { notes: notesText.trim() } },
+      { onSuccess: () => toast.success('备注已保存') }
+    );
+  };
+
+  const handleReopen = () => {
+    updateDecision.mutate(
+      {
+        id,
+        updates: {
+          status: 'active',
+          satisfaction: '',
+          review: '',
+          reviewedAt: null,
+        },
+      },
+      { onSuccess: () => toast.success('已重新打开这个决策') }
+    );
   };
 
   const renderOptionCard = (option, index, isCompare) => {
@@ -139,6 +195,8 @@ export default function DecisionDetail() {
         </div>
       </div>
 
+      <Timeline decision={decision} />
+
       {showDeleteConfirm && (
         <Card className="mb-4 border-destructive/40">
           <CardContent className="p-4 flex items-center justify-between">
@@ -159,6 +217,9 @@ export default function DecisionDetail() {
           <div className="flex items-center gap-2 mb-2">
             <Badge variant="outline" className="rounded-lg">{decision.category}</Badge>
             <Badge variant="secondary" className="rounded-lg">{decision.type === 'deep' ? '深度决策' : '快速决策'}</Badge>
+            {decision.hesitation > 0 && (
+              <span className="text-xs text-muted-foreground">纠结度 {decision.hesitation}/5</span>
+            )}
           </div>
           {decision.description && (
             <p className="text-sm text-muted-foreground mt-3 italic leading-relaxed">{decision.description}</p>
@@ -169,6 +230,7 @@ export default function DecisionDetail() {
           {decision.completedAt && (
             <p className="text-xs text-muted-foreground mt-1">
               完成于 {new Date(decision.completedAt).toLocaleString('zh-CN')}
+              {decision.confidence > 0 && ` · 信心值 ${decision.confidence}/5`}
             </p>
           )}
         </CardContent>
@@ -209,15 +271,32 @@ export default function DecisionDetail() {
       )}
 
       {decision.status === 'active' && (
-        <Button className="w-full h-12 text-base rounded-2xl" onClick={handleComplete}>
-          <CheckCircle2 className="w-5 h-5 mr-1" strokeWidth={1.5} />
-          确认选择 {selectedOptions.length > 0 && `(${selectedOptions.length})`}
-        </Button>
+        <div className="space-y-4">
+          <div>
+            <Label className="text-muted-foreground tracking-wide text-xs uppercase">你对这个选择有多确定？</Label>
+            <div className="mt-2">
+              <input type="range" min="1" max="5" value={confidence} onChange={(e) => setConfidence(Number(e.target.value))}
+                className="w-full h-1.5 bg-secondary rounded-full appearance-none cursor-pointer accent-primary" />
+              <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                <span>不太确定</span>
+                <span className="font-medium text-foreground">{['', '很犹豫', '有点犹豫', '还行', '比较确定', '非常确定'][confidence]}</span>
+                <span>非常确定</span>
+              </div>
+            </div>
+          </div>
+          <Button className="w-full h-12 text-base rounded-2xl" onClick={handleComplete}>
+            <CheckCircle2 className="w-5 h-5 mr-1" strokeWidth={1.5} />
+            确认选择 {selectedOptions.length > 0 && `(${selectedOptions.length})`}
+          </Button>
+        </div>
       )}
 
       {decision.status === 'completed' && (
         <Card className="mt-5">
-          <CardHeader><CardTitle className="text-base font-medium">复盘总结</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle className="text-base font-medium">复盘总结</CardTitle>
+            <p className="text-sm text-muted-foreground italic mt-1">{reviewGuide}</p>
+          </CardHeader>
           <CardContent className="space-y-4">
             <div>
               <Label className="mb-2 block text-muted-foreground tracking-wide text-xs uppercase">满意度评价 *</Label>
@@ -243,9 +322,14 @@ export default function DecisionDetail() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="text-base font-medium">复盘记录</CardTitle>
-              <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground" onClick={startEditReview}>
-                <Pencil className="w-3.5 h-3.5" strokeWidth={1.5} /> 修改
-              </Button>
+              <div className="flex items-center gap-1">
+                <Button variant="ghost" size="icon" className={cn('w-8 h-8', decision.isFavorite ? 'text-[#c9a84c]' : 'text-muted-foreground')} onClick={toggleFavorite}>
+                  <Star className="w-4 h-4" strokeWidth={1.5} fill={decision.isFavorite ? 'currentColor' : 'none'} />
+                </Button>
+                <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground" onClick={startEditReview}>
+                  <Pencil className="w-3.5 h-3.5" strokeWidth={1.5} /> 修改
+                </Button>
+              </div>
             </div>
           </CardHeader>
           <CardContent>
@@ -287,6 +371,32 @@ export default function DecisionDetail() {
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {(decision.status === 'completed' || decision.status === 'reviewed') && (
+        <div className="mt-4">
+          <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground w-full justify-start" onClick={() => { setShowNotes(!showNotes); if (!notesText) setNotesText(decision.notes || ''); }}>
+            <MessageSquarePlus className="w-3.5 h-3.5" strokeWidth={1.5} />
+            追加备注
+            {showNotes ? <ChevronUp className="w-3 h-3 ml-auto" /> : <ChevronDown className="w-3 h-3 ml-auto" />}
+            {decision.notes && !showNotes && <span className="w-1.5 h-1.5 rounded-full bg-primary ml-1" />}
+          </Button>
+          {showNotes && (
+            <div className="mt-2 space-y-2">
+              <Textarea placeholder="后来又想到……" value={notesText} onChange={(e) => setNotesText(e.target.value)} rows={3} />
+              <Button size="sm" className="rounded-xl" onClick={handleSaveNotes}>保存备注</Button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {decision.status === 'reviewed' && (
+        <div className="mt-4 pt-4 border-t border-border/50">
+          <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground" onClick={handleReopen}>
+            <RotateCcw className="w-3.5 h-3.5" strokeWidth={1.5} />
+            重新打开这个决策
+          </Button>
+        </div>
       )}
     </div>
   );

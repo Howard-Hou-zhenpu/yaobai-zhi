@@ -1,11 +1,13 @@
 import { useState, useMemo } from 'react';
-import { Search, ChevronDown, ChevronUp } from 'lucide-react';
+import { Search, ChevronDown, ChevronUp, Star } from 'lucide-react';
 import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { useDecisions } from '../hooks/useDecisions';
 import ReviewChart from '../components/ReviewChart';
+import DecisionProfile from '../components/DecisionProfile';
+import KeywordCloud from '../components/KeywordCloud';
 import DecisionCard from '../components/DecisionCard';
 import { CATEGORIES } from '../lib/constants';
 
@@ -29,6 +31,7 @@ export default function Review() {
   const [statusFilter, setStatusFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [timeFilter, setTimeFilter] = useState('');
+  const [favoriteOnly, setFavoriteOnly] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
 
   const allCategories = useMemo(() => {
@@ -41,6 +44,7 @@ export default function Review() {
     const matchSearch = !search || d.title.includes(search) || d.description?.includes(search) || d.category.includes(search);
     const matchStatus = !statusFilter || d.status === statusFilter;
     const matchCategory = !categoryFilter || d.category === categoryFilter;
+    const matchFavorite = !favoriteOnly || d.isFavorite;
     let matchTime = true;
     if (timeFilter) {
       const days = parseInt(timeFilter);
@@ -48,13 +52,13 @@ export default function Review() {
       cutoff.setDate(cutoff.getDate() - days);
       matchTime = new Date(d.createdAt) >= cutoff;
     }
-    return matchSearch && matchStatus && matchCategory && matchTime;
+    return matchSearch && matchStatus && matchCategory && matchFavorite && matchTime;
   });
 
   const total = decisions.length;
   const completed = decisions.filter((d) => d.status === 'completed' || d.status === 'reviewed').length;
   const reviewed = decisions.filter((d) => d.status === 'reviewed').length;
-  const hasActiveFilters = categoryFilter || timeFilter;
+  const hasActiveFilters = categoryFilter || timeFilter || favoriteOnly;
 
   return (
     <div className="pb-20 px-5">
@@ -79,6 +83,8 @@ export default function Review() {
       </div>
 
       <ReviewChart decisions={decisions} />
+      <DecisionProfile decisions={decisions} />
+      <KeywordCloud decisions={decisions} />
 
       <div className="mt-5 space-y-3">
         <div className="relative">
@@ -96,6 +102,12 @@ export default function Review() {
               {f.label}
             </Badge>
           ))}
+          <Badge
+            className={`cursor-pointer transition-all rounded-lg gap-1 ${favoriteOnly ? 'bg-[#c9a84c]/20 text-[#c9a84c]' : 'bg-card text-muted-foreground border-border/60'}`}
+            onClick={() => setFavoriteOnly(!favoriteOnly)}
+          >
+            <Star className="w-3 h-3" strokeWidth={1.5} fill={favoriteOnly ? 'currentColor' : 'none'} /> 收藏
+          </Badge>
           <Button
             variant="ghost"
             size="sm"

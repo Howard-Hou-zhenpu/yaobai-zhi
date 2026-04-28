@@ -34,7 +34,7 @@ export default function DecisionCard({ decision }) {
 
   return (
     <Card
-      className="cursor-pointer hover:shadow-[0_4px_16px_rgba(139,115,85,0.12)] transition-all duration-300 active:scale-[0.98]"
+      className="cursor-pointer card-hover hover:shadow-[0_4px_16px_rgba(139,115,85,0.12)] transition-all duration-300 active:scale-[0.98]"
       onClick={() => navigate(`/decision/${decision.id}`)}
     >
       <CardContent className="p-4">
