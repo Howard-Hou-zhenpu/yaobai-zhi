@@ -6,39 +6,46 @@ const steps = [
   { key: 'reviewed', label: '复盘', field: 'reviewedAt' },
 ];
 
+function formatDate(dateStr) {
+  if (!dateStr) return '—';
+  const d = new Date(dateStr);
+  return `${d.getMonth() + 1}/${d.getDate()}`;
+}
+
 export default function Timeline({ decision }) {
   const statusIndex = decision.status === 'reviewed' ? 2 : decision.status === 'completed' ? 1 : 0;
 
   return (
-    <div className="mb-5 px-2">
-      <div className="flex items-start">
+    <div className="mb-5">
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr', alignItems: 'center' }}>
+        {/* Row 1: circles and lines */}
+        <div className="flex justify-center">
+          <div className={cn('w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium',
+            0 <= statusIndex ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground'
+          )}>1</div>
+        </div>
+        <div className={cn('h-px', 0 < statusIndex ? 'bg-primary' : 'bg-border')} />
+        <div className="flex justify-center">
+          <div className={cn('w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium',
+            1 <= statusIndex ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground'
+          )}>2</div>
+        </div>
+        <div className={cn('h-px', 1 < statusIndex ? 'bg-primary' : 'bg-border')} />
+        <div className="flex justify-center">
+          <div className={cn('w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium',
+            2 <= statusIndex ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground'
+          )}>3</div>
+        </div>
+      </div>
+      {/* Row 2: labels */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr' }} className="mt-1.5">
         {steps.map((step, i) => {
           const done = i <= statusIndex;
           const time = decision[step.field];
           return (
-            <div key={step.key} className="flex items-center flex-1">
-              <div className="flex flex-col items-center flex-1">
-                <div className={cn(
-                  'w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium',
-                  done ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground'
-                )}>
-                  {i + 1}
-                </div>
-                <span className={cn('text-xs mt-1.5', done ? 'text-foreground' : 'text-muted-foreground')}>
-                  {step.label}
-                </span>
-                <span className="text-[10px] text-muted-foreground mt-0.5">
-                  {time
-                    ? new Date(time).toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })
-                    : '—'}
-                </span>
-              </div>
-              {i < steps.length - 1 && (
-                <div className={cn(
-                  'h-px w-full -mt-6',
-                  i < statusIndex ? 'bg-primary' : 'bg-border'
-                )} />
-              )}
+            <div key={step.key} className="text-center" style={{ gridColumn: i * 2 + 1 }}>
+              <p className={cn('text-xs', done ? 'text-foreground' : 'text-muted-foreground')}>{step.label}</p>
+              <p className="text-[10px] text-muted-foreground">{formatDate(time)}</p>
             </div>
           );
         })}
