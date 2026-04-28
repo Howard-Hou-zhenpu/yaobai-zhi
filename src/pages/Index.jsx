@@ -31,9 +31,7 @@ export default function Index() {
             <h1 className="text-3xl font-medium tracking-tight">摇摆志</h1>
           </div>
           <p className="text-sm text-muted-foreground">记录每一次选择，成就更好的决策</p>
-        </div>
-        <div className="mx-auto mt-4 px-4 py-2.5 border-l-2 border-primary/30 bg-card/50 rounded-r-lg max-w-[280px]">
-          <p className="text-sm text-muted-foreground/90 leading-relaxed">「{dailyPrompt}」</p>
+          <p className="text-xs text-muted-foreground/60 mt-2">「{dailyPrompt}」</p>
         </div>
       </div>
 
