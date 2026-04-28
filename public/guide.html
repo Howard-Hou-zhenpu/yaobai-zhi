@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>摇摆志 使用指南</title>
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: "LXGW WenKai", "楷体", serif;
+  background: #e8e3d8;
+  color: #3d3428;
+  line-height: 1.8;
+}
+.page {
+  width: 750px;
+  margin: 0 auto;
+  background: #f5f1e8;
+}
+.section {
+  padding: 60px 50px;
+  border-bottom: 1px dashed #d4cbb8;
+}
+.section:last-child { border-bottom: none; }
+
+/* Typography */
+h1 { font-size: 48px; font-weight: 700; letter-spacing: 0.05em; }
+h2 { font-size: 28px; font-weight: 700; margin-bottom: 24px; color: #3d3428; }
+h3 { font-size: 20px; font-weight: 700; margin-bottom: 12px; color: #6b5d4f; }
+p { font-size: 16px; color: #6b5d4f; margin-bottom: 12px; }
+.small { font-size: 13px; color: #a09080; }
+.accent { color: #8b7355; }
+.green { color: #5a6b4f; }
+.purple { color: #6b5570; }
+.red { color: #a0522d; }
+
+/* Components */
+.badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 400;
+}
+.badge-brown { background: #e8dfd0; color: #6b5d4f; }
+.badge-green { background: #dde5d4; color: #5a6b4f; }
+.badge-purple { background: #ddd8e0; color: #6b5570; }
+.badge-red { background: #e5d0c8; color: #a0522d; }
+
+.card {
+  background: #ebe7dc;
+  border-radius: 16px;
+  padding: 24px;
+  margin: 16px 0;
+}
+.card-white {
+  background: #f5f1e8;
+  border: 1px solid #d4cbb8;
+  border-radius: 16px;
+  padding: 20px;
+  margin: 12px 0;
+}
+
+.flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin: 30px 0;
+}
+.flow-node {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #8b7355;
+  color: #f5f1e8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+}
+.flow-line {
+  width: 60px;
+  height: 2px;
+  background: #8b7355;
+}
+
+.timeline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin: 20px 0;
+}
+.tl-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #f5f1e8;
+  background: #8b7355;
+}
+.tl-dot.inactive { background: #d4cbb8; color: #6b5d4f; }
+.tl-line { width: 80px; height: 2px; background: #8b7355; }
+.tl-line.inactive { background: #d4cbb8; }
+
+.slider-demo {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right, #8b7355 60%, #d4cbb8 60%);
+  margin: 12px 0 4px;
+  position: relative;
+}
+.slider-demo::after {
+  content: '';
+  position: absolute;
+  left: 58%;
+  top: -6px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #8b7355;
+  border: 2px solid #f5f1e8;
+  box-shadow: 0 1px 4px rgba(139,115,85,0.3);
+}
+
+.checkbox {
+  width: 20px; height: 20px;
+  border: 2px solid #d4cbb8;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+.checkbox.checked {
+  border-color: #8b7355;
+  background: #8b7355;
+  color: #f5f1e8;
+  font-size: 12px;
+}
+
+.option-card {
+  border: 1.5px solid #d4cbb8;
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f5f1e8;
+}
+.option-card.selected {
+  border-color: #8b7355;
+  box-shadow: 0 0 0 2px rgba(139,115,85,0.2);
+}
+
+.share-card {
+  background: #f5f1e8;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 4px 20px rgba(139,115,85,0.12);
+  margin: 20px auto;
+  max-width: 380px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 16px;
+  font-size: 15px;
+  font-family: inherit;
+  font-weight: 400;
+  border: none;
+  cursor: pointer;
+}
+.btn-primary { background: #8b7355; color: #f5f1e8; }
+.btn-outline { background: #f5f1e8; color: #3d3428; border: 1px solid #d4cbb8; }
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 12px;
+  margin: 20px 0;
+}
+.stat-item {
+  text-align: center;
+  background: #f5f1e8;
+  border: 1px solid #d4cbb850;
+  border-radius: 14px;
+  padding: 16px 8px;
+}
+.stat-num { font-size: 28px; font-weight: 700; }
+.stat-label { font-size: 11px; color: #6b5d4f; letter-spacing: 0.05em; }
+.stat-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: #d4cbb8;
+  margin: 8px 12px 4px;
+  overflow: hidden;
+}
+.stat-bar-fill { height: 100%; border-radius: 2px; background: #8b735580; }
+
+.pie-demo {
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: conic-gradient(#7a9b6a 0% 63%, #c9b896 63% 76%, #a0522d 76% 100%);
+  margin: 20px auto;
+  position: relative;
+}
+.pie-demo::after {
+  content: '';
+  position: absolute;
+  top: 35px; left: 35px;
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  background: #f5f1e8;
+}
+
+.tip-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin: 16px 0;
+}
+.tip-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: #e8dfd0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  shrink: 0;
+  flex-shrink: 0;
+}
+
+.divider {
+  text-align: center;
+  margin: 30px 0;
+  color: #d4cbb8;
+  font-size: 20px;
+  letter-spacing: 8px;
+}
+
+.url-box {
+  text-align: center;
+  padding: 16px;
+  background: #ebe7dc;
+  border-radius: 12px;
+  margin-top: 20px;
+  font-size: 15px;
+  color: #8b7355;
+  letter-spacing: 0.02em;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- 封面 -->
+  <div class="section" style="text-align:center; padding:80px 50px;">
+    <svg width="80" height="80" viewBox="0 0 512 512" style="margin-bottom:20px;">
+      <g transform="translate(256,256)" stroke="#8b7355" stroke-width="14" stroke-linecap="round" fill="none">
+        <line x1="0" y1="-100" x2="0" y2="80"/>
+        <line x1="-110" y1="-80" x2="110" y2="-80"/>
+        <line x1="-110" y1="-80" x2="-110" y2="-30"/>
+        <line x1="110" y1="-80" x2="110" y2="-30"/>
+        <path d="M-140,-30 Q-110,40 -80,-30" stroke-width="12"/>
+        <path d="M80,-30 Q110,40 140,-30" stroke-width="12"/>
+        <circle cx="0" cy="-100" r="10" fill="#8b7355"/>
+        <line x1="-40" y1="80" x2="40" y2="80" stroke-width="16"/>
+      </g>
+    </svg>
+    <h1>摇摆志</h1>
+    <p style="font-size:18px; color:#8b7355; margin:12px 0 30px;">记录每一次选择，成就更好的决策</p>
+    <span class="badge badge-brown">使用指南 v1.0</span>
+  </div>
+
+  <!-- 这是什么 -->
+  <div class="section">
+    <h2>这是什么</h2>
+    <p style="font-size:17px;">摇摆志是一个个人决策记录与复盘工具。帮你把重要的选择写下来、认真分析、做出决定，然后回头看看这个决定好不好。</p>
+    <div class="flow">
+      <div class="flow-node">记录</div>
+      <div class="flow-line"></div>
+      <div class="flow-node">选择</div>
+      <div class="flow-line"></div>
+      <div class="flow-node">复盘</div>
+      <div class="flow-line"></div>
+      <div class="flow-node">成长</div>
+    </div>
+  </div>
+
+  <!-- 快速开始 -->
+  <div class="section">
+    <h2>快速开始</h2>
+    <div class="card">
+      <h3>注册 / 登录</h3>
+      <p>打开摇摆志，输入邮箱和密码注册账号。注册后直接登录，数据同步到云端，换设备也能用。</p>
+    </div>
+    <div class="card">
+      <h3>添加到手机桌面</h3>
+      <p><strong>iPhone：</strong>用 Safari 打开 → 点底部分享按钮 → "添加到主屏幕"</p>
+      <p><strong>安卓：</strong>用浏览器打开 → 点菜单 → "添加到桌面"</p>
+      <p class="small" style="margin-top:8px;">添加后桌面会出现摇摆志图标，打开就像一个 App</p>
+    </div>
+  </div>
+
+  <!-- 创建决策 -->
+  <div class="section">
+    <h2>创建决策</h2>
+    <p>点击首页「开始新的决策」按钮，选择类型：</p>
+    <div style="display:flex; gap:12px; margin:20px 0;">
+      <div class="card" style="flex:1; text-align:center;">
+        <h3 style="color:#8b7355;">快速决策</h3>
+        <p>日常小事<br>填标题、分类、选项即可</p>
+      </div>
+      <div class="card" style="flex:1; text-align:center;">
+        <h3 style="color:#8b7355;">深度决策</h3>
+        <p>重要选择<br>每个选项可分析优缺点、风险、应对方案</p>
+      </div>
+    </div>
+
+    <h3>填写内容</h3>
+    <div class="card-white">
+      <p style="margin:0;"><strong>决策标题</strong>　例如"是否跳槽到新公司"</p>
+    </div>
+    <div class="card-white">
+      <p style="margin:0;"><strong>分类标签</strong>　选预设分类或点「+ 自定义」</p>
+      <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+        <span class="badge badge-brown">职业发展</span>
+        <span class="badge badge-green">学习教育</span>
+        <span class="badge badge-purple">投资理财</span>
+        <span class="badge" style="background:#d4cbb8; color:#6b5d4f;">+ 自定义</span>
+      </div>
+    </div>
+    <div class="card-white">
+      <p style="margin:0;"><strong>纠结程度</strong>　记录你现在有多纠结</p>
+      <div style="display:flex; justify-content:space-between; font-size:12px; color:#6b5d4f; margin-top:4px;">
+        <span>轻松</span><span style="color:#3d3428; font-weight:700;">有些纠结</span><span>纠结</span>
+      </div>
+      <div class="slider-demo"></div>
+    </div>
+    <div class="card-white">
+      <p style="margin:0;"><strong>决策模板</strong>　点右上角「模板」快速套用</p>
+      <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+        <span class="badge badge-brown">跳槽决策</span>
+        <span class="badge badge-brown">买房决策</span>
+        <span class="badge badge-brown">选校决策</span>
+        <span class="badge badge-brown">投资决策</span>
+        <span class="badge badge-brown">转行决策</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 做出选择 -->
+  <div class="section">
+    <h2>做出选择</h2>
+    <p>进入决策详情页，点击选项完成选择（支持多选）：</p>
+
+    <div class="option-card selected">
+      <span><span class="checkbox checked">✓</span> 留在现公司</span>
+    </div>
+    <div class="option-card">
+      <span><span class="checkbox"></span> 跳槽到新公司</span>
+    </div>
+
+    <div class="card" style="margin-top:24px;">
+      <p style="margin:0;"><strong>信心值</strong>　你对这个选择有多确定？</p>
+      <div style="display:flex; justify-content:space-between; font-size:12px; color:#6b5d4f; margin-top:4px;">
+        <span>不太确定</span><span style="color:#3d3428; font-weight:700;">比较确定</span><span>非常确定</span>
+      </div>
+      <div class="slider-demo" style="background:linear-gradient(to right, #8b7355 75%, #d4cbb8 75%);">
+        <style>.slider-demo[style]::after { left: 73% !important; }</style>
+      </div>
+    </div>
+
+    <p style="margin-top:20px;">深度决策支持<strong>对比视图</strong>，左右并排比较各选项的优缺点：</p>
+    <div style="display:flex; gap:10px; margin-top:12px;">
+      <div class="card-white" style="flex:1; font-size:14px;">
+        <p style="font-weight:700; margin-bottom:8px;">留在现公司</p>
+        <p><span class="green">优点：</span>稳定</p>
+        <p><span class="red">缺点：</span>成长慢</p>
+      </div>
+      <div class="card-white" style="flex:1; font-size:14px;">
+        <p style="font-weight:700; margin-bottom:8px;">跳槽到新公司</p>
+        <p><span class="green">优点：</span>薪资高</p>
+        <p><span class="red">缺点：</span>风险大</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 复盘总结 -->
+  <div class="section">
+    <h2>复盘总结</h2>
+    <p>过一段时间后，回到已完成的决策进行复盘：</p>
+
+    <div class="card" style="margin-top:20px;">
+      <h3>决策时间线</h3>
+      <div class="timeline">
+        <div class="tl-dot">1</div>
+        <div class="tl-line"></div>
+        <div class="tl-dot">2</div>
+        <div class="tl-line"></div>
+        <div class="tl-dot">3</div>
+      </div>
+      <div style="display:flex; justify-content:space-between; text-align:center; font-size:13px; color:#6b5d4f; padding:0 10px;">
+        <span>创建<br><span class="small">4/20</span></span>
+        <span>选择<br><span class="small">4/22</span></span>
+        <span>复盘<br><span class="small">4/28</span></span>
+      </div>
+    </div>
+
+    <h3 style="margin-top:24px;">满意度评价</h3>
+    <div style="display:flex; gap:10px; margin:12px 0;">
+      <div class="btn btn-primary" style="flex:1; justify-content:center;">✦ 满意</div>
+      <div class="btn btn-outline" style="flex:1; justify-content:center;">◇ 一般</div>
+      <div class="btn btn-outline" style="flex:1; justify-content:center;">✧ 后悔</div>
+    </div>
+
+    <div class="card-white" style="margin-top:16px;">
+      <p style="color:#a09080; margin:0;">记录你的反思和教训...</p>
+    </div>
+
+    <div style="display:flex; gap:16px; margin-top:24px; flex-wrap:wrap;">
+      <div style="display:flex; align-items:center; gap:6px; font-size:14px;">
+        <span style="font-size:18px;">⭐</span> <strong>收藏复盘</strong>　标记经典复盘
+      </div>
+      <div style="display:flex; align-items:center; gap:6px; font-size:14px;">
+        <span style="font-size:18px;">✏️</span> <strong>修改复盘</strong>　想法变了可以改
+      </div>
+      <div style="display:flex; align-items:center; gap:6px; font-size:14px;">
+        <span style="font-size:18px;">↩️</span> <strong>重新打开</strong>　状态回到进行中
+      </div>
+      <div style="display:flex; align-items:center; gap:6px; font-size:14px;">
+        <span style="font-size:18px;">📝</span> <strong>追加备注</strong>　后来又想到的事
+      </div>
+    </div>
+  </div>
+
+  <!-- 分享复盘卡片 -->
+  <div class="section">
+    <h2>分享复盘卡片</h2>
+    <p>已完成或已复盘的决策，点击详情页顶部的分享图标：</p>
+
+    <div class="share-card">
+      <div style="margin-bottom:14px;">
+        <span class="badge badge-brown">职业发展</span>
+        <span class="green" style="margin-left:8px; font-size:14px;">✦ 满意</span>
+      </div>
+      <h3 style="font-size:22px; margin-bottom:6px;">跳槽决策</h3>
+      <p>是否离开当前公司，加入新的机会</p>
+      <p style="font-size:13px; color:#6b5d4f; margin:12px 0;">纠结度 3/5　　信心值 4/5</p>
+      <p style="font-size:13px; color:#5a6b4f;">最终选择：跳槽到新公司</p>
+      <div style="background:#ebe7dc; border-radius:10px; padding:14px; margin:14px 0;">
+        <p style="font-size:14px; color:#3d3428; margin:0;">新公司的成长空间确实比预期大，虽然前三个月压力很大，但回头看是对的。</p>
+      </div>
+      <div style="border-top:1px solid #d4cbb8; padding-top:12px; display:flex; justify-content:space-between; font-size:12px;">
+        <span style="color:#8b7355;">来自「摇摆志」</span>
+        <span style="color:#a09080;">记录每一次选择</span>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:12px; margin-top:16px;">
+      <div class="btn btn-primary" style="flex:1; justify-content:center;">📥 保存图片</div>
+      <div class="btn btn-outline" style="flex:1; justify-content:center;">📋 复制文案</div>
+    </div>
+    <p class="small" style="text-align:center; margin-top:12px;">请确认分享内容不含敏感信息</p>
+  </div>
+
+  <!-- 复盘中心 -->
+  <div class="section">
+    <h2>复盘中心</h2>
+    <p>点击底部导航「复盘」进入，查看你的决策全貌。</p>
+
+    <h3 style="margin-top:24px;">统计概览</h3>
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin:16px 0;">
+      <div class="card-white" style="text-align:center;">
+        <div class="stat-num">9</div>
+        <div class="stat-label">总决策</div>
+      </div>
+      <div class="card-white" style="text-align:center;">
+        <div class="stat-num green">8</div>
+        <div class="stat-label">已完成</div>
+      </div>
+      <div class="card-white" style="text-align:center;">
+        <div class="stat-num purple">7</div>
+        <div class="stat-label">已复盘</div>
+      </div>
+    </div>
+
+    <h3>满意度分析</h3>
+    <div style="display:flex; align-items:center; gap:30px; margin:20px 0;">
+      <div class="pie-demo"></div>
+      <div style="font-size:14px;">
+        <div style="display:flex; align-items:center; gap:8px; margin:8px 0;">
+          <div style="width:12px; height:12px; border-radius:50%; background:#7a9b6a;"></div>
+          <span>✦ 满意 63%</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin:8px 0;">
+          <div style="width:12px; height:12px; border-radius:50%; background:#c9b896;"></div>
+          <span>◇ 一般 13%</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin:8px 0;">
+          <div style="width:12px; height:12px; border-radius:50%; background:#a0522d;"></div>
+          <span>✧ 后悔 25%</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>决策画像</h3>
+    <div class="card">
+      <p style="font-size:13px; color:#6b5d4f; margin-bottom:10px;">最常纠结的领域</p>
+      <div style="display:flex; gap:8px; margin-bottom:16px;">
+        <span class="badge badge-brown">职业发展 (5次)</span>
+        <span class="badge badge-green">学习教育 (2次)</span>
+        <span class="badge badge-purple">投资理财 (1次)</span>
+      </div>
+      <div style="display:flex; gap:40px; font-size:14px;">
+        <div><p class="small">后悔率</p><p style="font-size:20px; font-weight:700;" class="green">14%</p></div>
+        <div><p class="small">平均纠结度</p><p style="font-size:20px; font-weight:700;">3.5/5</p></div>
+        <div><p class="small">平均信心值</p><p style="font-size:20px; font-weight:700;">4.0/5</p></div>
+      </div>
+    </div>
+
+    <h3>高频关键词</h3>
+    <div style="display:flex; flex-wrap:wrap; gap:8px; margin:12px 0;">
+      <span class="badge badge-brown" style="font-size:16px;">跳槽</span>
+      <span class="badge badge-brown" style="font-size:14px;">公司</span>
+      <span class="badge badge-brown" style="font-size:15px;">成长</span>
+      <span class="badge badge-brown" style="font-size:13px;">薪资</span>
+      <span class="badge badge-brown" style="font-size:14px;">选择</span>
+      <span class="badge badge-brown" style="font-size:12px;">风险</span>
+    </div>
+
+    <h3 style="margin-top:24px;">搜索和筛选</h3>
+    <p>支持关键词搜索、按状态/分类/时间范围筛选、收藏筛选</p>
+    <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
+      <span class="badge badge-brown" style="background:#8b7355; color:#f5f1e8;">全部</span>
+      <span class="badge badge-brown">进行中</span>
+      <span class="badge badge-brown">已完成</span>
+      <span class="badge badge-brown">已复盘</span>
+      <span class="badge badge-brown">⭐ 收藏</span>
+      <span class="badge badge-brown">筛选 ▾</span>
+    </div>
+  </div>
+
+  <!-- 首页亮点 -->
+  <div class="section">
+    <h2>首页亮点</h2>
+
+    <h3>每日提问</h3>
+    <p>每天一句不同的思考提问，帮你安静下来：</p>
+    <div class="card-white" style="text-align:center; padding:16px;">
+      <p style="color:#8b7355; margin:0; font-size:14px;">「如果不考虑别人的看法，你会怎么选？」</p>
+    </div>
+
+    <h3 style="margin-top:24px;">快速统计</h3>
+    <p>四个指标卡片，带进度条和趋势对比：</p>
+    <div class="stat-grid">
+      <div class="stat-item">
+        <div class="stat-num" style="font-size:22px;">9</div>
+        <div class="stat-label">总决策</div>
+        <div class="stat-bar"><div class="stat-bar-fill" style="width:100%;"></div></div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num green" style="font-size:22px;">8</div>
+        <div class="stat-label">已完成</div>
+        <div class="stat-bar"><div class="stat-bar-fill" style="width:89%;"></div></div>
+        <div class="small">89%</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num purple" style="font-size:22px;">7</div>
+        <div class="stat-label">已复盘</div>
+        <div class="stat-bar"><div class="stat-bar-fill" style="width:88%;"></div></div>
+        <div class="small">88%</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" style="font-size:22px; color:#7a6245;">3</div>
+        <div class="stat-label">本周新增</div>
+        <div class="stat-bar"><div class="stat-bar-fill" style="width:60%;"></div></div>
+        <div class="small">↑ +1</div>
+      </div>
+    </div>
+
+    <h3>决策质量趋势</h3>
+    <p>复盘数据积累后，首页会出现满意度趋势折线图，帮你看到决策质量是否在提升。</p>
+  </div>
+
+  <!-- 小贴士 -->
+  <div class="section">
+    <h2>小贴士</h2>
+    <div class="tip-item">
+      <div class="tip-icon">💡</div>
+      <p style="margin:0;">日常小事用「快速决策」就够了，不是每个决定都需要深度分析</p>
+    </div>
+    <div class="tip-item">
+      <div class="tip-icon">⏰</div>
+      <p style="margin:0;">复盘不用急，做完决定过几天甚至几周再回来看，效果更好</p>
+    </div>
+    <div class="tip-item">
+      <div class="tip-icon">🎯</div>
+      <p style="margin:0;">纠结度和信心值没有对错，诚实记录就好，它们是帮你了解自己的</p>
+    </div>
+    <div class="tip-item">
+      <div class="tip-icon">📊</div>
+      <p style="margin:0;">定期看看复盘中心的决策画像，你会发现一些有趣的模式</p>
+    </div>
+  </div>
+
+  <!-- 数据安全 -->
+  <div class="section">
+    <h2>数据安全</h2>
+    <div class="card">
+      <div class="tip-item"><div class="tip-icon">☁️</div><p style="margin:0;">数据存储在云端，支持跨设备同步</p></div>
+      <div class="tip-item"><div class="tip-icon">🔒</div><p style="margin:0;">每个用户只能看到自己的数据</p></div>
+      <div class="tip-item"><div class="tip-icon">📶</div><p style="margin:0;">断网时可查看缓存，联网后自动同步</p></div>
+      <div class="tip-item"><div class="tip-icon">🛡️</div><p style="margin:0;">不收集任何敏感信息</p></div>
+    </div>
+  </div>
+
+  <!-- 结尾 -->
+  <div class="section" style="text-align:center; padding:60px 50px 80px;">
+    <svg width="48" height="48" viewBox="0 0 512 512" style="margin-bottom:16px; opacity:0.4;">
+      <g transform="translate(256,256)" stroke="#8b7355" stroke-width="14" stroke-linecap="round" fill="none">
+        <line x1="0" y1="-100" x2="0" y2="80"/>
+        <line x1="-110" y1="-80" x2="110" y2="-80"/>
+        <line x1="-110" y1="-80" x2="-110" y2="-30"/>
+        <line x1="110" y1="-80" x2="110" y2="-30"/>
+        <path d="M-140,-30 Q-110,40 -80,-30" stroke-width="12"/>
+        <path d="M80,-30 Q110,40 140,-30" stroke-width="12"/>
+        <circle cx="0" cy="-100" r="10" fill="#8b7355"/>
+        <line x1="-40" y1="80" x2="40" y2="80" stroke-width="16"/>
+      </g>
+    </svg>
+    <p style="font-size:18px; color:#8b7355; margin-bottom:8px;">摇摆志 — 安静地与自己对话</p>
+    <div class="url-box">
+      yaobai-zhi.zhenpu-hou.workers.dev
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
