@@ -62,7 +62,10 @@ export default function ShareCard({ decision, onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-5" onClick={onClose}>
-      <div className="w-full max-w-[340px]" onClick={(e) => e.stopPropagation()}>
+      <div className="w-full max-w-[340px] relative" onClick={(e) => e.stopPropagation()}>
+        <Button variant="ghost" size="icon" className="absolute -top-10 right-0 text-white/80 hover:text-white rounded-xl" onClick={onClose}>
+          <X className="w-5 h-5" strokeWidth={1.5} />
+        </Button>
         {/* The card to be captured */}
         <div ref={cardRef} style={{ padding: '24px', borderRadius: '16px', backgroundColor: '#f5f1e8', fontFamily: '"LXGW WenKai", serif' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
@@ -117,16 +120,13 @@ export default function ShareCard({ decision, onClose }) {
 
         {/* Action buttons */}
         <div className="flex gap-2 mt-3">
-          <Button className="flex-1 rounded-2xl gap-1.5" onClick={handleSaveImage} disabled={generating}>
+          <Button className="flex-1 rounded-2xl gap-1.5 h-11" onClick={handleSaveImage} disabled={generating}>
             <Download className="w-4 h-4" strokeWidth={1.5} />
             {generating ? '生成中...' : '保存图片'}
           </Button>
-          <Button variant="outline" className="flex-1 rounded-2xl gap-1.5" onClick={handleCopyText}>
+          <Button variant="outline" className="flex-1 rounded-2xl gap-1.5 h-11" onClick={handleCopyText}>
             <Copy className="w-4 h-4" strokeWidth={1.5} />
             复制文案
-          </Button>
-          <Button variant="ghost" size="icon" className="shrink-0 rounded-xl" onClick={onClose}>
-            <X className="w-4 h-4" strokeWidth={1.5} />
           </Button>
         </div>
 
