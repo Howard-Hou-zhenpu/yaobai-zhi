@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Trash2, CheckCircle2, AlertCircle, LayoutList, Columns2, Pencil, Square, CheckSquare, Star, MessageSquarePlus, RotateCcw, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowLeft, Trash2, CheckCircle2, AlertCircle, LayoutList, Columns2, Pencil, Square, CheckSquare, Star, MessageSquarePlus, RotateCcw, ChevronDown, ChevronUp, Share2 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -10,6 +10,7 @@ import { useDecision, useUpdateDecision, useDeleteDecision } from '../hooks/useD
 import { STATUS_MAP, SATISFACTION_MAP } from '../lib/constants';
 import { getReviewGuide, getCompletionFeedback } from '../lib/prompts';
 import Timeline from '../components/Timeline';
+import ShareCard from '../components/ShareCard';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
 
@@ -33,6 +34,7 @@ export default function DecisionDetail() {
   const [editing, setEditing] = useState(false);
   const [showNotes, setShowNotes] = useState(false);
   const [notesText, setNotesText] = useState('');
+  const [showShareCard, setShowShareCard] = useState(false);
   const [reviewGuide] = useState(getReviewGuide);
 
   if (!decision) {
@@ -187,8 +189,13 @@ export default function DecisionDetail() {
           </Button>
           <h1 className="text-lg font-medium truncate">{decision.title}</h1>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-1 shrink-0">
           <Badge className={`${status.color} rounded-lg`}>{status.label}</Badge>
+          {(decision.status === 'completed' || decision.status === 'reviewed') && (
+            <Button variant="ghost" size="icon" onClick={() => setShowShareCard(true)}>
+              <Share2 className="w-4 h-4" strokeWidth={1.5} />
+            </Button>
+          )}
           <Button variant="ghost" size="icon" className="text-destructive" onClick={() => setShowDeleteConfirm(true)}>
             <Trash2 className="w-4 h-4" strokeWidth={1.5} />
           </Button>
@@ -400,6 +407,8 @@ export default function DecisionDetail() {
           </Button>
         </div>
       )}
+
+      {showShareCard && <ShareCard decision={decision} onClose={() => setShowShareCard(false)} />}
     </div>
   );
 }
