@@ -45,12 +45,12 @@ export default function ReviewChart({ decisions }) {
             <Tooltip formatter={(value) => [`${value} 次`]} />
           </PieChart>
         </ResponsiveContainer>
-        <div className="flex justify-center gap-4 mt-1">
+        <div className="flex justify-center gap-3 mt-1 flex-wrap">
           {data.map((d) => {
             const pct = Math.round((d.value / reviewed.length) * 100);
             return (
-              <div key={d.key} className="flex items-center gap-1.5 text-sm">
-                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[d.key] }} />
+              <div key={d.key} className="flex items-center gap-1.5 text-sm whitespace-nowrap">
+                <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: COLORS[d.key] }} />
                 <span>{d.name}</span>
                 <span className="text-muted-foreground text-xs">{pct}%</span>
               </div>
