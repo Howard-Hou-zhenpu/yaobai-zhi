@@ -16,7 +16,7 @@ export default function QuickStats({ decisions }) {
     { label: '总决策', value: total, icon: ListChecks, color: 'text-[#8b7355] bg-[#e8dfd0]' },
     { label: '已完成', value: completed, icon: CheckCircle2, color: 'text-[#5a6b4f] bg-[#dde5d4]' },
     { label: '已复盘', value: reviewed, icon: BarChart3, color: 'text-[#6b5570] bg-[#ddd8e0]' },
-    { label: '本周', value: thisWeek, icon: CalendarDays, color: 'text-[#7a6245] bg-[#e8ddd0]' },
+    { label: '本周新增', value: thisWeek, icon: CalendarDays, color: 'text-[#7a6245] bg-[#e8ddd0]' },
   ];
 
   return (
