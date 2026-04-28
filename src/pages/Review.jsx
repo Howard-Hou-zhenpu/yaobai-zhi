@@ -92,18 +92,18 @@ export default function Review() {
           <Input className="pl-9" placeholder="搜索决策..." value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
           {STATUS_FILTERS.map((f) => (
             <Badge
               key={f.value}
-              className={`cursor-pointer transition-all rounded-lg ${statusFilter === f.value ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground border-border/60'}`}
+              className={`cursor-pointer transition-all rounded-lg shrink-0 ${statusFilter === f.value ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground border-border/60'}`}
               onClick={() => setStatusFilter(f.value)}
             >
               {f.label}
             </Badge>
           ))}
           <Badge
-            className={`cursor-pointer transition-all rounded-lg gap-1 ${favoriteOnly ? 'bg-[#c9a84c]/20 text-[#c9a84c]' : 'bg-card text-muted-foreground border-border/60'}`}
+            className={`cursor-pointer transition-all rounded-lg gap-1 shrink-0 ${favoriteOnly ? 'bg-[#c9a84c]/20 text-[#c9a84c]' : 'bg-card text-muted-foreground border-border/60'}`}
             onClick={() => setFavoriteOnly(!favoriteOnly)}
           >
             <Star className="w-3 h-3" strokeWidth={1.5} fill={favoriteOnly ? 'currentColor' : 'none'} /> 收藏
@@ -111,7 +111,7 @@ export default function Review() {
           <Button
             variant="ghost"
             size="sm"
-            className={`h-6 px-2 text-xs gap-1 ${hasActiveFilters ? 'text-primary' : 'text-muted-foreground'}`}
+            className={`h-6 px-2 text-xs gap-1 shrink-0 ${hasActiveFilters ? 'text-primary' : 'text-muted-foreground'}`}
             onClick={() => setShowFilters(!showFilters)}
           >
             筛选 {showFilters ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
