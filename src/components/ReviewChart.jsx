@@ -27,32 +27,35 @@ export default function ReviewChart({ decisions }) {
     <Card>
       <CardHeader><CardTitle className="text-base">满意度分析</CardTitle></CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={220}>
+        <ResponsiveContainer width="100%" height={180}>
           <PieChart>
             <Pie
               data={data}
               cx="50%"
               cy="50%"
-              innerRadius={50}
-              outerRadius={80}
+              innerRadius={45}
+              outerRadius={75}
               paddingAngle={3}
               dataKey="value"
-              label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
             >
               {data.map((entry) => (
                 <Cell key={entry.key} fill={COLORS[entry.key]} />
               ))}
             </Pie>
-            <Tooltip />
+            <Tooltip formatter={(value) => [`${value} 次`]} />
           </PieChart>
         </ResponsiveContainer>
-        <div className="flex justify-center gap-4 mt-2">
-          {data.map((d) => (
-            <div key={d.key} className="flex items-center gap-1 text-sm">
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[d.key] }} />
-              <span>{d.name}: {d.value}</span>
-            </div>
-          ))}
+        <div className="flex justify-center gap-4 mt-1">
+          {data.map((d) => {
+            const pct = Math.round((d.value / reviewed.length) * 100);
+            return (
+              <div key={d.key} className="flex items-center gap-1.5 text-sm">
+                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[d.key] }} />
+                <span>{d.name}</span>
+                <span className="text-muted-foreground text-xs">{pct}%</span>
+              </div>
+            );
+          })}
         </div>
       </CardContent>
     </Card>
