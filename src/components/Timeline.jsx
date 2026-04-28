@@ -10,37 +10,34 @@ export default function Timeline({ decision }) {
   const statusIndex = decision.status === 'reviewed' ? 2 : decision.status === 'completed' ? 1 : 0;
 
   return (
-    <div className="mb-5 px-4">
-      <div className="flex items-center">
-        {steps.map((step, i) => (
-          <div key={step.key} className="flex items-center flex-1 last:flex-none">
-            <div className={cn(
-              'w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium shrink-0',
-              i <= statusIndex ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground'
-            )}>
-              {i + 1}
-            </div>
-            {i < steps.length - 1 && (
-              <div className={cn(
-                'h-px flex-1 mx-2',
-                i < statusIndex ? 'bg-primary' : 'bg-border'
-              )} />
-            )}
-          </div>
-        ))}
-      </div>
-      <div className="flex justify-between mt-1.5">
+    <div className="mb-5 px-2">
+      <div className="flex items-start">
         {steps.map((step, i) => {
+          const done = i <= statusIndex;
           const time = decision[step.field];
           return (
-            <div key={step.key} className="text-center" style={{ width: '33.33%' }}>
-              <span className={cn('text-xs', i <= statusIndex ? 'text-foreground' : 'text-muted-foreground')}>
-                {step.label}
-              </span>
-              {time && (
-                <p className="text-[10px] text-muted-foreground mt-0.5">
-                  {new Date(time).toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })}
-                </p>
+            <div key={step.key} className="flex items-center flex-1">
+              <div className="flex flex-col items-center flex-1">
+                <div className={cn(
+                  'w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium',
+                  done ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground'
+                )}>
+                  {i + 1}
+                </div>
+                <span className={cn('text-xs mt-1.5', done ? 'text-foreground' : 'text-muted-foreground')}>
+                  {step.label}
+                </span>
+                <span className="text-[10px] text-muted-foreground mt-0.5">
+                  {time
+                    ? new Date(time).toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })
+                    : '—'}
+                </span>
+              </div>
+              {i < steps.length - 1 && (
+                <div className={cn(
+                  'h-px w-full -mt-6',
+                  i < statusIndex ? 'bg-primary' : 'bg-border'
+                )} />
               )}
             </div>
           );
