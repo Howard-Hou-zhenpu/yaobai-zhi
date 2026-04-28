@@ -30,9 +30,11 @@ export default function Index() {
             <Scale className="w-6 h-6 text-primary/70" strokeWidth={1.5} />
             <h1 className="text-3xl font-medium tracking-tight">摇摆志</h1>
           </div>
-          <p className="text-sm text-muted-foreground italic">记录每一次选择，成就更好的决策</p>
+          <p className="text-sm text-muted-foreground">记录每一次选择，成就更好的决策</p>
         </div>
-        <p className="text-center text-sm text-muted-foreground/80 mt-3 italic">「{dailyPrompt}」</p>
+        <div className="mx-auto mt-4 px-4 py-2.5 border-l-2 border-primary/30 bg-card/50 rounded-r-lg max-w-[280px]">
+          <p className="text-sm text-muted-foreground/90 leading-relaxed">「{dailyPrompt}」</p>
+        </div>
       </div>
 
       <QuickStats decisions={decisions} />
@@ -64,7 +66,7 @@ export default function Index() {
       {decisions.length === 0 && (
         <div className="text-center py-16 text-muted-foreground">
           <Scale className="w-10 h-10 mx-auto mb-4 opacity-20" strokeWidth={1} />
-          <p className="text-sm italic">每一个选择都值得被认真对待</p>
+          <p className="text-sm">每一个选择都值得被认真对待</p>
           <p className="text-xs mt-2 opacity-70">点击上方按钮，开始你的第一次对话</p>
         </div>
       )}

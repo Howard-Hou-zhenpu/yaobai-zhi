@@ -11,7 +11,7 @@ export default function ReviewChart({ decisions }) {
       <Card>
         <CardHeader><CardTitle className="text-base">满意度分析</CardTitle></CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground text-center py-8 italic">暂无复盘数据</p>
+          <p className="text-sm text-muted-foreground text-center py-8">暂无复盘数据</p>
         </CardContent>
       </Card>
     );

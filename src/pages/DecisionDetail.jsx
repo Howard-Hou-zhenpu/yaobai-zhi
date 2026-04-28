@@ -222,7 +222,7 @@ export default function DecisionDetail() {
             )}
           </div>
           {decision.description && (
-            <p className="text-sm text-muted-foreground mt-3 italic leading-relaxed">{decision.description}</p>
+            <p className="text-sm text-muted-foreground mt-3leading-relaxed">{decision.description}</p>
           )}
           <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border/50 text-xs text-muted-foreground">
             <span>创建于 {new Date(decision.createdAt).toLocaleString('zh-CN')}</span>
@@ -253,7 +253,7 @@ export default function DecisionDetail() {
       </div>
 
       {decision.status === 'active' && selectedOptions.length > 0 && (
-        <p className="text-xs text-muted-foreground mb-3 italic">
+        <p className="text-xs text-muted-foreground mb-3">
           已选 {selectedOptions.length} 项：{selectedOptions.join('、')}
         </p>
       )}
@@ -295,7 +295,9 @@ export default function DecisionDetail() {
         <Card className="mt-5">
           <CardHeader>
             <CardTitle className="text-base font-medium">复盘总结</CardTitle>
-            <p className="text-sm text-muted-foreground italic mt-1">{reviewGuide}</p>
+            <div className="mt-2 px-3 py-2 border-l-2 border-primary/30 bg-background/50 rounded-r-lg">
+              <p className="text-sm text-muted-foreground leading-relaxed">{reviewGuide}</p>
+            </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
@@ -339,7 +341,7 @@ export default function DecisionDetail() {
                 {SATISFACTION_MAP[decision.satisfaction]?.label}
               </span>
             </div>
-            {decision.review && <p className="text-sm text-muted-foreground italic leading-relaxed">{decision.review}</p>}
+            {decision.review && <p className="text-sm text-muted-foregroundleading-relaxed">{decision.review}</p>}
             <p className="text-xs text-muted-foreground mt-3 pt-3 border-t border-border/50">
               复盘于 {new Date(decision.reviewedAt).toLocaleString('zh-CN')}
             </p>

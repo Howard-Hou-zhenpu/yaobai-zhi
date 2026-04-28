@@ -64,7 +64,7 @@ export default function Review() {
     <div className="pb-20 px-5">
       <div className="py-6">
         <h1 className="text-xl font-medium">复盘中心</h1>
-        <p className="text-sm text-muted-foreground mt-1 italic">回顾决策，总结经验</p>
+        <p className="text-sm text-muted-foreground mt-1">回顾决策，总结经验</p>
       </div>
 
       <div className="grid grid-cols-3 gap-2 mb-5">
@@ -165,7 +165,7 @@ export default function Review() {
             <DecisionCard key={d.id} decision={d} />
           ))}
           {filtered.length === 0 && (
-            <p className="text-center text-sm text-muted-foreground py-8 italic">没有找到匹配的决策</p>
+            <p className="text-center text-sm text-muted-foreground py-8">没有找到匹配的决策</p>
           )}
         </div>
       </div>

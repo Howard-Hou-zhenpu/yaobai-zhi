@@ -41,7 +41,7 @@ export default function DecisionCard({ decision }) {
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
             <h3 className="font-medium text-base truncate">{decision.title}</h3>
-            <p className="text-sm text-muted-foreground mt-1.5 line-clamp-2 italic">
+            <p className="text-sm text-muted-foreground mt-1.5 line-clamp-2">
               {decision.description || '暂无描述'}
             </p>
           </div>

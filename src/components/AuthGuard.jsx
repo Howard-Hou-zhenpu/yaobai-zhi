@@ -27,7 +27,7 @@ export default function AuthGuard({ children }) {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-muted-foreground italic">加载中...</p>
+        <p className="text-muted-foreground">加载中...</p>
       </div>
     );
   }

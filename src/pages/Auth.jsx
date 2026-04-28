@@ -46,7 +46,7 @@ export default function Auth() {
             <Scale className="w-6 h-6 text-primary/70" strokeWidth={1.5} />
             <CardTitle className="text-2xl font-medium">摇摆志</CardTitle>
           </div>
-          <p className="text-sm text-muted-foreground italic">
+          <p className="text-sm text-muted-foreground">
             {isSignUp ? '创建账号，开始记录决策' : '登录账号，继续你的决策之旅'}
           </p>
         </CardHeader>
