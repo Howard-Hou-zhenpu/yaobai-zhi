@@ -58,13 +58,13 @@ export function canUseAI() {
 }
 
 export function getActiveConfig() {
-  const custom = getApiConfig();
-  if (custom?.apiKey) {
-    return { provider: custom.provider, apiKey: custom.apiKey, isFree: false };
-  }
   const defaultKey = import.meta.env.VITE_KIMI_API_KEY;
   if (defaultKey && getFreeRemaining() > 0) {
     return { provider: 'kimi', apiKey: defaultKey, isFree: true };
+  }
+  const custom = getApiConfig();
+  if (custom?.apiKey) {
+    return { provider: custom.provider, apiKey: custom.apiKey, isFree: false };
   }
   return null;
 }
