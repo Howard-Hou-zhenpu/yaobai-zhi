@@ -12,6 +12,7 @@ import KeywordCloud from '../components/KeywordCloud';
 import DecisionReport from '../components/DecisionReport';
 import DecisionCard from '../components/DecisionCard';
 import { CATEGORIES } from '../lib/constants';
+import { cn } from '../lib/utils';
 
 const STATUS_FILTERS = [
   { value: '', label: '全部' },
@@ -29,6 +30,7 @@ const TIME_FILTERS = [
 
 export default function Review() {
   const { data: decisions = [] } = useDecisions();
+  const [tab, setTab] = useState('overview');
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
@@ -69,110 +71,133 @@ export default function Review() {
         <p className="text-sm text-muted-foreground mt-1">回顾决策，总结经验</p>
       </div>
 
-      <div className="grid grid-cols-3 gap-2 mb-5">
-        <Card><CardContent className="p-3 text-center">
-          <p className="text-2xl font-medium">{total}</p>
-          <p className="text-[11px] text-muted-foreground tracking-wide">总决策</p>
-        </CardContent></Card>
-        <Card><CardContent className="p-3 text-center">
-          <p className="text-2xl font-medium text-[#5a6b4f]">{completed}</p>
-          <p className="text-[11px] text-muted-foreground tracking-wide">已完成</p>
-        </CardContent></Card>
-        <Card><CardContent className="p-3 text-center">
-          <p className="text-2xl font-medium text-[#6b5570]">{reviewed}</p>
-          <p className="text-[11px] text-muted-foreground tracking-wide">已复盘</p>
-        </CardContent></Card>
+      <div className="flex gap-2 mb-5">
+        <Button
+          variant={tab === 'overview' ? 'default' : 'outline'}
+          className="flex-1 rounded-2xl h-9"
+          onClick={() => setTab('overview')}
+        >
+          概览
+        </Button>
+        <Button
+          variant={tab === 'records' ? 'default' : 'outline'}
+          className="flex-1 rounded-2xl h-9"
+          onClick={() => setTab('records')}
+        >
+          记录
+        </Button>
       </div>
 
-      <ReviewChart decisions={decisions} />
-      <TrendChart decisions={decisions} />
-      <DecisionProfile decisions={decisions} />
-      <KeywordCloud decisions={decisions} />
-      <DecisionReport decisions={decisions} />
+      {tab === 'overview' && (
+        <div className="space-y-4">
+          <div className="grid grid-cols-3 gap-2">
+            <Card><CardContent className="p-3 text-center">
+              <p className="text-2xl font-medium">{total}</p>
+              <p className="text-[11px] text-muted-foreground tracking-wide">总决策</p>
+            </CardContent></Card>
+            <Card><CardContent className="p-3 text-center">
+              <p className="text-2xl font-medium text-[#5a6b4f]">{completed}</p>
+              <p className="text-[11px] text-muted-foreground tracking-wide">已完成</p>
+            </CardContent></Card>
+            <Card><CardContent className="p-3 text-center">
+              <p className="text-2xl font-medium text-[#6b5570]">{reviewed}</p>
+              <p className="text-[11px] text-muted-foreground tracking-wide">已复盘</p>
+            </CardContent></Card>
+          </div>
 
-      <div className="mt-5 space-y-3">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
-          <Input className="pl-9" placeholder="搜索决策..." value={search} onChange={(e) => setSearch(e.target.value)} />
+          <ReviewChart decisions={decisions} />
+          <TrendChart decisions={decisions} />
+          <DecisionProfile decisions={decisions} />
+          <KeywordCloud decisions={decisions} />
+          <DecisionReport decisions={decisions} />
         </div>
+      )}
 
-        <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
-          {STATUS_FILTERS.map((f) => (
-            <Badge
-              key={f.value}
-              className={`cursor-pointer transition-all rounded-lg shrink-0 ${statusFilter === f.value ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground border-border/60'}`}
-              onClick={() => setStatusFilter(f.value)}
-            >
-              {f.label}
-            </Badge>
-          ))}
-          <Badge
-            className={`cursor-pointer transition-all rounded-lg gap-1 shrink-0 ${favoriteOnly ? 'bg-[#c9a84c]/20 text-[#c9a84c]' : 'bg-card text-muted-foreground border-border/60'}`}
-            onClick={() => setFavoriteOnly(!favoriteOnly)}
-          >
-            <Star className="w-3 h-3" strokeWidth={1.5} fill={favoriteOnly ? 'currentColor' : 'none'} /> 收藏
-          </Badge>
-          <Button
-            variant="ghost"
-            size="sm"
-            className={`h-6 px-2 text-xs gap-1 shrink-0 ${hasActiveFilters ? 'text-primary' : 'text-muted-foreground'}`}
-            onClick={() => setShowFilters(!showFilters)}
-          >
-            筛选 {showFilters ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-            {hasActiveFilters && <span className="w-1.5 h-1.5 rounded-full bg-primary" />}
-          </Button>
-        </div>
-
-        {showFilters && (
-          <Card>
-            <CardContent className="p-3 space-y-3">
-              <div>
-                <p className="text-xs text-muted-foreground tracking-wide uppercase mb-1.5">分类</p>
-                <div className="flex flex-wrap gap-1.5">
-                  <Badge
-                    className={`cursor-pointer rounded-lg text-xs ${!categoryFilter ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground border-border/60'}`}
-                    onClick={() => setCategoryFilter('')}
-                  >
-                    全部
-                  </Badge>
-                  {allCategories.map((cat) => (
-                    <Badge
-                      key={cat}
-                      className={`cursor-pointer rounded-lg text-xs ${categoryFilter === cat ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground border-border/60'}`}
-                      onClick={() => setCategoryFilter(cat)}
-                    >
-                      {cat}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground tracking-wide uppercase mb-1.5">时间范围</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {TIME_FILTERS.map((f) => (
-                    <Badge
-                      key={f.value}
-                      className={`cursor-pointer rounded-lg text-xs ${timeFilter === f.value ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground border-border/60'}`}
-                      onClick={() => setTimeFilter(f.value)}
-                    >
-                      {f.label}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
+      {tab === 'records' && (
         <div className="space-y-3">
-          {filtered.map((d) => (
-            <DecisionCard key={d.id} decision={d} />
-          ))}
-          {filtered.length === 0 && (
-            <p className="text-center text-sm text-muted-foreground py-8">没有找到匹配的决策</p>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+            <Input className="pl-9" placeholder="搜索决策..." value={search} onChange={(e) => setSearch(e.target.value)} />
+          </div>
+
+          <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
+            {STATUS_FILTERS.map((f) => (
+              <Badge
+                key={f.value}
+                className={`cursor-pointer transition-all rounded-lg shrink-0 ${statusFilter === f.value ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground border-border/60'}`}
+                onClick={() => setStatusFilter(f.value)}
+              >
+                {f.label}
+              </Badge>
+            ))}
+            <Badge
+              className={`cursor-pointer transition-all rounded-lg gap-1 shrink-0 ${favoriteOnly ? 'bg-[#c9a84c]/20 text-[#c9a84c]' : 'bg-card text-muted-foreground border-border/60'}`}
+              onClick={() => setFavoriteOnly(!favoriteOnly)}
+            >
+              <Star className="w-3 h-3" strokeWidth={1.5} fill={favoriteOnly ? 'currentColor' : 'none'} /> 收藏
+            </Badge>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`h-6 px-2 text-xs gap-1 shrink-0 ${hasActiveFilters ? 'text-primary' : 'text-muted-foreground'}`}
+              onClick={() => setShowFilters(!showFilters)}
+            >
+              筛选 {showFilters ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+              {hasActiveFilters && <span className="w-1.5 h-1.5 rounded-full bg-primary" />}
+            </Button>
+          </div>
+
+          {showFilters && (
+            <Card>
+              <CardContent className="p-3 space-y-3">
+                <div>
+                  <p className="text-xs text-muted-foreground tracking-wide uppercase mb-1.5">分类</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    <Badge
+                      className={`cursor-pointer rounded-lg text-xs ${!categoryFilter ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground border-border/60'}`}
+                      onClick={() => setCategoryFilter('')}
+                    >
+                      全部
+                    </Badge>
+                    {allCategories.map((cat) => (
+                      <Badge
+                        key={cat}
+                        className={`cursor-pointer rounded-lg text-xs ${categoryFilter === cat ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground border-border/60'}`}
+                        onClick={() => setCategoryFilter(cat)}
+                      >
+                        {cat}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground tracking-wide uppercase mb-1.5">时间范围</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {TIME_FILTERS.map((f) => (
+                      <Badge
+                        key={f.value}
+                        className={`cursor-pointer rounded-lg text-xs ${timeFilter === f.value ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground border-border/60'}`}
+                        onClick={() => setTimeFilter(f.value)}
+                      >
+                        {f.label}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           )}
+
+          <div className="space-y-3">
+            {filtered.map((d) => (
+              <DecisionCard key={d.id} decision={d} />
+            ))}
+            {filtered.length === 0 && (
+              <p className="text-center text-sm text-muted-foreground py-8">没有找到匹配的决策</p>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
