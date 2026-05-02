@@ -6,6 +6,7 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { useDecisions } from '../hooks/useDecisions';
 import ReviewChart from '../components/ReviewChart';
+import TrendChart from '../components/TrendChart';
 import DecisionProfile from '../components/DecisionProfile';
 import KeywordCloud from '../components/KeywordCloud';
 import DecisionReport from '../components/DecisionReport';
@@ -84,6 +85,7 @@ export default function Review() {
       </div>
 
       <ReviewChart decisions={decisions} />
+      <TrendChart decisions={decisions} />
       <DecisionProfile decisions={decisions} />
       <KeywordCloud decisions={decisions} />
       <DecisionReport decisions={decisions} />

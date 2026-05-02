@@ -5,7 +5,6 @@ import { useDecisions } from '../hooks/useDecisions';
 import { supabase } from '../lib/supabase';
 import { getDailyPrompt } from '../lib/prompts';
 import QuickStats from '../components/QuickStats';
-import TrendChart from '../components/TrendChart';
 import DecisionCard from '../components/DecisionCard';
 
 export default function Index() {
@@ -36,7 +35,6 @@ export default function Index() {
       </div>
 
       <QuickStats decisions={decisions} />
-      <TrendChart decisions={decisions} />
 
       <Button
         className="w-full mt-5 h-12 text-base gap-2 rounded-2xl"
