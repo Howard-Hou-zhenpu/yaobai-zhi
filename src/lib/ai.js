@@ -115,17 +115,17 @@ ${description ? `决策描述：${description}` : ''}
 每个维度只写一句话（15字以内），用来启发用户自己深入思考，不要替用户做判断。`;
 
   const text = await callAI(prompt, 600);
-  const result = {};
+  const entries = [];
   let current = null;
   text.split('\n').forEach((line) => {
     const l = line.trim();
     const nameMatch = l.match(/^【(.+?)】$/);
-    if (nameMatch) { current = nameMatch[1]; result[current] = {}; return; }
-    if (current && l.startsWith('优点：')) result[current].pros = l.replace('优点：', '').trim();
-    if (current && l.startsWith('缺点：')) result[current].cons = l.replace('缺点：', '').trim();
-    if (current && l.startsWith('风险：')) result[current].risks = l.replace('风险：', '').trim();
+    if (nameMatch) { current = { name: nameMatch[1], pros: '', cons: '', risks: '' }; entries.push(current); return; }
+    if (current && l.startsWith('优点：')) current.pros = l.replace('优点：', '').trim();
+    if (current && l.startsWith('缺点：')) current.cons = l.replace('缺点：', '').trim();
+    if (current && l.startsWith('风险：')) current.risks = l.replace('风险：', '').trim();
   });
-  return result;
+  return entries;
 }
 
 export async function generateDecisionReport(decisions) {

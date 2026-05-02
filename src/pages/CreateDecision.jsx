@@ -25,6 +25,7 @@ export default function CreateDecision() {
   const [showTemplates, setShowTemplates] = useState(false);
   const [hesitation, setHesitation] = useState(3);
   const [aiLoading, setAiLoading] = useState(false);
+  const [aiHints, setAiHints] = useState([]);
   const [description, setDescription] = useState('');
   const [options, setOptions] = useState([
     { name: '', pros: '', cons: '', risks: '', worstCase: '', solution: '' },
@@ -225,18 +226,21 @@ export default function CreateDecision() {
                 setAiLoading(true);
                 try {
                   const hints = await generateAnalysisHints(title, description, options);
-                  const updated = options.map((o) => {
-                    const h = hints[o.name];
-                    if (!h) return o;
-                    return {
-                      ...o,
-                      pros: o.pros || h.pros || '',
-                      cons: o.cons || h.cons || '',
-                      risks: o.risks || h.risks || '',
-                    };
-                  });
-                  setOptions(updated);
-                  toast.success('AI 已生成分析提示，你可以在此基础上修改');
+                  setAiHints(hints);
+                  if (type === 'deep') {
+                    const updated = options.map((o, i) => {
+                      const h = hints[i];
+                      if (!h) return o;
+                      return {
+                        ...o,
+                        pros: o.pros || h.pros || '',
+                        cons: o.cons || h.cons || '',
+                        risks: o.risks || h.risks || '',
+                      };
+                    });
+                    setOptions(updated);
+                  }
+                  toast.success('AI 分析完成');
                 } catch (err) {
                   toast.error(err.message || 'AI 调用失败');
                 } finally {
@@ -248,6 +252,26 @@ export default function CreateDecision() {
               {aiLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4 text-[#c9a84c]" strokeWidth={1.5} />}
               {aiLoading ? 'AI 正在分析...' : 'AI 帮我分析各选项'}
             </Button>
+          )}
+          {aiHints.length > 0 && (
+            <Card className="mt-3 bounce-in">
+              <CardContent className="p-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <Sparkles className="w-3.5 h-3.5 text-[#c9a84c]" strokeWidth={1.5} />
+                  <span className="text-xs font-medium text-muted-foreground">AI 分析建议{type === 'deep' ? '（已填入下方）' : ''}</span>
+                </div>
+                <div className="space-y-2">
+                  {aiHints.map((h, i) => (
+                    <div key={i} className="text-sm">
+                      <p className="font-medium mb-0.5">{h.name}</p>
+                      {h.pros && <p className="text-xs text-[#5a6b4f]">优点：{h.pros}</p>}
+                      {h.cons && <p className="text-xs text-[#a0522d]">缺点：{h.cons}</p>}
+                      {h.risks && <p className="text-xs text-[#7a6245]">风险：{h.risks}</p>}
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           )}
         </div>
 
