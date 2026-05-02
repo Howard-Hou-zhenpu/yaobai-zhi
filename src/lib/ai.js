@@ -68,3 +68,95 @@ export async function generateReflection(decision) {
     .map((line) => line.trim())
     .filter((line) => line.length > 0);
 }
+
+async function callAI(prompt, maxTokens = 500) {
+  const config = getActiveConfig();
+  if (!config) throw new Error('没有可用的 AI 额度，请在设置中填写 API Key');
+
+  const response = await fetch(ENDPOINTS[config.provider], {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${config.apiKey}`,
+    },
+    body: JSON.stringify({
+      model: MODELS[config.provider],
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: maxTokens,
+      temperature: 0.7,
+    }),
+  });
+
+  if (!response.ok) {
+    const err = await response.text().catch(() => '');
+    throw new Error(`AI 调用失败 (${response.status})${err ? ': ' + err : ''}`);
+  }
+
+  const data = await response.json();
+  const text = data.choices?.[0]?.message?.content || '';
+  if (config.isFree) incrementFreeUsage();
+  return text;
+}
+
+export async function generateAnalysisHints(title, description, options) {
+  const optionNames = options.map((o) => o.name).filter(Boolean).join('、');
+  const prompt = `你是一个决策分析助手。用户正在做一个重要决策，请为每个选项提供简短的分析维度提示，帮助用户思考。
+
+决策标题：${title}
+${description ? `决策描述：${description}` : ''}
+选项：${optionNames}
+
+请为每个选项分别生成简短提示，格式如下（严格按此格式，不要多余内容）：
+【选项名称】
+优点：一句话提示
+缺点：一句话提示
+风险：一句话提示
+
+每个维度只写一句话（15字以内），用来启发用户自己深入思考，不要替用户做判断。`;
+
+  const text = await callAI(prompt, 600);
+  const result = {};
+  let current = null;
+  text.split('\n').forEach((line) => {
+    const l = line.trim();
+    const nameMatch = l.match(/^【(.+?)】$/);
+    if (nameMatch) { current = nameMatch[1]; result[current] = {}; return; }
+    if (current && l.startsWith('优点：')) result[current].pros = l.replace('优点：', '').trim();
+    if (current && l.startsWith('缺点：')) result[current].cons = l.replace('缺点：', '').trim();
+    if (current && l.startsWith('风险：')) result[current].risks = l.replace('风险：', '').trim();
+  });
+  return result;
+}
+
+export async function generateDecisionReport(decisions) {
+  const summary = decisions.map((d) => {
+    const sat = SATISFACTION_LABELS[d.satisfaction] || '未复盘';
+    return `- "${d.title}"（${d.category}）→ ${sat}${d.hesitation ? `，纠结度${d.hesitation}/5` : ''}${d.confidence ? `，信心值${d.confidence}/5` : ''}`;
+  }).join('\n');
+
+  const categoryStats = {};
+  decisions.forEach((d) => {
+    if (!categoryStats[d.category]) categoryStats[d.category] = { total: 0, satisfied: 0, regret: 0 };
+    categoryStats[d.category].total++;
+    if (d.satisfaction === 'satisfied') categoryStats[d.category].satisfied++;
+    if (d.satisfaction === 'regret') categoryStats[d.category].regret++;
+  });
+
+  const prompt = `你是一个决策行为分析师。根据以下用户的历史决策数据，生成一份简短的"决策性格报告"。
+
+用户共有 ${decisions.length} 条决策记录：
+${summary}
+
+请生成一份 150 字以内的性格报告，包含：
+1. 用户的决策风格特征（保守型/冒险型/犹豫型/果断型等）
+2. 一个有趣的发现（比如某类决策满意度特别高或低）
+3. 一句鼓励性的建议
+
+要求：
+- 用第二人称"你"
+- 语气温和、像朋友分析
+- 不要用标题或编号，写成一段连贯的文字
+- 基于数据说话，不要泛泛而谈`;
+
+  return await callAI(prompt, 400);
+}

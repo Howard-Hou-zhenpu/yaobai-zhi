@@ -8,6 +8,7 @@ import { useDecisions } from '../hooks/useDecisions';
 import ReviewChart from '../components/ReviewChart';
 import DecisionProfile from '../components/DecisionProfile';
 import KeywordCloud from '../components/KeywordCloud';
+import DecisionReport from '../components/DecisionReport';
 import DecisionCard from '../components/DecisionCard';
 import { CATEGORIES } from '../lib/constants';
 
@@ -85,6 +86,7 @@ export default function Review() {
       <ReviewChart decisions={decisions} />
       <DecisionProfile decisions={decisions} />
       <KeywordCloud decisions={decisions} />
+      <DecisionReport decisions={decisions} />
 
       <div className="mt-5 space-y-3">
         <div className="relative">

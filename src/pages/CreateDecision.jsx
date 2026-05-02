@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, X, FileText } from 'lucide-react';
+import { ArrowLeft, Plus, X, FileText, Sparkles, Loader2 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
@@ -10,6 +10,8 @@ import { Card, CardContent } from '../components/ui/card';
 import { useAddDecision } from '../hooks/useDecisions';
 import { CATEGORIES } from '../lib/constants';
 import { TEMPLATES } from '../lib/templates';
+import { generateAnalysisHints } from '../lib/ai';
+import { canUseAI } from '../lib/apiKeyStore';
 import { toast } from 'sonner';
 
 export default function CreateDecision() {
@@ -22,6 +24,7 @@ export default function CreateDecision() {
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [showTemplates, setShowTemplates] = useState(false);
   const [hesitation, setHesitation] = useState(3);
+  const [aiLoading, setAiLoading] = useState(false);
   const [description, setDescription] = useState('');
   const [options, setOptions] = useState([
     { name: '', pros: '', cons: '', risks: '', worstCase: '', solution: '' },
@@ -213,6 +216,39 @@ export default function CreateDecision() {
               </Card>
             ))}
           </div>
+          {type === 'deep' && canUseAI() && options.some((o) => o.name.trim()) && (
+            <Button
+              variant="outline"
+              className="w-full mt-2 rounded-2xl gap-2 text-sm"
+              onClick={async () => {
+                if (!title.trim()) { toast.error('请先填写决策标题'); return; }
+                setAiLoading(true);
+                try {
+                  const hints = await generateAnalysisHints(title, description, options);
+                  const updated = options.map((o) => {
+                    const h = hints[o.name];
+                    if (!h) return o;
+                    return {
+                      ...o,
+                      pros: o.pros || h.pros || '',
+                      cons: o.cons || h.cons || '',
+                      risks: o.risks || h.risks || '',
+                    };
+                  });
+                  setOptions(updated);
+                  toast.success('AI 已生成分析提示，你可以在此基础上修改');
+                } catch (err) {
+                  toast.error(err.message || 'AI 调用失败');
+                } finally {
+                  setAiLoading(false);
+                }
+              }}
+              disabled={aiLoading}
+            >
+              {aiLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4 text-[#c9a84c]" strokeWidth={1.5} />}
+              {aiLoading ? 'AI 正在分析...' : 'AI 帮我分析各选项'}
+            </Button>
+          )}
         </div>
 
         <div>
