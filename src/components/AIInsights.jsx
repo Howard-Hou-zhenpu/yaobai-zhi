@@ -3,7 +3,7 @@ import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { Sparkles, Loader2 } from 'lucide-react';
 import { generateReflection } from '../lib/ai';
-import { canUseAI, getFreeRemaining, getApiConfig } from '../lib/apiKeyStore';
+import { canUseAI, getFreeRemaining, getApiConfig, getActiveConfig } from '../lib/apiKeyStore';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -34,9 +34,9 @@ export default function AIInsights({ decision }) {
     }
   };
 
-  const customKey = getApiConfig()?.apiKey;
+  const activeConfig = getActiveConfig();
   const freeRemaining = getFreeRemaining();
-  const hintText = customKey ? '使用自定义 Key' : `免费额度 ${freeRemaining}/3`;
+  const hintText = activeConfig?.isFree ? `免费额度 ${freeRemaining}/3` : activeConfig ? '使用自定义 Key' : `免费额度 ${freeRemaining}/3`;
 
   if (questions.length > 0) {
     return (
