@@ -6,7 +6,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
-import { getApiConfig, saveApiConfig, clearApiConfig, getFreeRemaining } from '../lib/apiKeyStore';
+import { getApiConfig, saveApiConfig, clearApiConfig, getFreeRemaining, getPreferCustom, setPreferCustom } from '../lib/apiKeyStore';
 import { toast } from 'sonner';
 
 const PROVIDERS = [
@@ -20,6 +20,7 @@ export default function Settings() {
   const [provider, setProvider] = useState(existing?.provider || 'deepseek');
   const [apiKey, setApiKey] = useState(existing?.apiKey || '');
   const [showKey, setShowKey] = useState(false);
+  const [preferCustom, setPrefer] = useState(getPreferCustom());
   const freeRemaining = getFreeRemaining();
 
   const handleSave = () => {
@@ -54,6 +55,35 @@ export default function Settings() {
           <p className="text-xs text-muted-foreground mt-1">每月重置，使用默认 AI 模型</p>
         </CardContent>
       </Card>
+
+      {existing?.apiKey && (
+        <Card className="mb-4">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium">优先使用</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {preferCustom ? '优先使用自定义 Key' : '优先使用免费额度，用完再切换'}
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <Badge
+                  className={`cursor-pointer rounded-lg ${!preferCustom ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground border-border/60'}`}
+                  onClick={() => { setPrefer(false); setPreferCustom(false); }}
+                >
+                  免费优先
+                </Badge>
+                <Badge
+                  className={`cursor-pointer rounded-lg ${preferCustom ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground border-border/60'}`}
+                  onClick={() => { setPrefer(true); setPreferCustom(true); }}
+                >
+                  自定义优先
+                </Badge>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardHeader className="pb-2">

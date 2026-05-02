@@ -1,5 +1,6 @@
 const STORE_KEY = 'yaobai-zhi-api-config';
 const USAGE_KEY = 'yaobai-zhi-ai-usage';
+const PREFER_KEY = 'yaobai-zhi-ai-prefer';
 const FREE_LIMIT = 3;
 
 export function getApiConfig() {
@@ -57,13 +58,28 @@ export function canUseAI() {
   return getFreeRemaining() > 0;
 }
 
+export function getPreferCustom() {
+  return localStorage.getItem(PREFER_KEY) === 'true';
+}
+
+export function setPreferCustom(value) {
+  localStorage.setItem(PREFER_KEY, value ? 'true' : 'false');
+}
+
 export function getActiveConfig() {
+  const custom = getApiConfig();
   const defaultKey = import.meta.env.VITE_KIMI_API_KEY;
-  if (defaultKey && getFreeRemaining() > 0) {
+  const hasCustom = !!custom?.apiKey;
+  const hasFree = defaultKey && getFreeRemaining() > 0;
+  const preferCustom = getPreferCustom();
+
+  if (preferCustom && hasCustom) {
+    return { provider: custom.provider, apiKey: custom.apiKey, isFree: false };
+  }
+  if (hasFree) {
     return { provider: 'kimi', apiKey: defaultKey, isFree: true };
   }
-  const custom = getApiConfig();
-  if (custom?.apiKey) {
+  if (hasCustom) {
     return { provider: custom.provider, apiKey: custom.apiKey, isFree: false };
   }
   return null;
