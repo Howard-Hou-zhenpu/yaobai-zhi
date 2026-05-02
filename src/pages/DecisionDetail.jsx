@@ -11,6 +11,7 @@ import { STATUS_MAP, SATISFACTION_MAP } from '../lib/constants';
 import { getReviewGuide, getCompletionFeedback } from '../lib/prompts';
 import Timeline from '../components/Timeline';
 import ShareCard from '../components/ShareCard';
+import AIInsights from '../components/AIInsights';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
 
@@ -299,6 +300,7 @@ export default function DecisionDetail() {
       )}
 
       {decision.status === 'completed' && (
+        <>
         <Card className="mt-5">
           <CardHeader>
             <CardTitle className="text-base font-medium">复盘总结</CardTitle>
@@ -324,9 +326,12 @@ export default function DecisionDetail() {
             <Button className="w-full rounded-2xl" onClick={handleReview}>保存复盘</Button>
           </CardContent>
         </Card>
+        <AIInsights decision={decision} />
+        </>
       )}
 
       {decision.status === 'reviewed' && !editing && (
+        <>
         <Card className="mt-5">
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -354,6 +359,8 @@ export default function DecisionDetail() {
             </p>
           </CardContent>
         </Card>
+        <AIInsights decision={decision} />
+        </>
       )}
 
       {decision.status === 'reviewed' && editing && (

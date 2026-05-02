@@ -1,10 +1,11 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Home, BarChart3 } from 'lucide-react';
+import { Home, BarChart3, Settings } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 const tabs = [
   { path: '/', label: '首页', icon: Home },
   { path: '/review', label: '复盘', icon: BarChart3 },
+  { path: '/settings', label: '设置', icon: Settings },
 ];
 
 export default function BottomNav() {
