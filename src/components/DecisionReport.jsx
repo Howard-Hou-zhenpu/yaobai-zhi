@@ -13,7 +13,7 @@ export default function DecisionReport({ decisions }) {
   const navigate = useNavigate();
 
   const reviewed = decisions.filter((d) => d.status === 'reviewed');
-  if (reviewed.length < 10) return null;
+  if (reviewed.length < 3) return null;
 
   const handleGenerate = async () => {
     if (!canUseAI()) {

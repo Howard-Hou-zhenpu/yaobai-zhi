@@ -216,7 +216,7 @@ export default function CreateDecision() {
               </Card>
             ))}
           </div>
-          {type === 'deep' && canUseAI() && options.some((o) => o.name.trim()) && (
+          {canUseAI() && options.some((o) => o.name.trim()) && (
             <Button
               variant="outline"
               className="w-full mt-2 rounded-2xl gap-2 text-sm"
