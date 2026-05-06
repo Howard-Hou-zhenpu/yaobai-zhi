@@ -1,4 +1,5 @@
 import { getActiveConfig, incrementFreeUsage } from './apiKeyStore';
+import { buildPersonalityReportPrompt, buildDecisionAnalysisPrompt, buildReviewQuestionsPrompt, parseAIJson } from './aiPrompts';
 
 const ENDPOINTS = {
   deepseek: 'https://api.deepseek.com/v1/chat/completions',
@@ -159,4 +160,125 @@ ${summary}
 - 基于数据说话，不要泛泛而谈`;
 
   return await callAI(prompt, 400);
+}
+
+/**
+ * 生成结构化决策性格报告
+ * @param {Array} decisions - 决策列表
+ * @returns {Promise<Object>}
+ */
+export async function generatePersonalityReport(decisions) {
+  // 计算统计数据
+  const totalDecisions = decisions.length;
+  const completedCount = decisions.filter(d => d.status === 'completed' || d.status === 'reviewed').length;
+  const reviewedCount = decisions.filter(d => d.status === 'reviewed').length;
+  const satisfiedCount = decisions.filter(d => d.satisfaction === 'satisfied').length;
+  const neutralCount = decisions.filter(d => d.satisfaction === 'neutral').length;
+  const regretCount = decisions.filter(d => d.satisfaction === 'regret').length;
+
+  // 统计分类
+  const categoryMap = {};
+  decisions.forEach(d => {
+    categoryMap[d.category] = (categoryMap[d.category] || 0) + 1;
+  });
+  const topCategories = Object.entries(categoryMap)
+    .map(([category, count]) => ({ category, count }))
+    .sort((a, b) => b.count - a.count);
+
+  // 计算平均值
+  const decisionsWithHesitation = decisions.filter(d => d.hesitation > 0);
+  const avgHesitation = decisionsWithHesitation.length > 0
+    ? decisionsWithHesitation.reduce((sum, d) => sum + d.hesitation, 0) / decisionsWithHesitation.length
+    : 0;
+
+  const decisionsWithConfidence = decisions.filter(d => d.confidence > 0);
+  const avgConfidence = decisionsWithConfidence.length > 0
+    ? decisionsWithConfidence.reduce((sum, d) => sum + d.confidence, 0) / decisionsWithConfidence.length
+    : 0;
+
+  // 提取关键词（简单实现）
+  const keywords = [];
+  decisions.forEach(d => {
+    if (d.title) keywords.push(...d.title.split(/[，。、；]/));
+    if (d.description) keywords.push(...d.description.split(/[，。、；]/));
+  });
+  const keywordFreq = {};
+  keywords.forEach(k => {
+    const word = k.trim();
+    if (word.length >= 2 && word.length <= 6) {
+      keywordFreq[word] = (keywordFreq[word] || 0) + 1;
+    }
+  });
+  const topKeywords = Object.entries(keywordFreq)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10)
+    .map(([word]) => word);
+
+  const stats = {
+    totalDecisions,
+    completedCount,
+    reviewedCount,
+    satisfiedCount,
+    neutralCount,
+    regretCount,
+    topCategories,
+    avgHesitation,
+    avgConfidence,
+    keywords: topKeywords,
+    decisions: decisions.filter(d => d.status === 'reviewed').slice(0, 10)
+  };
+
+  const prompt = buildPersonalityReportPrompt(stats);
+  const text = await callAI(prompt, 1500);
+  const parsed = parseAIJson(text);
+
+  if (!parsed) {
+    throw new Error('AI 返回格式解析失败');
+  }
+
+  return {
+    ...parsed,
+    stats,
+    rawResponse: text
+  };
+}
+
+/**
+ * 生成结构化决策分析
+ * @param {Object} decision - 决策信息
+ * @returns {Promise<Object>}
+ */
+export async function generateStructuredAnalysis(decision) {
+  const prompt = buildDecisionAnalysisPrompt(decision);
+  const text = await callAI(prompt, 1200);
+  const parsed = parseAIJson(text);
+
+  if (!parsed) {
+    throw new Error('AI 返回格式解析失败');
+  }
+
+  return {
+    ...parsed,
+    rawResponse: text
+  };
+}
+
+/**
+ * 生成结构化复盘追问
+ * @param {Object} decision - 决策信息
+ * @returns {Promise<Object>}
+ */
+export async function generateStructuredReviewQuestions(decision) {
+  const prompt = buildReviewQuestionsPrompt(decision);
+  const text = await callAI(prompt, 800);
+  const parsed = parseAIJson(text);
+
+  if (!parsed) {
+    throw new Error('AI 返回格式解析失败');
+  }
+
+  return {
+    ...parsed,
+    rawResponse: text
+  };
 }

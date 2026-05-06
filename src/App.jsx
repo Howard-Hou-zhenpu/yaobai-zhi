@@ -8,6 +8,7 @@ import CreateDecision from './pages/CreateDecision';
 import DecisionDetail from './pages/DecisionDetail';
 import Review from './pages/Review';
 import Settings from './pages/Settings';
+import PersonalityReport from './pages/PersonalityReport';
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
                     <Route path="/create" element={<CreateDecision />} />
                     <Route path="/decision/:id" element={<DecisionDetail />} />
                     <Route path="/review" element={<Review />} />
+                    <Route path="/personality-report" element={<PersonalityReport />} />
                     <Route path="/settings" element={<Settings />} />
                   </Routes>
                 </PageTransition>
