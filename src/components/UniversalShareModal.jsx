@@ -4,7 +4,9 @@ import { Button } from './ui/button';
 import { toast } from 'sonner';
 import DecisionShareCard from './DecisionShareCard';
 import ReportShareCard from './ReportShareCard';
+import PersonalityReportExportCard from './PersonalityReportExportCard';
 import { prepareShareData, generateShareText } from '../lib/privacy';
+import { exportReportToImage } from '../lib/exportReportImage';
 
 /**
  * 通用分享卡片弹窗
@@ -38,26 +40,30 @@ export default function UniversalShareModal({ type, data, onClose }) {
   };
 
   const handleSaveImage = async () => {
-    if (!cardRef.current) return;
-
     setSaving(true);
     try {
-      const html2canvas = (await import('html2canvas')).default;
+      if (type === 'report') {
+        // 报告类型：使用新的离屏渲染导出方案
+        await exportReportToImage(
+          <PersonalityReportExportCard report={displayData} />,
+          '摇摆志-决策性格报告'
+        );
+      } else {
+        // 决策类型：使用原有方案
+        if (!cardRef.current) return;
+        const html2canvas = (await import('html2canvas')).default;
 
-      // 使用和原 ShareCard 相同的配置
-      const canvas = await html2canvas(cardRef.current, {
-        scale: 2,
-        backgroundColor: '#f5f1e8',
-        useCORS: true,
-      });
+        const canvas = await html2canvas(cardRef.current, {
+          scale: 2,
+          backgroundColor: '#f5f1e8',
+          useCORS: true,
+        });
 
-      const link = document.createElement('a');
-      const filename = type === 'decision'
-        ? `摇摆志-决策复盘-${Date.now()}.png`
-        : `摇摆志-决策性格报告-${Date.now()}.png`;
-      link.download = filename;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
+        const link = document.createElement('a');
+        link.download = `摇摆志-决策复盘-${Date.now()}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      }
 
       toast.success('图片已保存', {
         description: '可以在相册中找到并分享到微信'
