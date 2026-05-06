@@ -19,37 +19,40 @@ export default function Index() {
   };
 
   return (
-    <div className="pb-20 px-5">
-      <div className="relative py-8">
-        <Button variant="ghost" size="icon" onClick={handleLogout} className="absolute top-6 right-0">
+    <div className="pb-24 px-4 max-w-[430px] mx-auto">
+      <div className="relative pt-6 pb-4">
+        <Button variant="ghost" size="icon" onClick={handleLogout} className="absolute top-6 right-0 text-[#9AA6A2] hover:text-[#6F7D78]">
           <LogOut className="w-4 h-4" strokeWidth={1.5} />
         </Button>
+      </div>
+
+      <div className="hero-gradient rounded-[28px] p-6 mb-6 shadow-[0_8px_24px_rgba(34,51,47,0.04)] border border-[#E6EEEA]">
         <div className="text-center">
-          <div className="flex items-center justify-center gap-3 mb-2">
-            <Scale className="w-6 h-6 text-primary/70" strokeWidth={1.5} />
-            <h1 className="text-3xl font-medium tracking-tight">摇摆志</h1>
+          <div className="flex items-center justify-center gap-2.5 mb-3">
+            <Scale className="w-7 h-7 text-[#4F9D8B]" strokeWidth={1.5} />
+            <h1 className="text-[30px] font-bold tracking-tight text-[#22332F]">摇摆志</h1>
           </div>
-          <p className="text-sm text-muted-foreground">记录每一次选择，成就更好的决策</p>
-          <p className="text-xs text-muted-foreground/60 mt-2">「{dailyPrompt}」</p>
+          <p className="text-[15px] text-[#6F7D78] mb-3">记录每一次选择，成就更好的决策</p>
+          <p className="text-[13px] text-[#9AA6A2] leading-relaxed">「{dailyPrompt}」</p>
         </div>
       </div>
 
       <QuickStats decisions={decisions} />
 
       <Button
-        className="w-full mt-5 h-12 text-base gap-2 rounded-2xl"
+        className="w-full mt-6 h-12 text-[15px] gap-2 rounded-full font-medium"
         onClick={() => navigate('/create')}
       >
-        <Plus className="w-5 h-5" strokeWidth={1.5} />
+        <Plus className="w-5 h-5" strokeWidth={2} />
         开始新的决策
       </Button>
 
       {recentDecisions.length > 0 && (
         <div className="mt-8">
           <div className="flex items-center gap-3 mb-4">
-            <div className="h-px flex-1 bg-border" />
-            <h2 className="text-sm font-medium text-muted-foreground tracking-widest uppercase">最近决策</h2>
-            <div className="h-px flex-1 bg-border" />
+            <div className="h-px flex-1 bg-[#E6EEEA]" />
+            <h2 className="text-[13px] font-medium text-[#9AA6A2] tracking-wider">最近决策</h2>
+            <div className="h-px flex-1 bg-[#E6EEEA]" />
           </div>
           <div className="space-y-3">
             {recentDecisions.map((d) => (
@@ -60,7 +63,7 @@ export default function Index() {
       )}
 
       {decisions.length === 0 && (
-        <div className="text-center py-16 text-muted-foreground">
+        <div className="text-center py-16 text-[#9AA6A2]">
           <Scale className="w-10 h-10 mx-auto mb-4 opacity-20" strokeWidth={1} />
           <p className="text-sm">每一个选择都值得被认真对待</p>
           <p className="text-xs mt-2 opacity-70">点击上方按钮，开始你的第一次对话</p>

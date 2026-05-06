@@ -13,8 +13,8 @@ export default function BottomNav() {
   const navigate = useNavigate();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card/90 backdrop-blur-md border-t border-border/50 z-50">
-      <div className="max-w-[375px] mx-auto flex">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-[#E6EEEA] z-50">
+      <div className="max-w-[430px] mx-auto flex">
         {tabs.map((tab) => {
           const isActive = location.pathname === tab.path;
           return (
@@ -23,12 +23,12 @@ export default function BottomNav() {
               onClick={() => navigate(tab.path)}
               className={cn(
                 'flex-1 flex flex-col items-center gap-1 py-2.5 text-xs transition-all duration-200',
-                isActive ? 'text-primary' : 'text-muted-foreground'
+                isActive ? 'text-[#4F9D8B]' : 'text-[#9AA6A2]'
               )}
             >
               <div className={cn(
                 'w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-200',
-                isActive && 'bg-[#e8dfd0]'
+                isActive && 'bg-[#EAF6F2]'
               )}>
                 <tab.icon className="w-[18px] h-[18px]" strokeWidth={isActive ? 2 : 1.5} />
               </div>

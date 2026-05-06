@@ -65,23 +65,23 @@ export default function Review() {
   const hasActiveFilters = categoryFilter || timeFilter || favoriteOnly;
 
   return (
-    <div className="pb-20 px-5">
+    <div className="pb-24 px-4 max-w-[430px] mx-auto">
       <div className="py-6">
-        <h1 className="text-xl font-medium">复盘中心</h1>
-        <p className="text-sm text-muted-foreground mt-1">回顾决策，总结经验</p>
+        <h1 className="text-[28px] font-bold text-[#22332F]">复盘中心</h1>
+        <p className="text-[14px] text-[#6F7D78] mt-1.5">回顾决策，总结经验</p>
       </div>
 
-      <div className="flex gap-2 mb-5">
+      <div className="flex gap-2 mb-6">
         <Button
           variant={tab === 'overview' ? 'default' : 'outline'}
-          className="flex-1 rounded-2xl h-9"
+          className="flex-1 rounded-full h-10 font-medium"
           onClick={() => setTab('overview')}
         >
           概览
         </Button>
         <Button
           variant={tab === 'records' ? 'default' : 'outline'}
-          className="flex-1 rounded-2xl h-9"
+          className="flex-1 rounded-full h-10 font-medium"
           onClick={() => setTab('records')}
         >
           记录
@@ -90,18 +90,18 @@ export default function Review() {
 
       {tab === 'overview' && (
         <div className="space-y-4">
-          <div className="grid grid-cols-3 gap-2">
-            <Card><CardContent className="p-3 text-center">
-              <p className="text-2xl font-medium">{total}</p>
-              <p className="text-[11px] text-muted-foreground tracking-wide">总决策</p>
+          <div className="grid grid-cols-3 gap-2.5">
+            <Card><CardContent className="p-4 text-center">
+              <p className="text-[28px] font-bold text-[#22332F]">{total}</p>
+              <p className="text-[11px] text-[#9AA6A2] tracking-wide mt-1">总决策</p>
             </CardContent></Card>
-            <Card><CardContent className="p-3 text-center">
-              <p className="text-2xl font-medium text-[#5a6b4f]">{completed}</p>
-              <p className="text-[11px] text-muted-foreground tracking-wide">已完成</p>
+            <Card><CardContent className="p-4 text-center">
+              <p className="text-[28px] font-bold text-[#3F8677]">{completed}</p>
+              <p className="text-[11px] text-[#9AA6A2] tracking-wide mt-1">已完成</p>
             </CardContent></Card>
-            <Card><CardContent className="p-3 text-center">
-              <p className="text-2xl font-medium text-[#6b5570]">{reviewed}</p>
-              <p className="text-[11px] text-muted-foreground tracking-wide">已复盘</p>
+            <Card><CardContent className="p-4 text-center">
+              <p className="text-[28px] font-bold text-[#6266C7]">{reviewed}</p>
+              <p className="text-[11px] text-[#9AA6A2] tracking-wide mt-1">已复盘</p>
             </CardContent></Card>
           </div>
 
@@ -116,7 +116,7 @@ export default function Review() {
       {tab === 'records' && (
         <div className="space-y-3">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA6A2]" strokeWidth={1.5} />
             <Input className="pl-9" placeholder="搜索决策..." value={search} onChange={(e) => setSearch(e.target.value)} />
           </div>
 
@@ -124,14 +124,14 @@ export default function Review() {
             {STATUS_FILTERS.map((f) => (
               <Badge
                 key={f.value}
-                className={`cursor-pointer transition-all rounded-lg shrink-0 ${statusFilter === f.value ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground border-border/60'}`}
+                className={`cursor-pointer transition-all rounded-full shrink-0 ${statusFilter === f.value ? 'bg-[#4F9D8B] text-white' : 'bg-[#F0F5F3] text-[#6F7D78] border-[#E6EEEA]'}`}
                 onClick={() => setStatusFilter(f.value)}
               >
                 {f.label}
               </Badge>
             ))}
             <Badge
-              className={`cursor-pointer transition-all rounded-lg gap-1 shrink-0 ${favoriteOnly ? 'bg-[#c9a84c]/20 text-[#c9a84c]' : 'bg-card text-muted-foreground border-border/60'}`}
+              className={`cursor-pointer transition-all rounded-full gap-1 shrink-0 ${favoriteOnly ? 'bg-[#FFF7DF] text-[#B8860B]' : 'bg-[#F0F5F3] text-[#6F7D78] border-[#E6EEEA]'}`}
               onClick={() => setFavoriteOnly(!favoriteOnly)}
             >
               <Star className="w-3 h-3" strokeWidth={1.5} fill={favoriteOnly ? 'currentColor' : 'none'} /> 收藏
@@ -139,22 +139,22 @@ export default function Review() {
             <Button
               variant="ghost"
               size="sm"
-              className={`h-6 px-2 text-xs gap-1 shrink-0 ${hasActiveFilters ? 'text-primary' : 'text-muted-foreground'}`}
+              className={`h-6 px-2 text-xs gap-1 shrink-0 ${hasActiveFilters ? 'text-[#4F9D8B]' : 'text-[#9AA6A2]'}`}
               onClick={() => setShowFilters(!showFilters)}
             >
               筛选 {showFilters ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-              {hasActiveFilters && <span className="w-1.5 h-1.5 rounded-full bg-primary" />}
+              {hasActiveFilters && <span className="w-1.5 h-1.5 rounded-full bg-[#4F9D8B]" />}
             </Button>
           </div>
 
           {showFilters && (
             <Card>
-              <CardContent className="p-3 space-y-3">
+              <CardContent className="p-4 space-y-3">
                 <div>
-                  <p className="text-xs text-muted-foreground tracking-wide uppercase mb-1.5">分类</p>
+                  <p className="text-xs text-[#9AA6A2] tracking-wide uppercase mb-2">分类</p>
                   <div className="flex flex-wrap gap-1.5">
                     <Badge
-                      className={`cursor-pointer rounded-lg text-xs ${!categoryFilter ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground border-border/60'}`}
+                      className={`cursor-pointer rounded-full text-xs ${!categoryFilter ? 'bg-[#4F9D8B] text-white' : 'bg-[#F0F5F3] text-[#6F7D78] border-[#E6EEEA]'}`}
                       onClick={() => setCategoryFilter('')}
                     >
                       全部
@@ -162,7 +162,7 @@ export default function Review() {
                     {allCategories.map((cat) => (
                       <Badge
                         key={cat}
-                        className={`cursor-pointer rounded-lg text-xs ${categoryFilter === cat ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground border-border/60'}`}
+                        className={`cursor-pointer rounded-full text-xs ${categoryFilter === cat ? 'bg-[#4F9D8B] text-white' : 'bg-[#F0F5F3] text-[#6F7D78] border-[#E6EEEA]'}`}
                         onClick={() => setCategoryFilter(cat)}
                       >
                         {cat}
@@ -171,12 +171,12 @@ export default function Review() {
                   </div>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground tracking-wide uppercase mb-1.5">时间范围</p>
+                  <p className="text-xs text-[#9AA6A2] tracking-wide uppercase mb-2">时间范围</p>
                   <div className="flex flex-wrap gap-1.5">
                     {TIME_FILTERS.map((f) => (
                       <Badge
                         key={f.value}
-                        className={`cursor-pointer rounded-lg text-xs ${timeFilter === f.value ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground border-border/60'}`}
+                        className={`cursor-pointer rounded-full text-xs ${timeFilter === f.value ? 'bg-[#4F9D8B] text-white' : 'bg-[#F0F5F3] text-[#6F7D78] border-[#E6EEEA]'}`}
                         onClick={() => setTimeFilter(f.value)}
                       >
                         {f.label}
@@ -193,7 +193,7 @@ export default function Review() {
               <DecisionCard key={d.id} decision={d} />
             ))}
             {filtered.length === 0 && (
-              <p className="text-center text-sm text-muted-foreground py-8">没有找到匹配的决策</p>
+              <p className="text-center text-sm text-[#9AA6A2] py-8">没有找到匹配的决策</p>
             )}
           </div>
         </div>

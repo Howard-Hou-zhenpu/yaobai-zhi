@@ -38,67 +38,65 @@ export default function Settings() {
   const currentProvider = PROVIDERS.find((p) => p.value === provider);
 
   return (
-    <div className="pb-20 px-5">
+    <div className="pb-24 px-4 max-w-[430px] mx-auto">
       <div className="flex items-center gap-3 py-5">
-        <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+        <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="text-[#9AA6A2] hover:text-[#6F7D78]">
           <ArrowLeft className="w-5 h-5" strokeWidth={1.5} />
         </Button>
-        <h1 className="text-lg font-medium">AI 设置</h1>
+        <h1 className="text-[20px] font-bold text-[#22332F]">AI 设置</h1>
       </div>
 
       <Card className="mb-4">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground tracking-wide">免费额度</CardTitle>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-[14px] font-semibold text-[#6F7D78] tracking-wide">免费额度</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-2xl font-medium">{freeRemaining}<span className="text-sm text-muted-foreground font-normal"> / 3 次</span></p>
-          <p className="text-xs text-muted-foreground mt-1">每月重置，使用默认 AI 模型</p>
+          <p className="text-[32px] font-bold text-[#22332F]">{freeRemaining}<span className="text-[15px] text-[#9AA6A2] font-normal"> / 3 次</span></p>
+          <p className="text-[13px] text-[#9AA6A2] mt-2">每月重置，使用默认 AI 模型</p>
         </CardContent>
       </Card>
 
       {existing?.apiKey && (
         <Card className="mb-4">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium">优先使用</p>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  {preferCustom ? '优先使用自定义 Key' : '优先使用免费额度，用完再切换'}
-                </p>
-              </div>
-              <div className="flex gap-2">
-                <Badge
-                  className={`cursor-pointer rounded-lg ${!preferCustom ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground border-border/60'}`}
-                  onClick={() => { setPrefer(false); setPreferCustom(false); }}
-                >
-                  免费优先
-                </Badge>
-                <Badge
-                  className={`cursor-pointer rounded-lg ${preferCustom ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground border-border/60'}`}
-                  onClick={() => { setPrefer(true); setPreferCustom(true); }}
-                >
-                  自定义优先
-                </Badge>
-              </div>
+          <CardContent className="p-5">
+            <div className="mb-3">
+              <p className="text-[15px] font-semibold text-[#22332F]">优先使用</p>
+              <p className="text-[13px] text-[#9AA6A2] mt-1">
+                {preferCustom ? '优先使用自定义 Key' : '优先使用免费额度，用完再切换'}
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Badge
+                className={`cursor-pointer rounded-full flex-1 justify-center py-2 text-[13px] font-medium ${!preferCustom ? 'bg-[#4F9D8B] text-white' : 'bg-[#F0F5F3] text-[#6F7D78] border-[#E6EEEA]'}`}
+                onClick={() => { setPrefer(false); setPreferCustom(false); }}
+              >
+                免费优先
+              </Badge>
+              <Badge
+                className={`cursor-pointer rounded-full flex-1 justify-center py-2 text-[13px] font-medium ${preferCustom ? 'bg-[#4F9D8B] text-white' : 'bg-[#F0F5F3] text-[#6F7D78] border-[#E6EEEA]'}`}
+                onClick={() => { setPrefer(true); setPreferCustom(true); }}
+              >
+                自定义优先
+              </Badge>
             </div>
           </CardContent>
         </Card>
       )}
 
       <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground tracking-wide">自定义 API Key</CardTitle>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-[14px] font-semibold text-[#6F7D78] tracking-wide">自定义 API Key</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">填写自己的 Key 后不限次数使用，Key 仅保存在本地浏览器中。</p>
+          <p className="text-[14px] text-[#6F7D78] leading-relaxed">填写自己的 Key 后不限次数使用，Key 仅保存在本地浏览器中。</p>
 
           <div>
-            <Label className="text-muted-foreground tracking-wide text-xs uppercase mb-2 block">选择模型</Label>
+            <Label className="text-[#9AA6A2] tracking-wide text-[11px] uppercase mb-2 block">选择模型</Label>
             <div className="flex gap-2">
               {PROVIDERS.map((p) => (
                 <Badge
                   key={p.value}
-                  className={`cursor-pointer rounded-lg flex-1 justify-center py-1.5 ${provider === p.value ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground border-border/60'}`}
+                  className={`cursor-pointer rounded-full flex-1 justify-center py-2 text-[13px] font-medium ${provider === p.value ? 'bg-[#4F9D8B] text-white' : 'bg-[#F0F5F3] text-[#6F7D78] border-[#E6EEEA]'}`}
                   onClick={() => setProvider(p.value)}
                 >
                   {p.label}
@@ -108,7 +106,7 @@ export default function Settings() {
           </div>
 
           <div>
-            <Label className="text-muted-foreground tracking-wide text-xs uppercase mb-2 block">API Key</Label>
+            <Label className="text-[#9AA6A2] tracking-wide text-[11px] uppercase mb-2 block">API Key</Label>
             <div className="flex gap-2">
               <div className="relative flex-1">
                 <Input
@@ -121,7 +119,7 @@ export default function Settings() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="absolute right-1 top-1/2 -translate-y-1/2 w-8 h-8"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 w-8 h-8 text-[#9AA6A2] hover:text-[#6F7D78]"
                   onClick={() => setShowKey(!showKey)}
                 >
                   {showKey ? <EyeOff className="w-4 h-4" strokeWidth={1.5} /> : <Eye className="w-4 h-4" strokeWidth={1.5} />}
@@ -131,17 +129,17 @@ export default function Settings() {
           </div>
 
           <div className="flex gap-2">
-            <Button className="flex-1 rounded-2xl" onClick={handleSave}>保存</Button>
+            <Button className="flex-1 rounded-full h-11 font-medium" onClick={handleSave}>保存</Button>
             {existing?.apiKey && (
-              <Button variant="outline" className="rounded-2xl gap-1" onClick={handleClear}>
+              <Button variant="destructive" className="rounded-full gap-1.5 h-11 font-medium" onClick={handleClear}>
                 <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} /> 清除
               </Button>
             )}
           </div>
 
-          <div className="pt-2 border-t border-border/50">
-            <p className="text-xs text-muted-foreground">
-              还没有 Key？去 <a href={currentProvider?.url} target="_blank" rel="noopener noreferrer" className="text-primary underline">{currentProvider?.label} 官网</a> 免费申请
+          <div className="pt-3 border-t border-[#E6EEEA]">
+            <p className="text-[13px] text-[#9AA6A2]">
+              还没有 Key？去 <a href={currentProvider?.url} target="_blank" rel="noopener noreferrer" className="text-[#4F9D8B] underline">{currentProvider?.label} 官网</a> 免费申请
             </p>
           </div>
         </CardContent>
