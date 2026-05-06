@@ -21,7 +21,7 @@ export default function Index() {
   return (
     <div className="pb-24 px-4 max-w-[430px] mx-auto">
       <div className="relative pt-6 pb-4">
-        <Button variant="ghost" size="icon" onClick={handleLogout} className="absolute top-6 right-0 text-[#a09080] hover:text-[#6b5d4f]">
+        <Button variant="ghost" size="icon" onClick={handleLogout} className="absolute top-6 right-2 text-[#a09080] hover:text-[#6b5d4f]">
           <LogOut className="w-4 h-4" strokeWidth={1.5} />
         </Button>
       </div>
