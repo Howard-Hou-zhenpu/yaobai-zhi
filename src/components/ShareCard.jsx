@@ -1,13 +1,13 @@
-import { useRef, useState } from 'react';
-import html2canvas from 'html2canvas';
+import { useState } from 'react';
 import { Button } from './ui/button';
 import { Download, Copy, X, Shield, ShieldOff } from 'lucide-react';
 import { SATISFACTION_MAP } from '../lib/constants';
 import { prepareShareData } from '../lib/privacy';
+import { exportCardToImage, generateFilename } from '../lib/exportImage';
+import ExportCard from './ExportCard';
 import { toast } from 'sonner';
 
 export default function ShareCard({ decision, onClose }) {
-  const cardRef = useRef(null);
   const [generating, setGenerating] = useState(false);
   const [enableSanitize, setEnableSanitize] = useState(true);
 
@@ -16,20 +16,13 @@ export default function ShareCard({ decision, onClose }) {
   const selectedOptions = displayDecision.selectedOption ? displayDecision.selectedOption.split(',').filter(Boolean) : [];
 
   const handleSaveImage = async () => {
-    if (!cardRef.current) return;
     setGenerating(true);
     try {
-      const canvas = await html2canvas(cardRef.current, {
-        scale: 2,
-        backgroundColor: '#f5f1e8',
-        useCORS: true,
-      });
-      const link = document.createElement('a');
-      link.download = `摇摆志-${displayDecision.title}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-      toast.success('卡片已保存');
-    } catch {
+      const filename = generateFilename(displayDecision.title);
+      await exportCardToImage(<ExportCard decision={displayDecision} />, filename);
+      toast.success('图片已保存');
+    } catch (error) {
+      console.error('保存图片失败:', error);
       toast.error('保存失败，请重试');
     } finally {
       setGenerating(false);
@@ -93,8 +86,8 @@ export default function ShareCard({ decision, onClose }) {
           </Button>
         </div>
 
-        {/* The card to be captured */}
-        <div ref={cardRef} style={{ padding: '24px', borderRadius: '16px', backgroundColor: '#f5f1e8', fontFamily: '"LXGW WenKai", serif' }}>
+        {/* 预览卡片 */}
+        <div style={{ padding: '24px', borderRadius: '16px', backgroundColor: '#f5f1e8', fontFamily: '"LXGW WenKai", serif' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <span style={{ fontSize: '12px', color: '#8b7355', padding: '2px 8px', backgroundColor: '#e8dfd0', borderRadius: '6px' }}>
