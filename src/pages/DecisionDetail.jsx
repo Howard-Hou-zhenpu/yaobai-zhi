@@ -10,7 +10,7 @@ import { useDecision, useUpdateDecision, useDeleteDecision } from '../hooks/useD
 import { STATUS_MAP, SATISFACTION_MAP } from '../lib/constants';
 import { getReviewGuide, getCompletionFeedback } from '../lib/prompts';
 import Timeline from '../components/Timeline';
-import ShareCard from '../components/ShareCard';
+import UniversalShareModal from '../components/UniversalShareModal';
 import AIInsights from '../components/AIInsights';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
@@ -415,7 +415,7 @@ export default function DecisionDetail() {
         </div>
       )}
 
-      {showShareCard && <ShareCard decision={decision} onClose={() => setShowShareCard(false)} />}
+      {showShareCard && <UniversalShareModal type="decision" data={decision} onClose={() => setShowShareCard(false)} />}
     </div>
   );
 }

@@ -6,7 +6,7 @@ import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { useDecisions } from '../hooks/useDecisions';
 import { generatePersonalityReport } from '../lib/ai';
-import ShareCardModal from '../components/ShareCardModal';
+import UniversalShareModal from '../components/UniversalShareModal';
 import { toast } from 'sonner';
 
 export default function PersonalityReport() {
@@ -272,8 +272,9 @@ export default function PersonalityReport() {
 
       {/* 分享卡片弹窗 */}
       {showShareModal && report && (
-        <ShareCardModal
-          report={report}
+        <UniversalShareModal
+          type="report"
+          data={report}
           onClose={() => setShowShareModal(false)}
         />
       )}

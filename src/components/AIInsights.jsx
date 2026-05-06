@@ -1,16 +1,15 @@
 import { useState } from 'react';
-import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { Sparkles, Loader2 } from 'lucide-react';
-import { generateReflection } from '../lib/ai';
-import { canUseAI, getFreeRemaining, getApiConfig, getActiveConfig } from '../lib/apiKeyStore';
+import { generateStructuredReviewQuestions } from '../lib/ai';
+import { canUseAI, getFreeRemaining, getActiveConfig } from '../lib/apiKeyStore';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import StructuredReviewQuestions from './StructuredReviewQuestions';
 
 export default function AIInsights({ decision }) {
-  const [questions, setQuestions] = useState([]);
+  const [questions, setQuestions] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [used, setUsed] = useState(false);
   const navigate = useNavigate();
 
   const handleGenerate = async () => {
@@ -24,10 +23,10 @@ export default function AIInsights({ decision }) {
 
     setLoading(true);
     try {
-      const result = await generateReflection(decision);
+      const result = await generateStructuredReviewQuestions(decision);
       setQuestions(result);
-      setUsed(true);
     } catch (err) {
+      console.error('生成复盘问题失败:', err);
       toast.error(err.message || 'AI 调用失败，请稍后重试');
     } finally {
       setLoading(false);
@@ -38,44 +37,32 @@ export default function AIInsights({ decision }) {
   const freeRemaining = getFreeRemaining();
   const hintText = activeConfig?.isFree ? `免费额度 ${freeRemaining}/3` : activeConfig ? '使用自定义 Key' : `免费额度 ${freeRemaining}/3`;
 
-  if (questions.length > 0) {
+  if (questions) {
     return (
-      <Card className="mt-4 bounce-in">
-        <CardContent className="p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <Sparkles className="w-4 h-4 text-[#c9a84c]" strokeWidth={1.5} />
-            <span className="text-sm font-medium">AI 反思建议</span>
-          </div>
-          <div className="space-y-3">
-            {questions.map((q, i) => (
-              <div key={i} className="pl-3 border-l-2 border-primary/30">
-                <p className="text-sm text-muted-foreground leading-relaxed">{q}</p>
-              </div>
-            ))}
-          </div>
-          <Button variant="ghost" size="sm" className="mt-3 text-xs text-muted-foreground" onClick={handleGenerate} disabled={loading}>
-            {loading ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Sparkles className="w-3 h-3 mr-1" />}
-            重新生成
-          </Button>
-        </CardContent>
-      </Card>
+      <div className="mt-4 bounce-in">
+        <StructuredReviewQuestions
+          questions={questions}
+          onRegenerate={handleGenerate}
+          loading={loading}
+        />
+      </div>
     );
   }
 
   return (
     <Button
       variant="outline"
-      className="w-full mt-4 rounded-2xl gap-2 h-11"
+      className="w-full mt-4 rounded-full gap-2 h-11"
       onClick={handleGenerate}
       disabled={loading}
     >
       {loading ? (
         <Loader2 className="w-4 h-4 animate-spin" />
       ) : (
-        <Sparkles className="w-4 h-4 text-[#c9a84c]" strokeWidth={1.5} />
+        <Sparkles className="w-4 h-4 text-[#8b7355]" strokeWidth={1.5} />
       )}
       {loading ? 'AI 正在思考...' : '获取 AI 反思建议'}
-      <span className="text-xs text-muted-foreground ml-1">({hintText})</span>
+      <span className="text-xs text-[#a09080] ml-1">({hintText})</span>
     </Button>
   );
 }
