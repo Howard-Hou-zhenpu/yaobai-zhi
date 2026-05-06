@@ -2,9 +2,9 @@ import * as React from "react";
 import { cn } from "../../lib/utils";
 
 const badgeVariants = {
-  default: "bg-[#EAF6F2] text-[#3F8677] hover:bg-[#D9F0EA]",
-  secondary: "bg-[#F0F5F3] text-[#5F706B] hover:bg-[#E6EEEA]",
-  destructive: "bg-[#FFF0ED] text-[#C95F52] hover:bg-[#FFE1DA]",
+  default: "bg-[#EFF8EF] text-[#5C8F63] hover:bg-[#E0F2E0]",
+  secondary: "bg-[#F6EFE7] text-[#7A6758] hover:bg-[#EFE4D8]",
+  destructive: "bg-[#FFF0EA] text-[#C96B4D] hover:bg-[#FFE1D5]",
   outline: "text-foreground border border-border",
 };
 

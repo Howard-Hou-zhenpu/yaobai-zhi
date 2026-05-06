@@ -67,8 +67,8 @@ export default function Review() {
   return (
     <div className="pb-24 px-4 max-w-[430px] mx-auto">
       <div className="py-6">
-        <h1 className="text-[28px] font-bold text-[#22332F]">复盘中心</h1>
-        <p className="text-[14px] text-[#6F7D78] mt-1.5">回顾决策，总结经验</p>
+        <h1 className="text-[28px] font-bold text-[#2F2924]">复盘中心</h1>
+        <p className="text-[14px] text-[#7D7168] mt-1.5">回顾决策，总结经验</p>
       </div>
 
       <div className="flex gap-2 mb-6">
@@ -92,16 +92,16 @@ export default function Review() {
         <div className="space-y-4">
           <div className="grid grid-cols-3 gap-2.5">
             <Card><CardContent className="p-4 text-center">
-              <p className="text-[28px] font-bold text-[#22332F]">{total}</p>
-              <p className="text-[11px] text-[#9AA6A2] tracking-wide mt-1">总决策</p>
+              <p className="text-[28px] font-bold text-[#2F2924]">{total}</p>
+              <p className="text-[11px] text-[#A29489] tracking-wide mt-1">总决策</p>
             </CardContent></Card>
             <Card><CardContent className="p-4 text-center">
-              <p className="text-[28px] font-bold text-[#3F8677]">{completed}</p>
-              <p className="text-[11px] text-[#9AA6A2] tracking-wide mt-1">已完成</p>
+              <p className="text-[28px] font-bold text-[#5C8F63]">{completed}</p>
+              <p className="text-[11px] text-[#A29489] tracking-wide mt-1">已完成</p>
             </CardContent></Card>
             <Card><CardContent className="p-4 text-center">
-              <p className="text-[28px] font-bold text-[#6266C7]">{reviewed}</p>
-              <p className="text-[11px] text-[#9AA6A2] tracking-wide mt-1">已复盘</p>
+              <p className="text-[28px] font-bold text-[#7161B8]">{reviewed}</p>
+              <p className="text-[11px] text-[#A29489] tracking-wide mt-1">已复盘</p>
             </CardContent></Card>
           </div>
 
@@ -116,7 +116,7 @@ export default function Review() {
       {tab === 'records' && (
         <div className="space-y-3">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA6A2]" strokeWidth={1.5} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A29489]" strokeWidth={1.5} />
             <Input className="pl-9" placeholder="搜索决策..." value={search} onChange={(e) => setSearch(e.target.value)} />
           </div>
 
@@ -124,14 +124,14 @@ export default function Review() {
             {STATUS_FILTERS.map((f) => (
               <Badge
                 key={f.value}
-                className={`cursor-pointer transition-all rounded-full shrink-0 ${statusFilter === f.value ? 'bg-[#4F9D8B] text-white' : 'bg-[#F0F5F3] text-[#6F7D78] border-[#E6EEEA]'}`}
+                className={`cursor-pointer transition-all rounded-full shrink-0 ${statusFilter === f.value ? 'bg-[#D98C5F] text-white' : 'bg-[#F6EFE7] text-[#7D7168] border-[#EFE4D8]'}`}
                 onClick={() => setStatusFilter(f.value)}
               >
                 {f.label}
               </Badge>
             ))}
             <Badge
-              className={`cursor-pointer transition-all rounded-full gap-1 shrink-0 ${favoriteOnly ? 'bg-[#FFF7DF] text-[#B8860B]' : 'bg-[#F0F5F3] text-[#6F7D78] border-[#E6EEEA]'}`}
+              className={`cursor-pointer transition-all rounded-full gap-1 shrink-0 ${favoriteOnly ? 'bg-[#FFF7DF] text-[#B8860B]' : 'bg-[#F6EFE7] text-[#7D7168] border-[#EFE4D8]'}`}
               onClick={() => setFavoriteOnly(!favoriteOnly)}
             >
               <Star className="w-3 h-3" strokeWidth={1.5} fill={favoriteOnly ? 'currentColor' : 'none'} /> 收藏
@@ -139,7 +139,7 @@ export default function Review() {
             <Button
               variant="ghost"
               size="sm"
-              className={`h-6 px-2 text-xs gap-1 shrink-0 ${hasActiveFilters ? 'text-[#4F9D8B]' : 'text-[#9AA6A2]'}`}
+              className={`h-6 px-2 text-xs gap-1 shrink-0 ${hasActiveFilters ? 'text-[#D98C5F]' : 'text-[#A29489]'}`}
               onClick={() => setShowFilters(!showFilters)}
             >
               筛选 {showFilters ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
@@ -151,10 +151,10 @@ export default function Review() {
             <Card>
               <CardContent className="p-4 space-y-3">
                 <div>
-                  <p className="text-xs text-[#9AA6A2] tracking-wide uppercase mb-2">分类</p>
+                  <p className="text-xs text-[#A29489] tracking-wide uppercase mb-2">分类</p>
                   <div className="flex flex-wrap gap-1.5">
                     <Badge
-                      className={`cursor-pointer rounded-full text-xs ${!categoryFilter ? 'bg-[#4F9D8B] text-white' : 'bg-[#F0F5F3] text-[#6F7D78] border-[#E6EEEA]'}`}
+                      className={`cursor-pointer rounded-full text-xs ${!categoryFilter ? 'bg-[#D98C5F] text-white' : 'bg-[#F6EFE7] text-[#7D7168] border-[#EFE4D8]'}`}
                       onClick={() => setCategoryFilter('')}
                     >
                       全部
@@ -162,7 +162,7 @@ export default function Review() {
                     {allCategories.map((cat) => (
                       <Badge
                         key={cat}
-                        className={`cursor-pointer rounded-full text-xs ${categoryFilter === cat ? 'bg-[#4F9D8B] text-white' : 'bg-[#F0F5F3] text-[#6F7D78] border-[#E6EEEA]'}`}
+                        className={`cursor-pointer rounded-full text-xs ${categoryFilter === cat ? 'bg-[#D98C5F] text-white' : 'bg-[#F6EFE7] text-[#7D7168] border-[#EFE4D8]'}`}
                         onClick={() => setCategoryFilter(cat)}
                       >
                         {cat}
@@ -171,12 +171,12 @@ export default function Review() {
                   </div>
                 </div>
                 <div>
-                  <p className="text-xs text-[#9AA6A2] tracking-wide uppercase mb-2">时间范围</p>
+                  <p className="text-xs text-[#A29489] tracking-wide uppercase mb-2">时间范围</p>
                   <div className="flex flex-wrap gap-1.5">
                     {TIME_FILTERS.map((f) => (
                       <Badge
                         key={f.value}
-                        className={`cursor-pointer rounded-full text-xs ${timeFilter === f.value ? 'bg-[#4F9D8B] text-white' : 'bg-[#F0F5F3] text-[#6F7D78] border-[#E6EEEA]'}`}
+                        className={`cursor-pointer rounded-full text-xs ${timeFilter === f.value ? 'bg-[#D98C5F] text-white' : 'bg-[#F6EFE7] text-[#7D7168] border-[#EFE4D8]'}`}
                         onClick={() => setTimeFilter(f.value)}
                       >
                         {f.label}
@@ -193,7 +193,7 @@ export default function Review() {
               <DecisionCard key={d.id} decision={d} />
             ))}
             {filtered.length === 0 && (
-              <p className="text-center text-sm text-[#9AA6A2] py-8">没有找到匹配的决策</p>
+              <p className="text-center text-sm text-[#A29489] py-8">没有找到匹配的决策</p>
             )}
           </div>
         </div>
