@@ -3,11 +3,11 @@ import { cn } from "../../lib/utils";
 
 const buttonVariants = {
   variant: {
-    default: "bg-primary text-primary-foreground hover:bg-[#C5754A] shadow-[0_4px_14px_rgba(217,140,95,0.25)]",
-    destructive: "bg-[#FFF0EA] text-[#C96B4D] hover:bg-[#FFE1D5]",
-    outline: "border border-border bg-card text-foreground hover:bg-[#F6EFE7]",
-    secondary: "bg-[#F6EFE7] text-[#7A6758] hover:bg-[#EFE4D8]",
-    ghost: "hover:bg-[#F6EFE7] hover:text-foreground text-[#7D7168]",
+    default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_4px_14px_rgba(139,115,85,0.2)]",
+    destructive: "bg-[#e5d0c8] text-[#a0522d] hover:bg-[#d9c0b5]",
+    outline: "border border-border bg-card text-foreground hover:bg-[#e8dfd0]",
+    secondary: "bg-[#e8dfd0] text-[#6b5d4f] hover:bg-[#d4cbb8]",
+    ghost: "hover:bg-[#e8dfd0] hover:text-foreground text-[#6b5d4f]",
     link: "text-primary underline-offset-4 hover:underline",
   },
   size: {
