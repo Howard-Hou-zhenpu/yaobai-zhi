@@ -44,49 +44,24 @@ export default function UniversalShareModal({ type, data, onClose }) {
     try {
       const html2canvas = (await import('html2canvas')).default;
 
-      await new Promise(resolve => setTimeout(resolve, 100));
-
+      // 使用和原 ShareCard 相同的配置
       const canvas = await html2canvas(cardRef.current, {
-        backgroundColor: '#e8e3d8',
         scale: 2,
-        logging: false,
+        backgroundColor: '#f5f1e8',
         useCORS: true,
-        allowTaint: true,
-        width: 375,
-        height: cardRef.current.scrollHeight,
-        windowWidth: 375,
-        windowHeight: cardRef.current.scrollHeight,
-        onclone: (clonedDoc) => {
-          const clonedCard = clonedDoc.querySelector('[data-share-card]');
-          if (clonedCard) {
-            clonedCard.style.width = '375px';
-            clonedCard.style.boxSizing = 'border-box';
-          }
-        }
       });
 
-      canvas.toBlob((blob) => {
-        if (!blob) {
-          toast.error('生成图片失败');
-          return;
-        }
+      const link = document.createElement('a');
+      const filename = type === 'decision'
+        ? `摇摆志-决策复盘-${Date.now()}.png`
+        : `摇摆志-决策性格报告-${Date.now()}.png`;
+      link.download = filename;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
 
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        const filename = type === 'decision'
-          ? `摇摆志-决策复盘-${Date.now()}.png`
-          : `摇摆志-决策性格报告-${Date.now()}.png`;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-
-        toast.success('图片已保存', {
-          description: '可以在相册中找到并分享到微信'
-        });
-      }, 'image/png');
+      toast.success('图片已保存', {
+        description: '可以在相册中找到并分享到微信'
+      });
     } catch (error) {
       console.error('保存图片失败:', error);
       toast.error('保存图片失败，请截图保存');
