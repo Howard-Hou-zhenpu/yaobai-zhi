@@ -87,11 +87,6 @@ export default function ShareCardModal({ report, onClose }) {
           <ReportShareCard ref={cardRef} report={report} />
         </div>
 
-        {/* 提示文字 */}
-        <p className="text-[13px] text-[#6b5d4f] text-center mb-4">
-          保存图片后可以分享到微信朋友圈或好友
-        </p>
-
         {/* 操作按钮 */}
         <div className="flex gap-2">
           <Button
