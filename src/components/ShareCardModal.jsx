@@ -35,11 +35,27 @@ export default function ShareCardModal({ report, onClose }) {
       // 动态导入 html2canvas
       const html2canvas = (await import('html2canvas')).default;
 
+      // 等待一小段时间确保字体和样式完全加载
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       const canvas = await html2canvas(cardRef.current, {
         backgroundColor: '#e8e3d8',
         scale: 2, // 提高清晰度
         logging: false,
         useCORS: true,
+        allowTaint: true,
+        width: 375,
+        height: cardRef.current.scrollHeight,
+        windowWidth: 375,
+        windowHeight: cardRef.current.scrollHeight,
+        onclone: (clonedDoc) => {
+          // 确保克隆的文档中所有元素都正确应用样式
+          const clonedCard = clonedDoc.querySelector('[data-share-card]');
+          if (clonedCard) {
+            clonedCard.style.width = '375px';
+            clonedCard.style.boxSizing = 'border-box';
+          }
+        }
       });
 
       // 转换为 blob
