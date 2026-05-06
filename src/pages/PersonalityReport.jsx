@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, RefreshCw, Download, Share2, Sparkles } from 'lucide-react';
+import { ArrowLeft, RefreshCw, Share2, Sparkles } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { useDecisions } from '../hooks/useDecisions';
 import { generatePersonalityReport } from '../lib/ai';
+import ShareCardModal from '../components/ShareCardModal';
 import { toast } from 'sonner';
 
 export default function PersonalityReport() {
@@ -13,6 +14,7 @@ export default function PersonalityReport() {
   const { data: decisions = [] } = useDecisions();
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   const reviewedDecisions = decisions.filter(d => d.status === 'reviewed');
   const canGenerate = reviewedDecisions.length >= 3;
@@ -258,15 +260,22 @@ export default function PersonalityReport() {
               重新生成
             </Button>
             <Button
-              variant="outline"
               className="flex-1 rounded-full gap-2"
-              onClick={handleShare}
+              onClick={() => setShowShareModal(true)}
             >
               <Share2 className="w-4 h-4" strokeWidth={1.5} />
-              分享报告
+              生成分享卡片
             </Button>
           </div>
         </div>
+      )}
+
+      {/* 分享卡片弹窗 */}
+      {showShareModal && report && (
+        <ShareCardModal
+          report={report}
+          onClose={() => setShowShareModal(false)}
+        />
       )}
     </div>
   );
