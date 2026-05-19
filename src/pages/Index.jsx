@@ -5,6 +5,7 @@ import { useDecisions } from '../hooks/useDecisions';
 import { supabase } from '../lib/supabase';
 import { getDailyPrompt } from '../lib/prompts';
 import QuickStats from '../components/QuickStats';
+import TodayTodos from '../components/TodayTodos';
 import DecisionCard from '../components/DecisionCard';
 
 export default function Index() {
@@ -46,6 +47,10 @@ export default function Index() {
         <Plus className="w-5 h-5" strokeWidth={2} />
         开始新的决策
       </Button>
+
+      <div className="mt-6">
+        <TodayTodos decisions={decisions} />
+      </div>
 
       {recentDecisions.length > 0 && (
         <div className="mt-8">
