@@ -6,6 +6,7 @@ import { Button } from './ui/button';
 import { Clock, CheckCircle2, Trash2, CalendarClock } from 'lucide-react';
 import { STATUS_MAP, SATISFACTION_MAP } from '../lib/constants';
 import { useDeleteDecision } from '../hooks/useDecisions';
+import NextActionHint from './NextActionHint';
 import { toast } from 'sonner';
 
 export default function DecisionCard({ decision }) {
@@ -102,6 +103,11 @@ export default function DecisionCard({ decision }) {
             <span>预计复盘：{new Date(decision.reviewDueAt).toLocaleDateString('zh-CN')}</span>
           </div>
         )}
+        <NextActionHint
+          decision={decision}
+          variant="compact"
+          onAction={() => navigate(`/decision/${decision.id}`)}
+        />
       </CardContent>
     </Card>
   );

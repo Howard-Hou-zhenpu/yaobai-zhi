@@ -13,6 +13,7 @@ import Timeline from '../components/Timeline';
 import ShareCard from '../components/ShareCard';
 import ReviewTimeModal from '../components/ReviewTimeModal';
 import AIInsights from '../components/AIInsights';
+import NextActionHint from '../components/NextActionHint';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
 
@@ -38,6 +39,7 @@ export default function DecisionDetail() {
   const [notesText, setNotesText] = useState('');
   const [showShareCard, setShowShareCard] = useState(false);
   const [showReviewTimeModal, setShowReviewTimeModal] = useState(false);
+  const [reviewTimeMode, setReviewTimeMode] = useState('complete');
   const [principleText, setPrincipleText] = useState('');
   const [reviewGuide] = useState(getReviewGuide);
 
@@ -61,11 +63,20 @@ export default function DecisionDetail() {
 
   const handleComplete = () => {
     if (selectedOptions.length === 0) { toast.error('请至少选择一个选项'); return; }
+    setReviewTimeMode('complete');
     setShowReviewTimeModal(true);
   };
 
   const handleReviewTimeConfirm = (reviewDueAt) => {
     setShowReviewTimeModal(false);
+    if (reviewTimeMode === 'updateOnly') {
+      if (!reviewDueAt) return;
+      updateDecision.mutate(
+        { id, updates: { reviewDueAt } },
+        { onSuccess: () => toast.success('复盘时间已设置') }
+      );
+      return;
+    }
     updateDecision.mutate(
       {
         id,
@@ -79,6 +90,25 @@ export default function DecisionDetail() {
       },
       { onSuccess: () => toast.success('决策已完成') }
     );
+  };
+
+  const handleNextAction = (action) => {
+    if (action.type === 'set_review_time') {
+      setReviewTimeMode('updateOnly');
+      setShowReviewTimeModal(true);
+      return;
+    }
+    if (action.type === 'add_options' || action.type === 'make_choice') {
+      const el = document.getElementById('decision-options-section');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      else toast(action.label);
+      return;
+    }
+    if (action.type === 'review_due') {
+      const el = document.getElementById('review-form-section');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      else toast(action.label);
+    }
   };
 
   const handleReview = () => {
@@ -261,7 +291,9 @@ export default function DecisionDetail() {
         </CardContent>
       </Card>
 
-      <div className="flex items-center gap-3 mb-4">
+      <NextActionHint decision={decision} onAction={handleNextAction} />
+
+      <div className="flex items-center gap-3 mb-4" id="decision-options-section">
         <div className="h-px flex-1 bg-border" />
         <h2 className="text-sm font-medium text-muted-foreground tracking-widest uppercase">决策选项</h2>
         <div className="h-px flex-1 bg-border" />
@@ -318,7 +350,7 @@ export default function DecisionDetail() {
 
       {decision.status === 'completed' && (
         <>
-        <Card className="mt-5">
+        <Card className="mt-5" id="review-form-section">
           <CardHeader>
             <CardTitle className="text-base font-medium">复盘总结</CardTitle>
             <div className="mt-2 px-3 py-2 border-l-2 border-primary/30 bg-background/50 rounded-r-lg">
