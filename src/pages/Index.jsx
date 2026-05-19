@@ -7,6 +7,7 @@ import { getDailyPrompt } from '../lib/prompts';
 import QuickStats from '../components/QuickStats';
 import TodayTodos from '../components/TodayTodos';
 import DecisionCard from '../components/DecisionCard';
+import QuickCaptureInput from '../components/QuickCaptureInput';
 
 export default function Index() {
   const navigate = useNavigate();
@@ -47,6 +48,8 @@ export default function Index() {
         <Plus className="w-5 h-5" strokeWidth={2} />
         开始新的决策
       </Button>
+
+      <QuickCaptureInput />
 
       <div className="mt-6">
         <TodayTodos decisions={decisions} />
