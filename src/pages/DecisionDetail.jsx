@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Trash2, CheckCircle2, AlertCircle, LayoutList, Columns2, Pencil, Square, CheckSquare, Star, MessageSquarePlus, RotateCcw, ChevronDown, ChevronUp, Share2, CalendarClock } from 'lucide-react';
+import { ArrowLeft, Trash2, CheckCircle2, AlertCircle, LayoutList, Columns2, Pencil, Square, CheckSquare, Star, MessageSquarePlus, RotateCcw, ChevronDown, ChevronUp, Share2, CalendarClock, Lightbulb } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -38,6 +38,7 @@ export default function DecisionDetail() {
   const [notesText, setNotesText] = useState('');
   const [showShareCard, setShowShareCard] = useState(false);
   const [showReviewTimeModal, setShowReviewTimeModal] = useState(false);
+  const [principleText, setPrincipleText] = useState('');
   const [reviewGuide] = useState(getReviewGuide);
 
   if (!decision) {
@@ -89,6 +90,7 @@ export default function DecisionDetail() {
           status: 'reviewed',
           satisfaction,
           review: reviewText.trim(),
+          decisionPrinciple: principleText.trim(),
           reviewedAt: new Date().toISOString(),
         },
       },
@@ -104,6 +106,7 @@ export default function DecisionDetail() {
   const startEditReview = () => {
     setSatisfaction(decision.satisfaction || '');
     setReviewText(decision.review || '');
+    setPrincipleText(decision.decisionPrinciple || '');
     setEditing(true);
   };
 
@@ -337,6 +340,10 @@ export default function DecisionDetail() {
               <Label className="mb-2 block text-muted-foreground tracking-wide text-xs uppercase">经验总结</Label>
               <Textarea placeholder="记录你的反思和教训..." value={reviewText} onChange={(e) => setReviewText(e.target.value)} rows={4} />
             </div>
+            <div>
+              <Label className="mb-2 block text-muted-foreground tracking-wide text-xs uppercase">写给未来自己的提醒</Label>
+              <Textarea placeholder="下次遇到类似选择时，我要提醒自己……" value={principleText} onChange={(e) => setPrincipleText(e.target.value)} rows={2} />
+            </div>
             <Button className="w-full rounded-2xl" onClick={handleReview}>保存复盘</Button>
           </CardContent>
         </Card>
@@ -373,6 +380,17 @@ export default function DecisionDetail() {
             </p>
           </CardContent>
         </Card>
+        {decision.decisionPrinciple && (
+          <Card className="mt-3 border-[#d4cbb8] bg-[#faf6ef]">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Lightbulb className="w-4 h-4 text-[#8b7355]" strokeWidth={1.5} />
+                <span className="text-sm font-medium text-[#6b5d4f]">这次学到的原则</span>
+              </div>
+              <p className="text-sm text-[#3d3428] leading-relaxed pl-6">{decision.decisionPrinciple}</p>
+            </CardContent>
+          </Card>
+        )}
         <AIInsights decision={decision} />
         </>
       )}
@@ -394,6 +412,10 @@ export default function DecisionDetail() {
             <div>
               <Label className="mb-2 block text-muted-foreground tracking-wide text-xs uppercase">经验总结</Label>
               <Textarea placeholder="记录你的反思和教训..." value={reviewText} onChange={(e) => setReviewText(e.target.value)} rows={4} />
+            </div>
+            <div>
+              <Label className="mb-2 block text-muted-foreground tracking-wide text-xs uppercase">写给未来自己的提醒</Label>
+              <Textarea placeholder="下次遇到类似选择时，我要提醒自己……" value={principleText} onChange={(e) => setPrincipleText(e.target.value)} rows={2} />
             </div>
             <div className="flex gap-2">
               <Button variant="outline" className="flex-1 rounded-2xl" onClick={() => setEditing(false)}>取消</Button>

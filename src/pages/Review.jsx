@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
-import { Search, ChevronDown, ChevronUp, Star } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Search, ChevronDown, ChevronUp, Star, Lightbulb } from 'lucide-react';
 import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -11,7 +12,7 @@ import DecisionProfile from '../components/DecisionProfile';
 import KeywordCloud from '../components/KeywordCloud';
 import DecisionReport from '../components/DecisionReport';
 import DecisionCard from '../components/DecisionCard';
-import { CATEGORIES } from '../lib/constants';
+import { CATEGORIES, SATISFACTION_MAP } from '../lib/constants';
 import { cn } from '../lib/utils';
 
 const STATUS_FILTERS = [
@@ -29,6 +30,7 @@ const TIME_FILTERS = [
 ];
 
 export default function Review() {
+  const navigate = useNavigate();
   const { data: decisions = [] } = useDecisions();
   const [tab, setTab] = useState('overview');
   const [search, setSearch] = useState('');
@@ -80,6 +82,13 @@ export default function Review() {
           概览
         </Button>
         <Button
+          variant={tab === 'principles' ? 'default' : 'outline'}
+          className="flex-1 rounded-full h-10 font-medium"
+          onClick={() => setTab('principles')}
+        >
+          我的原则
+        </Button>
+        <Button
           variant={tab === 'records' ? 'default' : 'outline'}
           className="flex-1 rounded-full h-10 font-medium"
           onClick={() => setTab('records')}
@@ -110,6 +119,48 @@ export default function Review() {
           <DecisionProfile decisions={decisions} />
           <KeywordCloud decisions={decisions} />
           <DecisionReport decisions={decisions} />
+        </div>
+      )}
+
+      {tab === 'principles' && (
+        <div className="space-y-3">
+          {decisions.filter((d) => d.decisionPrinciple).length === 0 ? (
+            <div className="text-center py-12 text-[#a09080]">
+              <Lightbulb className="w-8 h-8 mx-auto mb-3 opacity-30" strokeWidth={1.5} />
+              <p className="text-sm">还没有沉淀任何原则</p>
+              <p className="text-xs mt-1.5 opacity-70">复盘时写下"给未来自己的提醒"，就会出现在这里</p>
+            </div>
+          ) : (
+            decisions.filter((d) => d.decisionPrinciple).map((d) => (
+              <Card
+                key={d.id}
+                className="cursor-pointer border-[#d4cbb8] bg-[#faf6ef] hover:shadow-[0_4px_16px_rgba(139,115,85,0.12)] transition-all"
+                onClick={() => navigate(`/decision/${d.id}`)}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-2.5">
+                    <Lightbulb className="w-4 h-4 text-[#8b7355] mt-0.5 shrink-0" strokeWidth={1.5} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-[#3d3428] leading-relaxed">{d.decisionPrinciple}</p>
+                      <div className="flex items-center gap-2 mt-2.5 text-xs text-[#a09080]">
+                        <span className="truncate max-w-[140px]">来自「{d.title}」</span>
+                        <span className="w-1 h-1 rounded-full bg-[#d4cbb8]" />
+                        <span>{d.category}</span>
+                        {d.satisfaction && SATISFACTION_MAP[d.satisfaction] && (
+                          <>
+                            <span className="w-1 h-1 rounded-full bg-[#d4cbb8]" />
+                            <span className={SATISFACTION_MAP[d.satisfaction].color}>
+                              {SATISFACTION_MAP[d.satisfaction].emoji} {SATISFACTION_MAP[d.satisfaction].label}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
         </div>
       )}
 

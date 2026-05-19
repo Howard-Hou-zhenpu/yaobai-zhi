@@ -25,6 +25,7 @@ function transformDecision(d) {
     confidence: d.confidence || 0,
     notes: d.notes || '',
     isFavorite: d.is_favorite || false,
+    decisionPrinciple: d.decision_principle || '',
     options: (d.options || [])
       .sort((a, b) => a.position - b.position)
       .map((o) => ({
@@ -132,6 +133,7 @@ export async function updateDecision(id, updates) {
   if (updates.confidence !== undefined) dbUpdates.confidence = updates.confidence;
   if (updates.notes !== undefined) dbUpdates.notes = updates.notes;
   if (updates.isFavorite !== undefined) dbUpdates.is_favorite = updates.isFavorite;
+  if (updates.decisionPrinciple !== undefined) dbUpdates.decision_principle = updates.decisionPrinciple;
   if (updates.completedAt) dbUpdates.completed_at = updates.completedAt;
   if (updates.reviewedAt) dbUpdates.reviewed_at = updates.reviewedAt;
   if (updates.reviewDueAt !== undefined) dbUpdates.review_due_at = updates.reviewDueAt;
