@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, ChevronDown, ChevronUp, Star, Lightbulb } from 'lucide-react';
+import { Search, ChevronDown, ChevronUp, Star, Lightbulb, CalendarClock } from 'lucide-react';
 import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -38,6 +38,7 @@ export default function Review() {
   const [categoryFilter, setCategoryFilter] = useState('');
   const [timeFilter, setTimeFilter] = useState('');
   const [favoriteOnly, setFavoriteOnly] = useState(false);
+  const [dueOnly, setDueOnly] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
 
   const allCategories = useMemo(() => {
@@ -51,6 +52,15 @@ export default function Review() {
     const matchStatus = !statusFilter || d.status === statusFilter;
     const matchCategory = !categoryFilter || d.category === categoryFilter;
     const matchFavorite = !favoriteOnly || d.isFavorite;
+    let matchDue = true;
+    if (dueOnly) {
+      const todayEnd = new Date();
+      todayEnd.setHours(23, 59, 59, 999);
+      matchDue =
+        d.status === 'completed' &&
+        !!d.reviewDueAt &&
+        new Date(d.reviewDueAt) <= todayEnd;
+    }
     let matchTime = true;
     if (timeFilter) {
       const days = parseInt(timeFilter);
@@ -58,8 +68,15 @@ export default function Review() {
       cutoff.setDate(cutoff.getDate() - days);
       matchTime = new Date(d.createdAt) >= cutoff;
     }
-    return matchSearch && matchStatus && matchCategory && matchFavorite && matchTime;
+    return matchSearch && matchStatus && matchCategory && matchFavorite && matchDue && matchTime;
   });
+
+  const sortedFiltered = useMemo(() => {
+    if (!dueOnly) return filtered;
+    return [...filtered].sort(
+      (a, b) => new Date(a.reviewDueAt).getTime() - new Date(b.reviewDueAt).getTime()
+    );
+  }, [filtered, dueOnly]);
 
   const total = decisions.length;
   const completed = decisions.filter((d) => d.status === 'completed' || d.status === 'reviewed').length;
@@ -187,6 +204,12 @@ export default function Review() {
             >
               <Star className="w-3 h-3" strokeWidth={1.5} fill={favoriteOnly ? 'currentColor' : 'none'} /> 收藏
             </Badge>
+            <Badge
+              className={`cursor-pointer transition-all rounded-full gap-1 shrink-0 ${dueOnly ? 'bg-[#dde5d4] text-[#5a6b4f] border-[#c8d4bb]' : 'bg-[#e8dfd0] text-[#6b5d4f] border-[#d4cbb8]'}`}
+              onClick={() => setDueOnly(!dueOnly)}
+            >
+              <CalendarClock className="w-3 h-3" strokeWidth={1.5} /> 到期复盘
+            </Badge>
             <Button
               variant="ghost"
               size="sm"
@@ -240,11 +263,35 @@ export default function Review() {
           )}
 
           <div className="space-y-3">
-            {filtered.map((d) => (
-              <DecisionCard key={d.id} decision={d} />
+            {sortedFiltered.map((d) => (
+              <div key={d.id} className="space-y-1.5">
+                <DecisionCard decision={d} />
+                {dueOnly && (
+                  <div className="flex justify-end">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="rounded-xl gap-1 text-[#5a6b4f] border-[#c8d4bb] hover:bg-[#f5f8f0]"
+                      onClick={() => navigate(`/decision/${d.id}`)}
+                    >
+                      去复盘
+                    </Button>
+                  </div>
+                )}
+              </div>
             ))}
-            {filtered.length === 0 && (
-              <p className="text-center text-sm text-[#a09080] py-8">没有找到匹配的决策</p>
+            {sortedFiltered.length === 0 && (
+              dueOnly ? (
+                <div className="text-center py-12 text-[#a09080]">
+                  <CalendarClock className="w-8 h-8 mx-auto mb-3 opacity-30" strokeWidth={1.5} />
+                  <p className="text-sm leading-relaxed px-6">
+                    现在没有到期复盘的决定。<br />
+                    做完选择后设置复盘时间，会在这里出现。
+                  </p>
+                </div>
+              ) : (
+                <p className="text-center text-sm text-[#a09080] py-8">没有找到匹配的决策</p>
+              )
             )}
           </div>
         </div>
