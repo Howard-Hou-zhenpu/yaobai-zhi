@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Trash2, CheckCircle2, AlertCircle, LayoutList, Columns2, Pencil, Square, CheckSquare, Star, MessageSquarePlus, RotateCcw, ChevronDown, ChevronUp, Share2 } from 'lucide-react';
+import { ArrowLeft, Trash2, CheckCircle2, AlertCircle, LayoutList, Columns2, Pencil, Square, CheckSquare, Star, MessageSquarePlus, RotateCcw, ChevronDown, ChevronUp, Share2, CalendarClock } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -11,6 +11,7 @@ import { STATUS_MAP, SATISFACTION_MAP } from '../lib/constants';
 import { getReviewGuide, getCompletionFeedback } from '../lib/prompts';
 import Timeline from '../components/Timeline';
 import ShareCard from '../components/ShareCard';
+import ReviewTimeModal from '../components/ReviewTimeModal';
 import AIInsights from '../components/AIInsights';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
@@ -36,6 +37,7 @@ export default function DecisionDetail() {
   const [showNotes, setShowNotes] = useState(false);
   const [notesText, setNotesText] = useState('');
   const [showShareCard, setShowShareCard] = useState(false);
+  const [showReviewTimeModal, setShowReviewTimeModal] = useState(false);
   const [reviewGuide] = useState(getReviewGuide);
 
   if (!decision) {
@@ -58,6 +60,11 @@ export default function DecisionDetail() {
 
   const handleComplete = () => {
     if (selectedOptions.length === 0) { toast.error('请至少选择一个选项'); return; }
+    setShowReviewTimeModal(true);
+  };
+
+  const handleReviewTimeConfirm = (reviewDueAt) => {
+    setShowReviewTimeModal(false);
     updateDecision.mutate(
       {
         id,
@@ -66,6 +73,7 @@ export default function DecisionDetail() {
           selectedOption: selectedOptions.join(','),
           confidence,
           completedAt: new Date().toISOString(),
+          reviewDueAt,
         },
       },
       { onSuccess: () => toast.success('决策已完成') }
@@ -239,6 +247,12 @@ export default function DecisionDetail() {
             <p className="text-xs text-muted-foreground mt-1">
               完成于 {new Date(decision.completedAt).toLocaleString('zh-CN')}
               {decision.confidence > 0 && ` · 信心值 ${decision.confidence}/5`}
+            </p>
+          )}
+          {decision.reviewDueAt && (
+            <p className="text-xs mt-1 flex items-center gap-1 text-[#8b7355]">
+              <CalendarClock className="w-3 h-3" strokeWidth={1.5} />
+              预计复盘：{new Date(decision.reviewDueAt).toLocaleDateString('zh-CN')}
             </p>
           )}
         </CardContent>
@@ -416,6 +430,13 @@ export default function DecisionDetail() {
       )}
 
       {showShareCard && <ShareCard decision={decision} onClose={() => setShowShareCard(false)} />}
+      {showReviewTimeModal && (
+        <ReviewTimeModal
+          category={decision.category}
+          onConfirm={handleReviewTimeConfirm}
+          onClose={() => setShowReviewTimeModal(false)}
+        />
+      )}
     </div>
   );
 }

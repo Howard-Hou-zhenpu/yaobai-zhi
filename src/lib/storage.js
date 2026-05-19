@@ -19,6 +19,7 @@ function transformDecision(d) {
     createdAt: d.created_at,
     completedAt: d.completed_at,
     reviewedAt: d.reviewed_at,
+    reviewDueAt: d.review_due_at || null,
     selectedOption: d.selected_option,
     hesitation: d.hesitation || 0,
     confidence: d.confidence || 0,
@@ -94,6 +95,7 @@ export async function addDecision(decision) {
       is_favorite: rest.isFavorite || false,
       completed_at: rest.completedAt || null,
       reviewed_at: rest.reviewedAt || null,
+      review_due_at: rest.reviewDueAt || null,
     })
     .select()
     .single();
@@ -132,6 +134,7 @@ export async function updateDecision(id, updates) {
   if (updates.isFavorite !== undefined) dbUpdates.is_favorite = updates.isFavorite;
   if (updates.completedAt) dbUpdates.completed_at = updates.completedAt;
   if (updates.reviewedAt) dbUpdates.reviewed_at = updates.reviewedAt;
+  if (updates.reviewDueAt !== undefined) dbUpdates.review_due_at = updates.reviewDueAt;
 
   const { data, error } = await supabase
     .from('decisions')

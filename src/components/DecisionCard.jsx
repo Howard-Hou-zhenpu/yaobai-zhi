@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
-import { Clock, CheckCircle2, Trash2 } from 'lucide-react';
+import { Clock, CheckCircle2, Trash2, CalendarClock } from 'lucide-react';
 import { STATUS_MAP, SATISFACTION_MAP } from '../lib/constants';
 import { useDeleteDecision } from '../hooks/useDecisions';
 import { toast } from 'sonner';
@@ -94,6 +94,12 @@ export default function DecisionCard({ decision }) {
           <div className="mt-2.5 flex items-start gap-1.5 text-sm text-[#5a6b4f]">
             <CheckCircle2 className="w-3.5 h-3.5 mt-0.5 shrink-0" strokeWidth={1.5} />
             <span>已选择: {selectedOptions.join('、')}</span>
+          </div>
+        )}
+        {decision.reviewDueAt && decision.status === 'completed' && (
+          <div className="mt-1.5 flex items-center gap-1.5 text-xs text-[#8b7355]">
+            <CalendarClock className="w-3 h-3 shrink-0" strokeWidth={1.5} />
+            <span>预计复盘：{new Date(decision.reviewDueAt).toLocaleDateString('zh-CN')}</span>
           </div>
         )}
       </CardContent>
