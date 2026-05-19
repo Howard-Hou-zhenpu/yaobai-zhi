@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Scale, LogOut } from 'lucide-react';
 import { Button } from '../components/ui/button';
@@ -8,16 +9,24 @@ import QuickStats from '../components/QuickStats';
 import TodayTodos from '../components/TodayTodos';
 import DecisionCard from '../components/DecisionCard';
 import QuickCaptureInput from '../components/QuickCaptureInput';
+import ModeSelectModal from '../components/ModeSelectModal';
 
 export default function Index() {
   const navigate = useNavigate();
   const { data: decisions = [] } = useDecisions();
   const recentDecisions = decisions.slice(0, 5);
   const dailyPrompt = getDailyPrompt();
+  const [showModeModal, setShowModeModal] = useState(false);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate('/auth');
+  };
+
+  const handleModeSelect = (mode) => {
+    setShowModeModal(false);
+    if (mode === 'active') navigate('/create');
+    else if (mode === 'backfill') navigate('/backfill');
   };
 
   return (
@@ -43,7 +52,7 @@ export default function Index() {
 
       <Button
         className="w-full mt-6 h-12 text-[15px] gap-2 rounded-full font-medium"
-        onClick={() => navigate('/create')}
+        onClick={() => setShowModeModal(true)}
       >
         <Plus className="w-5 h-5" strokeWidth={2} />
         开始新的决策
@@ -76,6 +85,13 @@ export default function Index() {
           <p className="text-sm">每一个选择都值得被认真对待</p>
           <p className="text-xs mt-2 opacity-70">点击上方按钮，开始你的第一次对话</p>
         </div>
+      )}
+
+      {showModeModal && (
+        <ModeSelectModal
+          onClose={() => setShowModeModal(false)}
+          onSelect={handleModeSelect}
+        />
       )}
     </div>
   );

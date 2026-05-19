@@ -5,6 +5,7 @@ import PageTransition from './components/PageTransition';
 import Auth from './pages/Auth';
 import Index from './pages/Index';
 import CreateDecision from './pages/CreateDecision';
+import BackfillDecision from './pages/BackfillDecision';
 import DecisionDetail from './pages/DecisionDetail';
 import Review from './pages/Review';
 import Settings from './pages/Settings';
@@ -24,6 +25,7 @@ export default function App() {
                   <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/create" element={<CreateDecision />} />
+                    <Route path="/backfill" element={<BackfillDecision />} />
                     <Route path="/decision/:id" element={<DecisionDetail />} />
                     <Route path="/review" element={<Review />} />
                     <Route path="/personality-report" element={<PersonalityReport />} />
