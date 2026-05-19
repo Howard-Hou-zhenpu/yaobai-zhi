@@ -33,16 +33,13 @@ export default function QuickCaptureInput() {
       isFavorite: false,
       completedAt: '',
       reviewedAt: '',
-      options: [
-        { name: '', pros: '', cons: '', risks: '', worstCase: '', solution: '' },
-        { name: '', pros: '', cons: '', risks: '', worstCase: '', solution: '' },
-      ],
+      options: [],
     };
 
     addDecision.mutate(draft, {
       onSuccess: (data) => {
         setText('');
-        toast.success('已经先帮你记下来了，可以继续补充选项。');
+        toast.success('已经先帮你记下来了，可以继续补全分类、选项和思考过程。');
         if (data?.id) navigate(`/decision/${data.id}`);
       },
       onError: (err) => {
@@ -81,7 +78,7 @@ export default function QuickCaptureInput() {
         </Button>
       </div>
       <p className="text-[11px] text-[#a09080] mt-1.5 ml-6 leading-relaxed">
-        想到一句就先记下，之后再补充选项也来得及。
+        先记一句也可以，之后再慢慢补全分类、选项和思考过程。
       </p>
     </div>
   );

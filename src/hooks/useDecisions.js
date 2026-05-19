@@ -5,6 +5,7 @@ import {
   addDecision,
   updateDecision,
   deleteDecision,
+  replaceDecisionOptions,
 } from '../lib/storage';
 
 export function useDecisions() {
@@ -42,6 +43,14 @@ export function useDeleteDecision() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: deleteDecision,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['decisions'] }),
+  });
+}
+
+export function useReplaceDecisionOptions() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, options }) => replaceDecisionOptions(id, options),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['decisions'] }),
   });
 }

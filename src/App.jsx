@@ -7,6 +7,7 @@ import Index from './pages/Index';
 import CreateDecision from './pages/CreateDecision';
 import BackfillDecision from './pages/BackfillDecision';
 import DecisionDetail from './pages/DecisionDetail';
+import EditDecision from './pages/EditDecision';
 import Review from './pages/Review';
 import Settings from './pages/Settings';
 import PersonalityReport from './pages/PersonalityReport';
@@ -27,6 +28,7 @@ export default function App() {
                     <Route path="/create" element={<CreateDecision />} />
                     <Route path="/backfill" element={<BackfillDecision />} />
                     <Route path="/decision/:id" element={<DecisionDetail />} />
+                    <Route path="/decision/:id/edit" element={<EditDecision />} />
                     <Route path="/review" element={<Review />} />
                     <Route path="/personality-report" element={<PersonalityReport />} />
                     <Route path="/settings" element={<Settings />} />

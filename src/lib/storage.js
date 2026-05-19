@@ -83,7 +83,7 @@ export async function addDecision(decision) {
     .insert({
       user_id: userId,
       title: rest.title,
-      category: rest.category,
+      category: rest.category || '未分类',
       type: rest.type,
       description: rest.description || '',
       status: rest.status,
@@ -103,28 +103,35 @@ export async function addDecision(decision) {
 
   if (decisionError) throw decisionError;
 
-  const optionsData = options.map((opt, index) => ({
-    decision_id: newDecision.id,
-    name: opt.name,
-    pros: opt.pros || '',
-    cons: opt.cons || '',
-    risks: opt.risks || '',
-    worst_case: opt.worstCase || '',
-    solution: opt.solution || '',
-    position: index,
-  }));
+  const validOptions = (options || []).filter((o) => o && typeof o.name === 'string' && o.name.trim());
+  if (validOptions.length > 0) {
+    const optionsData = validOptions.map((opt, index) => ({
+      decision_id: newDecision.id,
+      name: opt.name.trim(),
+      pros: opt.pros || '',
+      cons: opt.cons || '',
+      risks: opt.risks || '',
+      worst_case: opt.worstCase || '',
+      solution: opt.solution || '',
+      position: index,
+    }));
 
-  const { error: optionsError } = await supabase
-    .from('decision_options')
-    .insert(optionsData);
+    const { error: optionsError } = await supabase
+      .from('decision_options')
+      .insert(optionsData);
 
-  if (optionsError) throw optionsError;
+    if (optionsError) throw optionsError;
+  }
 
-  return { ...newDecision, options };
+  return { ...newDecision, options: validOptions };
 }
 
 export async function updateDecision(id, updates) {
   const dbUpdates = {};
+  if (updates.title !== undefined) dbUpdates.title = updates.title;
+  if (updates.category !== undefined) dbUpdates.category = updates.category;
+  if (updates.type !== undefined) dbUpdates.type = updates.type;
+  if (updates.description !== undefined) dbUpdates.description = updates.description;
   if (updates.status !== undefined) dbUpdates.status = updates.status;
   if (updates.selectedOption !== undefined) dbUpdates.selected_option = updates.selectedOption;
   if (updates.satisfaction !== undefined) dbUpdates.satisfaction = updates.satisfaction;
@@ -147,6 +154,37 @@ export async function updateDecision(id, updates) {
 
   if (error) throw error;
   return data;
+}
+
+export async function replaceDecisionOptions(id, options) {
+  const { error: deleteError } = await supabase
+    .from('decision_options')
+    .delete()
+    .eq('decision_id', id);
+  if (deleteError) throw deleteError;
+
+  const validOptions = (options || []).filter(
+    (o) => o && typeof o.name === 'string' && o.name.trim()
+  );
+  if (validOptions.length === 0) return [];
+
+  const optionsData = validOptions.map((opt, index) => ({
+    decision_id: id,
+    name: opt.name.trim(),
+    pros: opt.pros || '',
+    cons: opt.cons || '',
+    risks: opt.risks || '',
+    worst_case: opt.worstCase || '',
+    solution: opt.solution || '',
+    position: index,
+  }));
+
+  const { error: insertError } = await supabase
+    .from('decision_options')
+    .insert(optionsData);
+  if (insertError) throw insertError;
+
+  return validOptions;
 }
 
 export async function deleteDecision(id) {

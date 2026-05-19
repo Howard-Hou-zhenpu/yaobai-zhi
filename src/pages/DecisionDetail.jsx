@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Trash2, CheckCircle2, AlertCircle, LayoutList, Columns2, Pencil, Square, CheckSquare, Star, MessageSquarePlus, RotateCcw, ChevronDown, ChevronUp, Share2, CalendarClock, Lightbulb } from 'lucide-react';
+import { ArrowLeft, Trash2, CheckCircle2, AlertCircle, LayoutList, Columns2, Pencil, Square, CheckSquare, Star, MessageSquarePlus, RotateCcw, ChevronDown, ChevronUp, Share2, CalendarClock, Lightbulb, Plus } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -17,9 +17,21 @@ import NextActionHint from '../components/NextActionHint';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
 
-function parseSelected(str) {
+function parseSelected(str, validNames) {
   if (!str) return [];
-  return str.split(',').filter(Boolean);
+  const list = String(str).split(',').map((s) => s.trim()).filter(Boolean);
+  if (!validNames || validNames.length === 0) return [];
+  const set = new Set(validNames);
+  return list.filter((n) => set.has(n));
+}
+
+function isQuickDraft(decision) {
+  if (!decision || decision.status !== 'active') return false;
+  const hasNamedOptions =
+    Array.isArray(decision.options) &&
+    decision.options.some((o) => o && typeof o.name === 'string' && o.name.trim());
+  const hasDescription = !!(decision.description || '').trim();
+  return decision.type === 'quick' && !hasNamedOptions && !hasDescription;
 }
 
 export default function DecisionDetail() {
@@ -52,7 +64,12 @@ export default function DecisionDetail() {
   }
 
   const status = STATUS_MAP[decision.status];
-  const savedSelections = parseSelected(decision.selectedOption);
+  const optionsList = Array.isArray(decision.options) ? decision.options : [];
+  const validOptionNames = optionsList
+    .map((o) => o && typeof o.name === 'string' ? o.name.trim() : '')
+    .filter(Boolean);
+  const savedSelections = parseSelected(decision.selectedOption, validOptionNames);
+  const draftMode = isQuickDraft(decision);
 
   const toggleOption = (name) => {
     if (decision.status !== 'active') return;
@@ -62,6 +79,7 @@ export default function DecisionDetail() {
   };
 
   const handleComplete = () => {
+    if (validOptionNames.length === 0) { toast.error('请先添加选项'); return; }
     if (selectedOptions.length === 0) { toast.error('请至少选择一个选项'); return; }
     setReviewTimeMode('complete');
     setShowReviewTimeModal(true);
@@ -98,7 +116,11 @@ export default function DecisionDetail() {
       setShowReviewTimeModal(true);
       return;
     }
-    if (action.type === 'add_options' || action.type === 'make_choice') {
+    if (action.type === 'add_options') {
+      navigate(`/decision/${id}/edit`);
+      return;
+    }
+    if (action.type === 'make_choice') {
       const el = document.getElementById('decision-options-section');
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       else toast(action.label);
@@ -233,6 +255,17 @@ export default function DecisionDetail() {
         </div>
         <div className="flex items-center gap-1 shrink-0">
           <Badge className={`${status.color} rounded-lg`}>{status.label}</Badge>
+          {decision.status === 'active' && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-[#8b7355]"
+              onClick={() => navigate(`/decision/${id}/edit`)}
+              title="编辑"
+            >
+              <Pencil className="w-4 h-4" strokeWidth={1.5} />
+            </Button>
+          )}
           {(decision.status === 'completed' || decision.status === 'reviewed') && (
             <Button variant="ghost" size="icon" onClick={() => setShowShareCard(true)}>
               <Share2 className="w-4 h-4" strokeWidth={1.5} />
@@ -264,15 +297,23 @@ export default function DecisionDetail() {
       <Card className="mb-5">
         <CardContent className="p-4">
           <div className="flex items-center gap-2 mb-2">
-            <Badge variant="outline" className="rounded-lg">{decision.category}</Badge>
+            <Badge variant="outline" className="rounded-lg">{decision.category || '未分类'}</Badge>
             <Badge variant="secondary" className="rounded-lg">{decision.type === 'deep' ? '深度决策' : '快速决策'}</Badge>
             {decision.hesitation > 0 && (
               <span className="text-xs text-muted-foreground">纠结度 {decision.hesitation}/5</span>
             )}
           </div>
-          {decision.description && (
-            <p className="text-sm text-muted-foreground mt-3leading-relaxed">{decision.description}</p>
-          )}
+          {decision.description ? (
+            <p className="text-sm text-muted-foreground mt-3 leading-relaxed">{decision.description}</p>
+          ) : decision.status === 'active' ? (
+            <button
+              type="button"
+              onClick={() => navigate(`/decision/${id}/edit`)}
+              className="mt-3 text-sm text-[#a09080] italic hover:text-[#6b5d4f] text-left"
+            >
+              还没有补充背景，可以之后再写。
+            </button>
+          ) : null}
           <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border/50 text-xs text-muted-foreground">
             <span>创建于 {new Date(decision.createdAt).toLocaleString('zh-CN')}</span>
           </div>
@@ -290,6 +331,23 @@ export default function DecisionDetail() {
           )}
         </CardContent>
       </Card>
+
+      {draftMode && (
+        <Card className="mb-4 border-[#dde5d4] bg-[#f5f8f0]">
+          <CardContent className="p-4 flex items-center justify-between gap-3">
+            <p className="text-sm text-[#5a6b4f] leading-relaxed flex-1">
+              这条决策是先记下来的，你可以继续补充分类、描述、选项和复盘时间。
+            </p>
+            <Button
+              size="sm"
+              className="rounded-xl shrink-0"
+              onClick={() => navigate(`/decision/${id}/edit`)}
+            >
+              继续补全
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
       <NextActionHint decision={decision} onAction={handleNextAction} />
 
@@ -309,25 +367,42 @@ export default function DecisionDetail() {
         )}
       </div>
 
-      {decision.status === 'active' && selectedOptions.length > 0 && (
+      {decision.status === 'active' && validOptionNames.length > 0 && selectedOptions.length > 0 && (
         <p className="text-xs text-muted-foreground mb-3">
           已选 {selectedOptions.length} 项：{selectedOptions.join('、')}
         </p>
       )}
 
-      {viewMode === 'compare' && decision.type === 'deep' ? (
+      {validOptionNames.length === 0 ? (
+        <Card className="mb-5 border-dashed border-[#d4cbb8]">
+          <CardContent className="p-6 text-center space-y-3">
+            <p className="text-sm text-[#a09080]">还没有选项，可以先添加几个可选方案。</p>
+            {decision.status === 'active' && (
+              <Button
+                size="sm"
+                variant="outline"
+                className="rounded-xl gap-1"
+                onClick={() => navigate(`/decision/${id}/edit`)}
+              >
+                <Plus className="w-3.5 h-3.5" strokeWidth={1.5} />
+                添加选项
+              </Button>
+            )}
+          </CardContent>
+        </Card>
+      ) : viewMode === 'compare' && decision.type === 'deep' ? (
         <div className="overflow-x-auto mb-5 -mx-1 px-1">
-          <div className="flex gap-2" style={{ minWidth: decision.options.length * 160 }}>
-            {decision.options.map((option, index) => renderOptionCard(option, index, true))}
+          <div className="flex gap-2" style={{ minWidth: optionsList.length * 160 }}>
+            {optionsList.map((option, index) => renderOptionCard(option, index, true))}
           </div>
         </div>
       ) : (
         <div className="space-y-3 mb-5">
-          {decision.options.map((option, index) => renderOptionCard(option, index, false))}
+          {optionsList.map((option, index) => renderOptionCard(option, index, false))}
         </div>
       )}
 
-      {decision.status === 'active' && (
+      {decision.status === 'active' && validOptionNames.length > 0 && (
         <div className="space-y-4">
           <div>
             <Label className="text-muted-foreground tracking-wide text-xs uppercase">你对这个选择有多确定？</Label>
