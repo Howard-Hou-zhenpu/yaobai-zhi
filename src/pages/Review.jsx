@@ -12,6 +12,7 @@ import DecisionProfile from '../components/DecisionProfile';
 import KeywordCloud from '../components/KeywordCloud';
 import DecisionReport from '../components/DecisionReport';
 import DecisionCard from '../components/DecisionCard';
+import RegretAnalysis from '../components/RegretAnalysis';
 import { CATEGORIES, SATISFACTION_MAP } from '../lib/constants';
 import { cn } from '../lib/utils';
 
@@ -133,6 +134,7 @@ export default function Review() {
 
           <ReviewChart decisions={decisions} />
           <TrendChart decisions={decisions} />
+          <RegretAnalysis decisions={decisions} />
           <DecisionProfile decisions={decisions} />
           <KeywordCloud decisions={decisions} />
           <DecisionReport decisions={decisions} />

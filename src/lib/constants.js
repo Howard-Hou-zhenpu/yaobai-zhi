@@ -19,3 +19,14 @@ export const SATISFACTION_MAP = {
   neutral: { label: '一般', emoji: '◇', color: 'text-[#8b7355]' },
   regret: { label: '后悔', emoji: '✧', color: 'text-[#a0522d]' },
 };
+
+export const REGRET_REASONS = [
+  '信息不足',
+  '情绪冲动',
+  '高估收益',
+  '低估成本',
+  '忽略长期目标',
+  '被他人影响',
+  '执行不到位',
+  '其他',
+];

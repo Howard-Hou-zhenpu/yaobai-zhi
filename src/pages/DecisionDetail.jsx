@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Textarea } from '../components/ui/textarea';
 import { Label } from '../components/ui/label';
 import { useDecision, useUpdateDecision, useDeleteDecision } from '../hooks/useDecisions';
-import { STATUS_MAP, SATISFACTION_MAP } from '../lib/constants';
+import { STATUS_MAP, SATISFACTION_MAP, REGRET_REASONS } from '../lib/constants';
 import { getReviewGuide, getCompletionFeedback } from '../lib/prompts';
 import Timeline from '../components/Timeline';
 import ShareCard from '../components/ShareCard';
@@ -23,6 +23,11 @@ function parseSelected(str, validNames) {
   if (!validNames || validNames.length === 0) return [];
   const set = new Set(validNames);
   return list.filter((n) => set.has(n));
+}
+
+function parseRegretReasons(str) {
+  if (!str) return [];
+  return String(str).split(',').map((s) => s.trim()).filter(Boolean);
 }
 
 function isQuickDraft(decision) {
@@ -53,6 +58,7 @@ export default function DecisionDetail() {
   const [showReviewTimeModal, setShowReviewTimeModal] = useState(false);
   const [reviewTimeMode, setReviewTimeMode] = useState('complete');
   const [principleText, setPrincipleText] = useState('');
+  const [regretReasons, setRegretReasons] = useState([]);
   const [reviewGuide] = useState(getReviewGuide);
 
   if (!decision) {
@@ -75,6 +81,12 @@ export default function DecisionDetail() {
     if (decision.status !== 'active') return;
     setSelectedOptions((prev) =>
       prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]
+    );
+  };
+
+  const toggleRegretReason = (reason) => {
+    setRegretReasons((prev) =>
+      prev.includes(reason) ? prev.filter((r) => r !== reason) : [...prev, reason]
     );
   };
 
@@ -135,6 +147,7 @@ export default function DecisionDetail() {
 
   const handleReview = () => {
     if (!satisfaction) { toast.error('请选择满意度'); return; }
+    const finalRegret = satisfaction === 'regret' ? regretReasons.join(',') : '';
     updateDecision.mutate(
       {
         id,
@@ -143,6 +156,7 @@ export default function DecisionDetail() {
           satisfaction,
           review: reviewText.trim(),
           decisionPrinciple: principleText.trim(),
+          regretReasons: finalRegret,
           reviewedAt: new Date().toISOString(),
         },
       },
@@ -159,6 +173,7 @@ export default function DecisionDetail() {
     setSatisfaction(decision.satisfaction || '');
     setReviewText(decision.review || '');
     setPrincipleText(decision.decisionPrinciple || '');
+    setRegretReasons(parseRegretReasons(decision.regretReasons));
     setEditing(true);
   };
 
@@ -188,6 +203,7 @@ export default function DecisionDetail() {
           status: 'active',
           satisfaction: '',
           review: '',
+          regretReasons: '',
           reviewedAt: null,
         },
       },
@@ -443,6 +459,31 @@ export default function DecisionDetail() {
                 ))}
               </div>
             </div>
+            {satisfaction === 'regret' && (
+              <div className="rounded-xl border border-[#e5d5c8] bg-[#faf2eb] p-3.5">
+                <Label className="mb-1 block text-[#a0522d] tracking-wide text-xs uppercase">这次后悔，可能因为……</Label>
+                <p className="text-[11px] text-[#a09080] mb-2.5 leading-relaxed">不是责怪自己，只是看清楚发生了什么，下次会更清晰。可以多选。</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {REGRET_REASONS.map((reason) => {
+                    const active = regretReasons.includes(reason);
+                    return (
+                      <Badge
+                        key={reason}
+                        className={cn(
+                          'cursor-pointer rounded-lg text-xs transition-all',
+                          active
+                            ? 'bg-[#a0522d] text-[#faf2eb] border-[#a0522d]'
+                            : 'bg-card text-[#7a6245] border-[#d4cbb8]'
+                        )}
+                        onClick={() => toggleRegretReason(reason)}
+                      >
+                        {reason}
+                      </Badge>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
             <div>
               <Label className="mb-2 block text-muted-foreground tracking-wide text-xs uppercase">经验总结</Label>
               <Textarea placeholder="记录你的反思和教训..." value={reviewText} onChange={(e) => setReviewText(e.target.value)} rows={4} />
@@ -481,6 +522,18 @@ export default function DecisionDetail() {
                 {SATISFACTION_MAP[decision.satisfaction]?.label}
               </span>
             </div>
+            {decision.satisfaction === 'regret' && parseRegretReasons(decision.regretReasons).length > 0 && (
+              <div className="mb-3 rounded-xl border border-[#e5d5c8] bg-[#faf2eb] p-3">
+                <p className="text-[11px] text-[#a0522d] tracking-wide uppercase mb-2">后悔原因</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {parseRegretReasons(decision.regretReasons).map((reason) => (
+                    <Badge key={reason} className="rounded-lg text-xs bg-[#f3e2d4] text-[#7a4a2d] border-[#e5d5c8]">
+                      {reason}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
             {decision.review && <p className="text-sm text-muted-foregroundleading-relaxed">{decision.review}</p>}
             <p className="text-xs text-muted-foreground mt-3 pt-3 border-t border-border/50">
               复盘于 {new Date(decision.reviewedAt).toLocaleString('zh-CN')}
@@ -516,6 +569,31 @@ export default function DecisionDetail() {
                 ))}
               </div>
             </div>
+            {satisfaction === 'regret' && (
+              <div className="rounded-xl border border-[#e5d5c8] bg-[#faf2eb] p-3.5">
+                <Label className="mb-1 block text-[#a0522d] tracking-wide text-xs uppercase">这次后悔，可能因为……</Label>
+                <p className="text-[11px] text-[#a09080] mb-2.5 leading-relaxed">不是责怪自己，只是看清楚发生了什么，下次会更清晰。可以多选。</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {REGRET_REASONS.map((reason) => {
+                    const active = regretReasons.includes(reason);
+                    return (
+                      <Badge
+                        key={reason}
+                        className={cn(
+                          'cursor-pointer rounded-lg text-xs transition-all',
+                          active
+                            ? 'bg-[#a0522d] text-[#faf2eb] border-[#a0522d]'
+                            : 'bg-card text-[#7a6245] border-[#d4cbb8]'
+                        )}
+                        onClick={() => toggleRegretReason(reason)}
+                      >
+                        {reason}
+                      </Badge>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
             <div>
               <Label className="mb-2 block text-muted-foreground tracking-wide text-xs uppercase">经验总结</Label>
               <Textarea placeholder="记录你的反思和教训..." value={reviewText} onChange={(e) => setReviewText(e.target.value)} rows={4} />
