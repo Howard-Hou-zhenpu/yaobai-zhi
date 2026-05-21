@@ -12,6 +12,7 @@ import { getReviewGuide, getCompletionFeedback } from '../lib/prompts';
 import Timeline from '../components/Timeline';
 import ShareCard from '../components/ShareCard';
 import ReviewTimeModal from '../components/ReviewTimeModal';
+import ReviewCompletedModal from '../components/ReviewCompletedModal';
 import AIInsights from '../components/AIInsights';
 import NextActionHint from '../components/NextActionHint';
 import { cn } from '../lib/utils';
@@ -57,6 +58,8 @@ export default function DecisionDetail() {
   const [showShareCard, setShowShareCard] = useState(false);
   const [showReviewTimeModal, setShowReviewTimeModal] = useState(false);
   const [reviewTimeMode, setReviewTimeMode] = useState('complete');
+  const [showCompletedModal, setShowCompletedModal] = useState(false);
+  const [savingPrinciple, setSavingPrinciple] = useState(false);
   const [principleText, setPrincipleText] = useState('');
   const [regretReasons, setRegretReasons] = useState([]);
   const [reviewGuide] = useState(getReviewGuide);
@@ -148,6 +151,7 @@ export default function DecisionDetail() {
   const handleReview = () => {
     if (!satisfaction) { toast.error('请选择满意度'); return; }
     const finalRegret = satisfaction === 'regret' ? regretReasons.join(',') : '';
+    const wasEditing = editing;
     updateDecision.mutate(
       {
         id,
@@ -164,9 +168,30 @@ export default function DecisionDetail() {
         onSuccess: () => {
           toast.success('复盘已保存', { description: getCompletionFeedback() });
           setEditing(false);
+          if (!wasEditing) setShowCompletedModal(true);
         },
       }
     );
+  };
+
+  const handleSavePrincipleFromModal = (text) => {
+    setSavingPrinciple(true);
+    updateDecision.mutate(
+      { id, updates: { decisionPrinciple: text } },
+      {
+        onSuccess: () => {
+          toast.success('已保存为个人原则');
+          setPrincipleText(text);
+          setSavingPrinciple(false);
+        },
+        onError: () => setSavingPrinciple(false),
+      }
+    );
+  };
+
+  const handleShareFromModal = () => {
+    setShowCompletedModal(false);
+    setShowShareCard(true);
   };
 
   const startEditReview = () => {
@@ -642,6 +667,17 @@ export default function DecisionDetail() {
           category={decision.category}
           onConfirm={handleReviewTimeConfirm}
           onClose={() => setShowReviewTimeModal(false)}
+        />
+      )}
+      {showCompletedModal && (
+        <ReviewCompletedModal
+          hasPrinciple={!!(decision.decisionPrinciple || '').trim()}
+          isFavorite={!!decision.isFavorite}
+          saving={savingPrinciple}
+          onSavePrinciple={handleSavePrincipleFromModal}
+          onToggleFavorite={toggleFavorite}
+          onShare={handleShareFromModal}
+          onClose={() => setShowCompletedModal(false)}
         />
       )}
     </div>
