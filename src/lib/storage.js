@@ -17,9 +17,11 @@ function transformDecision(d) {
   return {
     ...d,
     createdAt: d.created_at,
+    updatedAt: d.updated_at || null,
     completedAt: d.completed_at,
     reviewedAt: d.reviewed_at,
     reviewDueAt: d.review_due_at || null,
+    snoozeUntil: d.snooze_until || null,
     selectedOption: d.selected_option,
     hesitation: d.hesitation || 0,
     confidence: d.confidence || 0,
@@ -143,6 +145,7 @@ export async function updateDecision(id, updates) {
   if (updates.isFavorite !== undefined) dbUpdates.is_favorite = updates.isFavorite;
   if (updates.decisionPrinciple !== undefined) dbUpdates.decision_principle = updates.decisionPrinciple;
   if (updates.regretReasons !== undefined) dbUpdates.regret_reasons = updates.regretReasons;
+  if (updates.snoozeUntil !== undefined) dbUpdates.snooze_until = updates.snoozeUntil;
   if (updates.completedAt) dbUpdates.completed_at = updates.completedAt;
   if (updates.reviewedAt) dbUpdates.reviewed_at = updates.reviewedAt;
   if (updates.reviewDueAt !== undefined) dbUpdates.review_due_at = updates.reviewDueAt;

@@ -1,6 +1,6 @@
-import { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Search, ChevronDown, ChevronUp, Star, Lightbulb, CalendarClock } from 'lucide-react';
+import { useState, useMemo, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Search, ChevronDown, ChevronUp, Star, Lightbulb, CalendarClock, Hourglass } from 'lucide-react';
 import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -14,6 +14,7 @@ import DecisionReport from '../components/DecisionReport';
 import DecisionCard from '../components/DecisionCard';
 import RegretAnalysis from '../components/RegretAnalysis';
 import { CATEGORIES, SATISFACTION_MAP } from '../lib/constants';
+import { isStale } from '../lib/staleness';
 import { cn } from '../lib/utils';
 
 const STATUS_FILTERS = [
@@ -21,6 +22,7 @@ const STATUS_FILTERS = [
   { value: 'active', label: '进行中' },
   { value: 'completed', label: '已完成' },
   { value: 'reviewed', label: '已复盘' },
+  { value: 'archived', label: '已过期' },
 ];
 
 const TIME_FILTERS = [
@@ -32,6 +34,7 @@ const TIME_FILTERS = [
 
 export default function Review() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { data: decisions = [] } = useDecisions();
   const [tab, setTab] = useState('overview');
   const [search, setSearch] = useState('');
@@ -40,7 +43,17 @@ export default function Review() {
   const [timeFilter, setTimeFilter] = useState('');
   const [favoriteOnly, setFavoriteOnly] = useState(false);
   const [dueOnly, setDueOnly] = useState(false);
+  const [staleOnly, setStaleOnly] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+
+  useEffect(() => {
+    if (searchParams.get('filter') === 'stale') {
+      setTab('records');
+      setStatusFilter('active');
+      setStaleOnly(true);
+      setSearchParams({}, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   const allCategories = useMemo(() => {
     const preset = CATEGORIES.map((c) => c.value);
@@ -50,9 +63,13 @@ export default function Review() {
 
   const filtered = decisions.filter((d) => {
     const matchSearch = !search || d.title.includes(search) || d.description?.includes(search) || d.category.includes(search);
+    // 默认隐藏 archived，除非显式筛选 archived 或选了"全部"+过期 chip
+    const showArchived = statusFilter === 'archived';
+    if (d.status === 'archived' && !showArchived) return false;
     const matchStatus = !statusFilter || d.status === statusFilter;
     const matchCategory = !categoryFilter || d.category === categoryFilter;
     const matchFavorite = !favoriteOnly || d.isFavorite;
+    const matchStale = !staleOnly || isStale(d);
     let matchDue = true;
     if (dueOnly) {
       const todayEnd = new Date();
@@ -69,7 +86,7 @@ export default function Review() {
       cutoff.setDate(cutoff.getDate() - days);
       matchTime = new Date(d.createdAt) >= cutoff;
     }
-    return matchSearch && matchStatus && matchCategory && matchFavorite && matchDue && matchTime;
+    return matchSearch && matchStatus && matchCategory && matchFavorite && matchDue && matchStale && matchTime;
   });
 
   const sortedFiltered = useMemo(() => {
@@ -211,6 +228,12 @@ export default function Review() {
               onClick={() => setDueOnly(!dueOnly)}
             >
               <CalendarClock className="w-3 h-3" strokeWidth={1.5} /> 到期复盘
+            </Badge>
+            <Badge
+              className={`cursor-pointer transition-all rounded-full gap-1 shrink-0 ${staleOnly ? 'bg-[#fbf6e6] text-[#a8893a] border-[#e6d49a]' : 'bg-[#e8dfd0] text-[#6b5d4f] border-[#d4cbb8]'}`}
+              onClick={() => setStaleOnly(!staleOnly)}
+            >
+              <Hourglass className="w-3 h-3" strokeWidth={1.5} /> 长期未更新
             </Badge>
             <Button
               variant="ghost"

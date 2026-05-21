@@ -12,7 +12,11 @@ export const STATUS_MAP = {
   active: { label: '进行中', color: 'bg-[#e8ddd0] text-[#8b7355]' },
   completed: { label: '已完成', color: 'bg-[#dde5d4] text-[#5a6b4f]' },
   reviewed: { label: '已复盘', color: 'bg-[#ddd8e0] text-[#6b5570]' },
+  archived: { label: '已过期', color: 'bg-[#e0d8d0] text-[#a09080]' },
 };
+
+export const STALE_THRESHOLD_DAYS = 14;
+export const SNOOZE_DAYS = 7;
 
 export const SATISFACTION_MAP = {
   satisfied: { label: '满意', emoji: '✦', color: 'text-[#5a6b4f]' },

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Scale, LogOut } from 'lucide-react';
+import { Plus, Scale, LogOut, Hourglass } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { useDecisions } from '../hooks/useDecisions';
 import { supabase } from '../lib/supabase';
@@ -10,11 +10,14 @@ import TodayTodos from '../components/TodayTodos';
 import DecisionCard from '../components/DecisionCard';
 import QuickCaptureInput from '../components/QuickCaptureInput';
 import ModeSelectModal from '../components/ModeSelectModal';
+import { countStale } from '../lib/staleness';
 
 export default function Index() {
   const navigate = useNavigate();
   const { data: decisions = [] } = useDecisions();
-  const recentDecisions = decisions.slice(0, 5);
+  const visibleDecisions = decisions.filter((d) => d.status !== 'archived');
+  const recentDecisions = visibleDecisions.slice(0, 5);
+  const staleCount = countStale(decisions);
   const dailyPrompt = getDailyPrompt();
   const [showModeModal, setShowModeModal] = useState(false);
 
@@ -27,6 +30,10 @@ export default function Index() {
     setShowModeModal(false);
     if (mode === 'active') navigate('/create');
     else if (mode === 'backfill') navigate('/backfill');
+  };
+
+  const goToStale = () => {
+    navigate('/review?filter=stale');
   };
 
   return (
@@ -63,6 +70,21 @@ export default function Index() {
       <div className="mt-6">
         <TodayTodos decisions={decisions} />
       </div>
+
+      {staleCount > 0 && (
+        <button
+          onClick={goToStale}
+          className="mt-4 w-full flex items-center gap-3 px-4 py-3 rounded-2xl border border-[#e6d49a] bg-[#fbf6e6] text-left hover:bg-[#f7eed3] transition-all"
+        >
+          <Hourglass className="w-4 h-4 text-[#a8893a] shrink-0" strokeWidth={1.5} />
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-[#7a6245]">
+              {staleCount} 条决策放了一段时间了
+            </p>
+            <p className="text-[11px] text-[#a09080] mt-0.5">点这里整理一下</p>
+          </div>
+        </button>
+      )}
 
       {recentDecisions.length > 0 && (
         <div className="mt-8">

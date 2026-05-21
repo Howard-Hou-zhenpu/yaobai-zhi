@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Trash2, CheckCircle2, AlertCircle, LayoutList, Columns2, Pencil, Square, CheckSquare, Star, MessageSquarePlus, RotateCcw, ChevronDown, ChevronUp, Share2, CalendarClock, Lightbulb, Plus } from 'lucide-react';
+import { ArrowLeft, Trash2, CheckCircle2, AlertCircle, LayoutList, Columns2, Pencil, Square, CheckSquare, Star, MessageSquarePlus, RotateCcw, ChevronDown, ChevronUp, Share2, CalendarClock, Lightbulb, Plus, Archive } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -15,6 +15,9 @@ import ReviewTimeModal from '../components/ReviewTimeModal';
 import ReviewCompletedModal from '../components/ReviewCompletedModal';
 import AIInsights from '../components/AIInsights';
 import NextActionHint from '../components/NextActionHint';
+import StaleDecisionHint from '../components/StaleDecisionHint';
+import { isStale } from '../lib/staleness';
+import { SNOOZE_DAYS } from '../lib/constants';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
 
@@ -236,6 +239,36 @@ export default function DecisionDetail() {
     );
   };
 
+  const handleStaleContinue = () => {
+    updateDecision.mutate(
+      { id, updates: { snoozeUntil: null } },
+      { onSuccess: () => toast.success('好，继续推进这个决策') }
+    );
+  };
+
+  const handleStaleArchive = () => {
+    updateDecision.mutate(
+      { id, updates: { status: 'archived', snoozeUntil: null } },
+      { onSuccess: () => toast.success('已标记为过期，需要时还能在记录里找到') }
+    );
+  };
+
+  const handleStaleSnooze = () => {
+    const until = new Date();
+    until.setDate(until.getDate() + SNOOZE_DAYS);
+    updateDecision.mutate(
+      { id, updates: { snoozeUntil: until.toISOString() } },
+      { onSuccess: () => toast.success(`好，${SNOOZE_DAYS} 天后再提醒你`) }
+    );
+  };
+
+  const handleUnarchive = () => {
+    updateDecision.mutate(
+      { id, updates: { status: 'active', snoozeUntil: null } },
+      { onSuccess: () => toast.success('已重新启用这个决策') }
+    );
+  };
+
   const renderOptionCard = (option, index, isCompare) => {
     const isSelected = savedSelections.includes(option.name);
     const isSelecting = decision.status === 'active' && selectedOptions.includes(option.name);
@@ -385,6 +418,38 @@ export default function DecisionDetail() {
               onClick={() => navigate(`/decision/${id}/edit`)}
             >
               继续补全
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {isStale(decision) && (
+        <StaleDecisionHint
+          decision={decision}
+          onContinue={handleStaleContinue}
+          onArchive={handleStaleArchive}
+          onSnooze={handleStaleSnooze}
+          busy={updateDecision.isPending}
+        />
+      )}
+
+      {decision.status === 'archived' && (
+        <Card className="mb-4 border-[#d4cbb8] bg-[#f0eadf]">
+          <CardContent className="p-4 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <Archive className="w-4 h-4 text-[#a09080] shrink-0" strokeWidth={1.5} />
+              <p className="text-sm text-[#7a6245] leading-relaxed">
+                已标记为过期。如果想继续推进，可以重新启用。
+              </p>
+            </div>
+            <Button
+              size="sm"
+              variant="outline"
+              className="rounded-xl shrink-0"
+              onClick={handleUnarchive}
+              disabled={updateDecision.isPending}
+            >
+              重新启用
             </Button>
           </CardContent>
         </Card>
