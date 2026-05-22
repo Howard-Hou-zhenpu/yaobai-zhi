@@ -3,445 +3,658 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>摇摆志 · 使用说明</title>
+<title>摇摆志 · 新手指南</title>
 <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body {
-    font-family: "LXGW WenKai", "楷体", "Microsoft YaHei", serif;
-    color: #3d3428;
-    background: #d4cbb8;
-    -webkit-font-smoothing: antialiased;
-  }
-  .stage {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 24px;
-    padding: 24px 0;
-  }
-  .card {
-    width: 750px;
-    height: 1334px;
-    background: #f5f1e8;
-    padding: 80px 64px;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 6px 20px rgba(34,28,22,0.12);
-  }
-  .num {
-    position: absolute;
-    top: 36px;
-    right: 56px;
-    font-size: 22px;
-    color: #a09080;
-    letter-spacing: 0.1em;
-  }
-  .footer {
-    position: absolute;
-    bottom: 36px;
-    left: 64px;
-    right: 64px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 22px;
-    color: #a09080;
-    border-top: 1.5px solid #d4cbb8;
-    padding-top: 18px;
-  }
-  .footer-brand { color: #8b7355; font-weight: 700; }
-  h1 { font-size: 96px; font-weight: 700; letter-spacing: 0.04em; line-height: 1.1; }
-  h2 { font-size: 56px; font-weight: 700; line-height: 1.25; margin-bottom: 28px; }
-  h3 { font-size: 36px; font-weight: 700; line-height: 1.3; color: #3d3428; }
-  p { font-size: 28px; line-height: 1.7; color: #6b5d4f; }
-  .lead { font-size: 32px; line-height: 1.7; color: #6b5d4f; }
-  .accent { color: #8b7355; font-weight: 700; }
-  .green-text { color: #5a6b4f; }
-  .orange-text { color: #a0522d; }
-  .pill {
-    display: inline-block;
-    padding: 6px 18px;
-    border-radius: 12px;
-    font-size: 22px;
-    background: #e8dfd0;
-    color: #8b7355;
-    margin: 0 6px 6px 0;
-  }
-  .pill-green { background: #dde5d4; color: #5a6b4f; }
-  .pill-purple { background: #ddd8e0; color: #6b5570; }
-  .pill-gold { background: #f5efd5; color: #a8893a; }
-  .pill-rose { background: #f3e2d4; color: #a0522d; }
-  .badge-new {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 8px;
-    font-size: 20px;
-    background: #a0522d;
-    color: #faf2eb;
-    margin-left: 12px;
-    vertical-align: middle;
-    letter-spacing: 0.15em;
-  }
-  .block {
-    border-radius: 24px;
-    padding: 30px 32px;
-    margin-bottom: 20px;
-    background: #faf6ef;
-    border: 1.5px solid #e8dfd0;
-  }
-  .block-warm { background: #faf6ef; }
-  .block-cream { background: #ebe7dc; border: none; }
-  .block-mint { background: #ecf2e6; border-color: #cfdac3; }
-  .block-rose { background: #faf2eb; border-color: #e5d5c8; }
-  .block-purple { background: #efebf0; border-color: #d6cdd6; }
-  .block-gold { background: #fbf6e6; border-color: #e6d49a; }
-  .quote {
-    border-left: 6px solid #c9b890;
-    padding: 18px 28px;
-    background: #faf5ea;
-    border-radius: 12px;
-    font-size: 30px;
-    color: #3d3428;
-    line-height: 1.7;
-    font-weight: 600;
-  }
-  .row { display: flex; align-items: center; gap: 18px; margin-bottom: 14px; }
-  .dot {
-    width: 56px; height: 56px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 28px; font-weight: 700; color: #faf6ef;
-    flex-shrink: 0;
-  }
-  .dot-1 { background: #8b7355; }
-  .dot-2 { background: #5a6b4f; }
-  .dot-3 { background: #6b5570; }
-  .step-label { font-size: 30px; font-weight: 700; color: #3d3428; }
-  .step-desc { font-size: 24px; color: #8b7355; margin-top: 4px; }
-  .scale {
-    display: inline-block;
-    padding: 4px 14px;
-    border-radius: 10px;
-    font-size: 22px;
-    background: #f5f1e8;
-    border: 1px solid #d4cbb8;
-    color: #6b5d4f;
-    margin-right: 8px;
-  }
-  .checkbox { color: #5a6b4f; font-weight: 700; margin-right: 8px; font-size: 30px; }
-  .cross { color: #a0522d; font-weight: 700; margin-right: 8px; font-size: 30px; }
-  .wave { color: #8b7355; font-weight: 700; margin-right: 8px; font-size: 30px; }
-  .center { text-align: center; }
-  .grow { flex: 1; }
-  .mb-md { margin-bottom: 28px; }
-  .mb-sm { margin-bottom: 16px; }
-  .mb-lg { margin-bottom: 40px; }
-  .small { font-size: 22px; color: #a09080; line-height: 1.6; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+  font-family: "LXGW WenKai", "楷体", "Microsoft YaHei", serif;
+  color: #3d3428;
+  background: #ebe7dc;
+  -webkit-font-smoothing: antialiased;
+}
 
-  /* Card 1 - hero */
-  .hero {
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    background: linear-gradient(155deg, #faf6ef 0%, #f5f1e8 50%, #ebe7dc 100%);
-  }
-  .hero-mark {
-    width: 180px; height: 180px;
-    border-radius: 60px;
-    background: #f0e6c8;
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 50px;
-    box-shadow: 0 6px 24px rgba(139,115,85,0.18);
-  }
-  .hero-tag {
-    margin-top: 56px;
-    font-size: 32px;
-    color: #8b7355;
-    letter-spacing: 0.1em;
-  }
-  .hero-sub {
-    margin-top: 28px;
-    font-size: 28px;
-    color: #a09080;
-    letter-spacing: 0.05em;
-  }
+.hero {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 72px 24px 48px;
+  text-align: center;
+}
+.hero-logo {
+  width: 72px; height: 72px;
+  margin: 0 auto 20px;
+  border-radius: 18px;
+  overflow: hidden;
+}
+.hero-logo svg { width: 100%; height: 100%; display: block; }
+.hero h1 { font-size: 42px; font-weight: 700; letter-spacing: 0.03em; margin-bottom: 12px; }
+.hero-sub { font-size: 18px; color: #8b7355; margin-bottom: 20px; }
+.hero-desc { font-size: 16px; line-height: 1.8; color: #6b5d4f; max-width: 560px; margin: 0 auto; }
 
-  /* hint print preview helper */
-  @media print {
-    .card { page-break-after: always; box-shadow: none; }
-    .stage { gap: 0; padding: 0; background: #fff; }
-    body, html { background: #fff; }
-  }
+.content { max-width: 720px; margin: 0 auto; padding: 0 24px 60px; }
+
+/* Section */
+.section {
+  background: #faf6ef;
+  border: 1px solid #e0d8c8;
+  border-radius: 16px;
+  padding: 40px 32px;
+  margin-bottom: 28px;
+}
+.section-num { font-size: 13px; color: #b5a98f; letter-spacing: 0.1em; margin-bottom: 10px; }
+.section-title { font-size: 26px; font-weight: 700; line-height: 1.35; margin-bottom: 10px; }
+.section-subtitle { font-size: 16px; line-height: 1.6; color: #8b7355; margin-bottom: 24px; }
+.section-text { font-size: 15px; line-height: 1.8; color: #6b5d4f; margin-bottom: 24px; }
+.accent { color: #8b7355; font-weight: 700; }
+
+/* AI 强调模块 */
+.section.ai-highlight {
+  border-color: #d4cbb8;
+  box-shadow: 0 4px 16px rgba(139, 115, 85, 0.06);
+}
+.ai-tag {
+  display: inline-block;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #f5efe0;
+  color: #8b7355;
+  border: 1px solid #e0d8c8;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+/* 手机模拟框 */
+.phone-frame {
+  background: #f5f1e8;
+  border: 1px solid #e0d8c8;
+  border-radius: 24px;
+  padding: 16px;
+  max-width: 360px;
+  margin: 0 auto;
+  box-shadow: 0 2px 12px rgba(60, 50, 40, 0.05);
+}
+.phone-frame-inner {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #f0ebe0;
+}
+
+/* App 内部 UI 组件 */
+.app-header {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid #f0ebe0;
+}
+.app-header-icon {
+  width: 24px; height: 24px;
+  color: #8b7355;
+}
+.app-header-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #3d3428;
+}
+.app-body { padding: 16px; }
+
+/* 统计卡 */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.stat-item {
+  background: #faf6ef;
+  border: 1px solid #e8dfd0;
+  border-radius: 12px;
+  padding: 10px 8px;
+  text-align: center;
+}
+.stat-num { font-size: 20px; font-weight: 700; color: #8b7355; }
+.stat-label { font-size: 11px; color: #a09080; margin-top: 2px; }
+
+/* 输入框 */
+.app-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #d4cbb8;
+  border-radius: 10px;
+  font-size: 13px;
+  color: #a09080;
+  background: #faf6ef;
+  margin-bottom: 8px;
+}
+.app-input-hint {
+  font-size: 11px;
+  color: #a09080;
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* 决策卡片 */
+.decision-card {
+  background: white;
+  border: 1px solid #e8dfd0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+}
+.dc-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.dc-title { font-size: 14px; font-weight: 600; color: #3d3428; }
+.dc-badge {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 8px;
+}
+.badge-active { background: #e8ddd0; color: #8b7355; }
+.badge-completed { background: #dde5d4; color: #5a6b4f; }
+.badge-reviewed { background: #ddd8e0; color: #6b5570; }
+.dc-meta { font-size: 11px; color: #a09080; margin-top: 4px; }
+.dc-hint {
+  margin-top: 6px;
+  font-size: 11px;
+  color: #8b7355;
+  background: #faf6ef;
+  border: 1px solid #e8dfd0;
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+
+/* 选项卡 */
+.option-card {
+  background: white;
+  border: 1px solid #e8dfd0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+}
+.option-card.selected {
+  border: 2px solid #8b7355;
+  background: #faf6ef;
+}
+.option-name { font-size: 14px; font-weight: 600; color: #3d3428; margin-bottom: 6px; }
+.option-detail { font-size: 12px; color: #6b5d4f; line-height: 1.5; }
+.option-detail strong { font-weight: 600; }
+.pro { color: #5a6b4f; }
+.con { color: #a0522d; }
+.risk { color: #8b7355; }
+
+/* 信心滑杆 */
+.confidence-box {
+  background: #faf6ef;
+  border: 1px solid #e8dfd0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-top: 10px;
+}
+.confidence-label { font-size: 12px; color: #6b5d4f; margin-bottom: 8px; }
+.confidence-track { height: 5px; background: #e8dfd0; border-radius: 3px; position: relative; }
+.confidence-fill { height: 100%; background: #8b7355; border-radius: 3px; width: 80%; }
+.confidence-val { text-align: center; font-size: 13px; font-weight: 700; color: #8b7355; margin-top: 6px; }
+
+/* AI 分析结果 */
+.ai-result {
+  background: #faf6ef;
+  border: 1px solid #d4cbb8;
+  border-radius: 12px;
+  padding: 14px;
+}
+.ai-result-header {
+  display: flex; align-items: center; gap: 6px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e8dfd0;
+}
+.ai-result-title { font-size: 13px; font-weight: 700; color: #3d3428; }
+.ai-result-meta { font-size: 11px; color: #a09080; }
+.ai-section { margin-bottom: 10px; }
+.ai-section:last-child { margin-bottom: 0; }
+.ai-section-label { font-size: 12px; font-weight: 600; color: #8b7355; margin-bottom: 4px; }
+.ai-section-content { font-size: 12px; color: #6b5d4f; line-height: 1.6; }
+.ai-bullet { display: flex; align-items: flex-start; gap: 6px; margin-bottom: 3px; }
+.ai-bullet::before { content: "·"; color: #8b7355; font-weight: 700; flex-shrink: 0; }
+.ai-disclaimer {
+  margin-top: 10px;
+  padding: 8px 10px;
+  background: #f7f3e9;
+  border-radius: 8px;
+  font-size: 11px;
+  color: #a09080;
+  line-height: 1.5;
+}
+
+/* 复盘 */
+.satisfaction-row { display: flex; gap: 8px; margin-bottom: 10px; }
+.sat-chip {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  border: 1px solid;
+  background: white;
+}
+.sat-satisfied { color: #5a6b4f; border-color: #cfdac3; }
+.sat-satisfied.active { background: #dde5d4; }
+.sat-neutral { color: #8b7c4f; border-color: #e2d6a8; }
+.sat-regret { color: #a0522d; border-color: #e5d5c8; }
+.principle-card {
+  background: #f5efe0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-top: 8px;
+  font-size: 13px;
+  color: #6b5d4f;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* 趋势图 */
+.trend-bars { display: flex; gap: 3px; height: 36px; align-items: flex-end; margin: 8px 0; }
+.trend-bar { flex: 1; border-radius: 3px 3px 0 0; }
+
+/* 提醒 */
+.reminder-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 14px;
+  background: white;
+  border: 1px solid #e8dfd0;
+  border-radius: 12px;
+  margin-bottom: 8px;
+}
+.reminder-icon { font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+.reminder-text { font-size: 12px; color: #6b5d4f; line-height: 1.5; }
+.reminder-title { font-size: 12px; font-weight: 600; color: #8b7355; margin-bottom: 2px; }
+
+/* 提示框 */
+.hint-box {
+  background: #f7f3e9;
+  border: 1px solid #e0d8c8;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #6b5d4f;
+  line-height: 1.7;
+}
+
+/* CTA */
+.cta {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 24px 72px;
+  text-align: center;
+}
+.cta-text { font-size: 22px; color: #3d3428; margin-bottom: 20px; font-weight: 500; }
+.cta-btn {
+  display: inline-block;
+  padding: 12px 28px;
+  background: #8b7355;
+  color: #faf6ef;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+.cta-btn:hover { background: #6b5d4f; }
+
+/* 底部信息 */
+.footer-section {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 24px 32px;
+}
+.footer-card {
+  background: #f7f3e9;
+  border: 1px solid #e0d8c8;
+  border-radius: 16px;
+  padding: 32px;
+}
+.footer-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+.footer-card p { font-size: 14px; color: #6b5d4f; line-height: 1.8; margin-bottom: 12px; }
+.footer-card p:last-child { margin-bottom: 0; }
+
+@media (max-width: 480px) {
+  .hero { padding: 56px 20px 36px; }
+  .hero h1 { font-size: 34px; }
+  .hero-sub { font-size: 16px; }
+  .section { padding: 28px 20px; }
+  .section-title { font-size: 22px; }
+  .phone-frame { max-width: 100%; }
+}
 </style>
 </head>
 <body>
-  <div class="stage">
 
-    <!-- ============== Card 1 — 封面 ============== -->
-    <section class="card hero">
-      <div class="hero-mark">
-        <!-- 简化的天平/钩子图标 -->
-        <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#8b7355" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M16 16.01V20a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2v-3.99"/>
-          <path d="M12 2v14"/>
-          <path d="M5 8l7-6 7 6"/>
-          <path d="M3 14h6l-3 6-3-6z"/>
-          <path d="M15 14h6l-3 6-3-6z"/>
-        </svg>
-      </div>
-      <h1>摇摆志</h1>
-      <div class="hero-tag">记录每一次选择，成就更好的决策</div>
-      <div class="hero-sub">决策日记 · AI 决策教练</div>
-      <div style="position: absolute; bottom: 80px; font-size: 24px; color: #a09080;">
-        2026 · V2 使用说明
-      </div>
-    </section>
-
-    <!-- ============== Card 2 — 痛点 ============== -->
-    <section class="card">
-      <div class="num">01 / 08</div>
-      <h2>你是不是<br>也这样？</h2>
-      <p class="lead mb-lg">
-        重要选择前反复纠结，事后却记不清当初为什么这么选；同一类的错误不断重复；复盘时想到的道理过几天就忘了。
-      </p>
-
-      <div class="block block-warm">
-        <h3 class="mb-sm">摇摆志想做的事</h3>
-        <p>把每一次选择变成一份<span class="accent">可复盘、可学习</span>的记录，让你看见自己的决策模式，慢慢成为更稳的自己。</p>
-      </div>
-
-      <div class="block block-mint">
-        <h3 class="green-text mb-sm">不替你做决定</h3>
-        <p>这里没有"标准答案"。摇摆志只帮你把过程记下来，把经验沉淀下来。</p>
-      </div>
-
-      <div class="footer">
-        <span>痛点</span>
-        <span class="footer-brand">摇摆志</span>
-      </div>
-    </section>
-
-    <!-- ============== Card 3 — 三步上手 ============== -->
-    <section class="card">
-      <div class="num">02 / 08</div>
-      <h2>三步上手</h2>
-      <p class="lead mb-lg">从一次选择到一份经验，跟着走就行。</p>
-
-      <div class="block">
-        <div class="row">
-          <div class="dot dot-1">1</div>
-          <div>
-            <div class="step-label">记录决策</div>
-            <div class="step-desc">写下标题、背景、几个候选选项</div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="dot dot-2">2</div>
-          <div>
-            <div class="step-label">做出选择</div>
-            <div class="step-desc">选一个，标一下信心值</div>
-          </div>
-        </div>
-        <div class="row" style="margin-bottom: 0;">
-          <div class="dot dot-3">3</div>
-          <div>
-            <div class="step-label">复盘沉淀</div>
-            <div class="step-desc">满意 / 一般 / 后悔，写一条「给未来自己的提醒」</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="block block-gold">
-        <p style="font-size: 26px; color: #7a6245;">
-          没时间细写？<span class="accent">一句话先记下来</span>，过两天回来再补也行。
-        </p>
-      </div>
-
-      <div class="footer">
-        <span>上手</span>
-        <span class="footer-brand">摇摆志</span>
-      </div>
-    </section>
-
-    <!-- ============== Card 4 — 决策记录方式 ============== -->
-    <section class="card">
-      <div class="num">03 / 08</div>
-      <h2>四种方式<br>抓住一个决策</h2>
-
-      <div class="block">
-        <h3 class="mb-sm"><span class="pill">主动</span>正面对的选择</h3>
-        <p>面前正纠结的事，正式开一条决策慢慢理。</p>
-      </div>
-
-      <div class="block">
-        <h3 class="mb-sm"><span class="pill pill-purple">回溯</span>已经做过的决定</h3>
-        <p>事后想复盘的过去选择，补录进来一样能沉淀经验。</p>
-      </div>
-
-      <div class="block">
-        <h3 class="mb-sm"><span class="pill pill-gold">快速捕捉</span>一句话</h3>
-        <p>首页有个输入框，先写一句话占个位，回头再补全。</p>
-      </div>
-
-      <div class="block block-mint">
-        <h3 class="green-text mb-sm">⚡ 快速 vs 🔬 深度</h3>
-        <p>琐碎选择走<span class="accent">快速决策</span>；重要的事走<span class="accent">深度决策</span>，每个选项可以单独写优点 / 缺点 / 风险 / 最坏情况 / 应对方案。</p>
-      </div>
-
-      <div class="footer">
-        <span>记录</span>
-        <span class="footer-brand">摇摆志</span>
-      </div>
-    </section>
-
-    <!-- ============== Card 5 — 复盘 + 沉淀原则 ============== -->
-    <section class="card">
-      <div class="num">04 / 08</div>
-      <h2>复盘 ＋<br>沉淀你的原则</h2>
-      <p class="lead mb-md">事后回头看，比当下纠结更有价值。</p>
-
-      <div class="block">
-        <h3 class="mb-sm">三档满意度</h3>
-        <p>
-          <span class="scale"><span class="checkbox">✦</span>满意</span>
-          <span class="scale"><span class="wave">◇</span>一般</span>
-          <span class="scale"><span class="cross">⌒</span>后悔</span>
-        </p>
-        <p style="margin-top: 14px;">选了「后悔」，可以勾选具体原因（信息不足 / 情绪驱动 / 跟随他人……），下次会更清晰。</p>
-      </div>
-
-      <div class="block block-gold">
-        <h3 class="mb-sm">写给未来自己的提醒</h3>
-        <p>每次复盘可以留一句话——这条话会自动沉淀成<span class="accent">你的决策原则</span>，集中收在「我的原则」页里。</p>
-        <div class="quote" style="margin-top: 18px;">
-          "情绪很强的时候，不做长期决定。"
-        </div>
-      </div>
-
-      <div class="footer">
-        <span>复盘</span>
-        <span class="footer-brand">摇摆志</span>
-      </div>
-    </section>
-
-    <!-- ============== Card 6 — AI 决策教练 ============== -->
-    <section class="card">
-      <div class="num">05 / 08</div>
-      <h2>AI 决策教练 <span class="badge-new">核心</span></h2>
-      <p class="lead mb-md">不替你拍板，只帮你把问题想清楚。</p>
-
-      <div class="block block-warm">
-        <h3 class="mb-sm">① 各选项 AI 分析</h3>
-        <p>创建决策时，一键给每个选项生成优点 / 缺点 / 风险的提示。</p>
-      </div>
-
-      <div class="block block-purple">
-        <h3 class="mb-sm">② AI 反思建议</h3>
-        <p>复盘时让 AI 反过来追问你 3-5 个具体问题，引导更深的自省。</p>
-      </div>
-
-      <div class="block block-mint">
-        <h3 class="mb-sm">③ 结合我的记录分析 <span class="badge-new">NEW</span></h3>
-        <p>AI 会读你过去的复盘和原则，给当前选项做<span class="accent">个性化分析</span>——哪些选项符合你过去满意的模式，哪些可能重复你后悔过的坑。</p>
-      </div>
-
-      <div class="block block-cream" style="margin-top: 12px;">
-        <p class="small">每月免费 3 次。可在「设置」填入自己的 DeepSeek / Kimi API Key 无限使用。</p>
-      </div>
-
-      <div class="footer">
-        <span>AI 教练</span>
-        <span class="footer-brand">摇摆志</span>
-      </div>
-    </section>
-
-    <!-- ============== Card 7 — 复盘中心 / 决策画像 ============== -->
-    <section class="card">
-      <div class="num">06 / 08</div>
-      <h2>看见自己的<br>决策画像</h2>
-      <p class="lead mb-md">复盘中心，把你所有选择串成一面镜子。</p>
-
-      <div class="block">
-        <h3 class="mb-sm">📊 趋势与分布</h3>
-        <p>满意度变化、纠结度起伏、关键词云、各分类决策表现。</p>
-      </div>
-
-      <div class="block block-rose">
-        <h3 class="mb-sm orange-text">🌀 后悔分析</h3>
-        <p>哪些原因最常导致你后悔？信息不足？情绪驱动？数据告诉你。</p>
-      </div>
-
-      <div class="block block-purple">
-        <h3 class="mb-sm">🪞 决策性格报告</h3>
-        <p>AI 基于你所有数据，生成一份「谨慎权衡型 / 机会探索型……」的人格画像。</p>
-      </div>
-
-      <div class="block block-gold">
-        <h3 class="mb-sm">💡 我的原则</h3>
-        <p>所有沉淀过的提醒一处汇总，下次开新决策前，先翻翻它。</p>
-      </div>
-
-      <div class="footer">
-        <span>画像</span>
-        <span class="footer-brand">摇摆志</span>
-      </div>
-    </section>
-
-    <!-- ============== Card 8 — 智能提醒 + 匿名分享 ============== -->
-    <section class="card">
-      <div class="num">07 / 08</div>
-      <h2>不让选择悬空<br>不让原则蒙尘</h2>
-
-      <div class="block block-mint">
-        <h3 class="green-text mb-sm">⏰ 到期复盘</h3>
-        <p>完成一个决策时设定复盘时间。到点了首页温柔提醒你回来看看结果。</p>
-      </div>
-
-      <div class="block block-gold">
-        <h3 class="mb-sm">⏳ 长期未更新</h3>
-        <p>进行中超过 14 天没动？提示你处理一下：<span class="pill">继续推进</span><span class="pill">标过期</span><span class="pill">7 天后再提醒</span></p>
-      </div>
-
-      <div class="block block-purple">
-        <h3 class="mb-sm">🌱 匿名洞察分享 <span class="badge-new">NEW</span></h3>
-        <p>把一条复盘做成卡片发朋友圈 / 小红书。担心暴露隐私？切到<span class="accent">匿名洞察模式</span>——只展示分类、满意度和你沉淀的原则，标题/背景/选项全部隐藏。</p>
-      </div>
-
-      <div class="footer">
-        <span>提醒 · 分享</span>
-        <span class="footer-brand">摇摆志</span>
-      </div>
-    </section>
-
-    <!-- ============== Card 9 — 隐私 + 结尾 CTA ============== -->
-    <section class="card hero" style="background: linear-gradient(165deg, #ebe7dc 0%, #f5f1e8 60%, #faf6ef 100%);">
-      <div class="num">08 / 08</div>
-      <h2 style="text-align: center;">与其纠结<br>不如记下来</h2>
-
-      <div style="margin: 20px 0 30px 0; width: 100%;">
-        <div class="block block-cream center" style="margin-bottom: 16px;">
-          <p style="color: #6b5d4f;">🔒 数据存在你自己的账号下，可随时导出</p>
-        </div>
-        <div class="block block-cream center" style="margin-bottom: 16px;">
-          <p style="color: #6b5d4f;">🔑 API Key 只存本地，不上传服务器</p>
-        </div>
-        <div class="block block-cream center">
-          <p style="color: #6b5d4f;">🙈 分享时一键脱敏敏感信息</p>
-        </div>
-      </div>
-
-      <div style="margin-top: 20px; text-align: center;">
-        <p class="lead" style="font-size: 30px; color: #3d3428;">摇摆志 · 决策日记</p>
-        <p class="small" style="margin-top: 12px; font-size: 24px;">每一次选择，都在塑造下一次更清晰的自己</p>
-      </div>
-
-      <div style="position: absolute; bottom: 80px; left: 0; right: 0; text-align: center;">
-        <p style="font-size: 26px; color: #a09080;">现在就开一条决策吧</p>
-      </div>
-    </section>
-
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+      <rect width="512" height="512" rx="96" fill="#f5f1e8"/>
+      <g transform="translate(256,256)" stroke="#8b7355" stroke-width="14" stroke-linecap="round" fill="none">
+        <line x1="0" y1="-100" x2="0" y2="80"/>
+        <line x1="-110" y1="-80" x2="110" y2="-80"/>
+        <line x1="-110" y1="-80" x2="-110" y2="-30"/>
+        <line x1="110" y1="-80" x2="110" y2="-30"/>
+        <path d="M-140,-30 Q-110,40 -80,-30" stroke-width="12"/>
+        <path d="M80,-30 Q110,40 140,-30" stroke-width="12"/>
+        <circle cx="0" cy="-100" r="10" fill="#8b7355"/>
+        <line x1="-40" y1="80" x2="40" y2="80" stroke-width="16"/>
+      </g>
+    </svg>
   </div>
+  <h1>摇摆志</h1>
+  <p class="hero-sub">决策日记 · AI 决策教练</p>
+  <p class="hero-desc">记录每一次选择，复盘每一次结果，沉淀属于你自己的决策原则。</p>
+</div>
+
+<div class="content">
+
+<!-- 01 摇摆志是什么 -->
+<section class="section">
+  <div class="section-num">01 / 08</div>
+  <h2 class="section-title">把每一次选择，变成可以学习的经验</h2>
+  <p class="section-subtitle">记录选择、复盘结果，再用 AI 帮你看见自己的决策模式。</p>
+  <p class="section-text">摇摆志不替你做决定，只帮你记录过程、复盘结果、沉淀原则。当你积累了足够多的记录，AI 可以结合过去的复盘，帮你分析现在的选择。</p>
+  <div class="phone-frame">
+    <div class="phone-frame-inner">
+      <div class="app-header">
+        <svg class="app-header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="12" y1="3" x2="12" y2="17"/><line x1="5" y1="6" x2="19" y2="6"/><line x1="5" y1="6" x2="5" y2="10"/><line x1="19" y1="6" x2="19" y2="10"/><path d="M3,10 Q5,15 7,10"/><path d="M17,10 Q19,15 21,10"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+        <span class="app-header-title">摇摆志</span>
+      </div>
+      <div class="app-body">
+        <div class="stats-row">
+          <div class="stat-item"><div class="stat-num">12</div><div class="stat-label">总决策</div></div>
+          <div class="stat-item"><div class="stat-num">3</div><div class="stat-label">进行中</div></div>
+          <div class="stat-item"><div class="stat-num">75%</div><div class="stat-label">满意率</div></div>
+        </div>
+        <div class="decision-card">
+          <div class="dc-row"><span class="dc-title">下一段找什么实习</span><span class="dc-badge badge-active">进行中</span></div>
+          <div class="dc-meta">职业发展 · 2 天前</div>
+          <div class="dc-hint">先补充 2 个可选方案</div>
+        </div>
+        <div class="decision-card">
+          <div class="dc-row"><span class="dc-title">要不要换新显示器</span><span class="dc-badge badge-completed">已完成</span></div>
+          <div class="dc-meta">生活消费 · 5 天前 · ✦ 满意</div>
+        </div>
+        <div class="decision-card">
+          <div class="dc-row"><span class="dc-title">要不要继续减脂计划</span><span class="dc-badge badge-reviewed">已复盘</span></div>
+          <div class="dc-meta">健康运动 · 1 周前 · ✧ 后悔</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 先记一句 -->
+<section class="section">
+  <div class="section-num">02 / 08</div>
+  <h2 class="section-title">先记一句，也可以开始</h2>
+  <p class="section-subtitle">没想清楚也没关系，先把纠结留下来。</p>
+  <p class="section-text">分类、选项、描述和复盘时间都可以之后慢慢补全。快速记录不是低配功能，而是一个可以逐步完善的决策草稿。</p>
+  <div class="phone-frame">
+    <div class="phone-frame-inner">
+      <div class="app-body">
+        <div class="app-input">要不要报名这个课程？</div>
+        <div class="app-input-hint">先记一句也可以，之后再慢慢补全分类、选项和思考过程。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 从草稿到完整决策 -->
+<section class="section">
+  <div class="section-num">03 / 08</div>
+  <h2 class="section-title">从草稿到完整决策</h2>
+  <p class="section-subtitle">补全分类、背景、选项和风险，让选择慢慢清晰。</p>
+  <p class="section-text">你可以补充候选选项、优点、缺点、风险、最坏结果和应对方案。重要选择可以使用深度决策。</p>
+  <div class="phone-frame">
+    <div class="phone-frame-inner">
+      <div class="app-body">
+        <div style="font-size: 16px; font-weight: 700; color: #3d3428; margin-bottom: 4px;">下一段找什么实习</div>
+        <div style="font-size: 11px; color: #a09080; margin-bottom: 12px;">职业发展 · 深度决策</div>
+        <div class="option-card">
+          <div class="option-name">选项 A：继续留在现在公司</div>
+          <div class="option-detail">
+            <strong class="pro">优点：</strong>熟悉业务，稳定<br>
+            <strong class="con">缺点：</strong>成长空间有限<br>
+            <strong class="risk">风险：</strong>可能错过新方向窗口期
+          </div>
+        </div>
+        <div class="option-card">
+          <div class="option-name">选项 B：投大厂 AI 产品岗</div>
+          <div class="option-detail">
+            <strong class="pro">优点：</strong>学习新技能，薪资高<br>
+            <strong class="con">缺点：</strong>竞争激烈，不确定性高<br>
+            <strong class="risk">风险：</strong>适应期较长
+          </div>
+        </div>
+        <div class="option-card">
+          <div class="option-name">选项 C：Gap 一段时间想清楚</div>
+          <div class="option-detail">
+            <strong class="pro">优点：</strong>减轻焦虑，深度思考<br>
+            <strong class="con">缺点：</strong>收入中断<br>
+            <strong class="risk">风险：</strong>简历空窗被问
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 AI 先帮你拆开选项 -->
+<section class="section ai-highlight">
+  <span class="ai-tag">AI 决策教练</span>
+  <div class="section-num">04 / 08</div>
+  <h2 class="section-title">AI 先帮你拆开选项</h2>
+  <p class="section-subtitle">在做选择前，先看清每个方案的优点、缺点和风险。</p>
+  <p class="section-text">当你列出几个候选方案后，AI 可以帮你生成各选项分析。它不会直接告诉你选哪个，而是帮助你把信息摊开，减少凭感觉乱选。</p>
+  <div class="phone-frame">
+    <div class="phone-frame-inner">
+      <div class="app-body">
+        <div class="ai-result">
+          <div class="ai-result-header">
+            <span style="color: #8b7355;">✦</span>
+            <span class="ai-result-title">AI 各选项分析</span>
+          </div>
+          <div class="ai-section">
+            <div class="ai-section-label">选项 A：继续留在现在公司</div>
+            <div class="ai-section-content">
+              <div class="ai-bullet">短期稳定性高，适合需要确定性的阶段</div>
+              <div class="ai-bullet">成长天花板可能在 6-12 个月内触及</div>
+              <div class="ai-bullet">风险：如果行业变化快，被动等待可能错过窗口</div>
+            </div>
+          </div>
+          <div class="ai-section">
+            <div class="ai-section-label">选项 B：投大厂 AI 产品岗</div>
+            <div class="ai-section-content">
+              <div class="ai-bullet">长期成长空间大，技能迁移性强</div>
+              <div class="ai-bullet">准备周期 1-2 个月，需要投入精力</div>
+              <div class="ai-bullet">风险：竞争激烈，可能多轮面试后无果</div>
+            </div>
+          </div>
+          <div class="ai-section">
+            <div class="ai-section-label">建议补充思考</div>
+            <div class="ai-section-content">
+              <div class="ai-bullet">你现在最看重的是稳定还是成长？</div>
+              <div class="ai-bullet">如果投了没拿到 offer，最坏结果你能接受吗？</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hint-box">AI 的建议只作为思考辅助，最终决定仍然由你自己做。</div>
+</section>
+
+<!-- 05 AI 结合历史记录分析 -->
+<section class="section ai-highlight">
+  <span class="ai-tag">核心功能 · AI 决策教练</span>
+  <div class="section-num">05 / 08</div>
+  <h2 class="section-title">AI 结合你的记录分析当前选择</h2>
+  <p class="section-subtitle">过去的复盘，不只是历史，也可以成为现在的参考。</p>
+  <p class="section-text">AI 会参考你过去的复盘、后悔原因和个人原则，分析当前几个选项。它会提醒你哪些选择更符合过去满意的模式，哪些可能重复曾经后悔过的坑。</p>
+  <div class="phone-frame">
+    <div class="phone-frame-inner">
+      <div class="app-body">
+        <div class="ai-result">
+          <div class="ai-result-header">
+            <span style="color: #8b7355;">✦</span>
+            <span class="ai-result-title">结合历史记录的分析</span>
+          </div>
+          <div class="ai-result-meta">参考了 8 条过往决策，其中 3 条来自同一分类</div>
+
+          <div class="ai-section" style="margin-top: 12px;">
+            <div class="ai-section-label">过往决策模式</div>
+            <div class="ai-section-content">你在"职业发展"类决策中，选择主动尝试新方向的满意度（80%）明显高于选择维持现状（40%）。但你也有过因准备不足而后悔的经历。</div>
+          </div>
+
+          <div class="ai-section">
+            <div class="ai-section-label">选项 B：投大厂 AI 产品岗</div>
+            <div class="ai-section-content">
+              <div class="ai-bullet" style="color: #5a6b4f;">符合你过去满意的模式：主动尝试、有明确目标</div>
+              <div class="ai-bullet" style="color: #a0522d;">注意：你曾因"准备不充分就行动"后悔过</div>
+            </div>
+          </div>
+
+          <div class="ai-section">
+            <div class="ai-section-label">选项 A：继续留在现在公司</div>
+            <div class="ai-section-content">
+              <div class="ai-bullet" style="color: #a0522d;">你过去选择"维持现状"的满意度偏低</div>
+              <div class="ai-bullet">但如果当前阶段确实需要稳定，也是合理选择</div>
+            </div>
+          </div>
+
+          <div class="ai-section">
+            <div class="ai-section-label">引用的历史提醒</div>
+            <div class="ai-section-content">
+              <div class="principle-card" style="margin: 0;">"想清楚自己要什么再投，不要海投"</div>
+            </div>
+          </div>
+
+          <div class="ai-section">
+            <div class="ai-section-label">温和倾向</div>
+            <div class="ai-section-content">
+              <div class="ai-bullet">如果你看重长期成长 → 选项 B 更符合你过去满意的模式</div>
+              <div class="ai-bullet">如果你当前需要稳定收入 → 选项 A 也合理，但建议设一个重新评估的时间点</div>
+            </div>
+          </div>
+
+          <div class="ai-disclaimer">这只是基于你过往记录的辅助参考，最终决定权在你自己。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hint-box">AI 的建议只作为思考辅助，最终决定仍然由你自己做。</div>
+</section>
+
+<!-- 06 做出选择 -->
+<section class="section">
+  <div class="section-num">06 / 08</div>
+  <h2 class="section-title">做出选择，记录当时的确定感</h2>
+  <p class="section-subtitle">选择一个方案，也记录你当时有多确定。</p>
+  <p class="section-text">信心值没有对错，它只是帮你保留当时的判断状态。事后回头看，当时的信心和最终满意度放在一起，会让你看到自己的判断是否越来越准。</p>
+  <div class="phone-frame">
+    <div class="phone-frame-inner">
+      <div class="app-body">
+        <div style="font-size: 13px; color: #6b5d4f; margin-bottom: 10px;">选择你最终的方案：</div>
+        <div class="option-card">
+          <div class="option-name">选项 A：继续留在现在公司</div>
+        </div>
+        <div class="option-card selected">
+          <div class="option-name">✓ 选项 B：投大厂 AI 产品岗</div>
+        </div>
+        <div class="option-card">
+          <div class="option-name">选项 C：Gap 一段时间想清楚</div>
+        </div>
+        <div class="confidence-box">
+          <div class="confidence-label">你对这个选择有多确定？</div>
+          <div class="confidence-track"><div class="confidence-fill"></div></div>
+          <div class="confidence-val">比较确定（4/5）</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 07 复盘 -->
+<section class="section">
+  <div class="section-num">07 / 08</div>
+  <h2 class="section-title">复盘，沉淀你的个人原则</h2>
+  <p class="section-subtitle">满意、一般、后悔，都会成为下一次选择的参考。</p>
+  <p class="section-text">复盘时可以写一句给未来自己的提醒，它会进入"我的原则"。选择"后悔"时，可以勾选具体原因，让下次做类似选择时更清楚。</p>
+  <div class="phone-frame">
+    <div class="phone-frame-inner">
+      <div class="app-body">
+        <div style="font-size: 13px; color: #6b5d4f; margin-bottom: 10px;">这次选择你满意吗？</div>
+        <div class="satisfaction-row">
+          <span class="sat-chip sat-satisfied active">✦ 满意</span>
+          <span class="sat-chip sat-neutral">◇ 一般</span>
+          <span class="sat-chip sat-regret">✧ 后悔</span>
+        </div>
+        <div style="font-size: 13px; color: #6b5d4f; margin-bottom: 6px; margin-top: 12px;">经验总结</div>
+        <div class="app-input" style="margin-bottom: 12px;">虽然准备周期长，但投的过程本身就是学习</div>
+        <div style="font-size: 13px; color: #6b5d4f; margin-bottom: 6px;">给未来自己的提醒</div>
+        <div class="app-input">想清楚自己要什么再投，不要海投</div>
+        <div class="principle-card">"情绪很强的时候，不做长期决定。"</div>
+        <div style="font-size: 11px; color: #a09080; margin-top: 6px; text-align: center;">↑ 已加入「我的原则」</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 决策画像 -->
+<section class="section">
+  <div class="section-num">08 / 08</div>
+  <h2 class="section-title">看见自己的决策画像</h2>
+  <p class="section-subtitle">记录越多，越能看见自己的决策模式。</p>
+  <p class="section-text">复盘中心会展示满意度趋势、后悔原因、关键词、分类表现和个人原则。这些数据不是评判，只是一面镜子。下次开新决策前，可以先翻翻它。</p>
+  <div class="phone-frame">
+    <div class="phone-frame-inner">
+      <div class="app-body">
+        <div style="font-size: 14px; font-weight: 700; color: #3d3428; margin-bottom: 12px;">复盘中心</div>
+        <div style="font-size: 12px; font-weight: 600; color: #8b7355; margin-bottom: 6px;">满意度趋势</div>
+        <div class="trend-bars">
+          <div class="trend-bar" style="background: #5a6b4f; height: 60%;"></div>
+          <div class="trend-bar" style="background: #5a6b4f; height: 75%;"></div>
+          <div class="trend-bar" style="background: #8b7c4f; height: 45%;"></div>
+          <div class="trend-bar" style="background: #5a6b4f; height: 85%;"></div>
+          <div class="trend-bar" style="background: #5a6b4f; height: 90%;"></div>
+          <div class="trend-bar" style="background: #a0522d; height: 30%;"></div>
+          <div class="trend-bar" style="background: #5a6b4f; height: 80%;"></div>
+          <div class="trend-bar" style="background: #5a6b4f; height: 95%;"></div>
+        </div>
+        <div style="font-size: 11px; color: #a09080; margin-bottom: 14px;">最近 8 次决策满意度</div>
+        <div style="font-size: 12px; font-weight: 600; color: #8b7355; margin-bottom: 6px;">后悔原因 TOP 3</div>
+        <div style="font-size: 12px; color: #6b5d4f; line-height: 1.8; margin-bottom: 14px;">1. 信息不足（40%）<br>2. 情绪冲动（30%）<br>3. 被他人影响（20%）</div>
+        <div style="font-size: 12px; font-weight: 600; color: #8b7355; margin-bottom: 6px;">我的原则</div>
+        <div class="principle-card" style="margin-bottom: 6px;">"情绪很强的时候，不做长期决定。"</div>
+        <div class="principle-card">"想清楚自己要什么再投，不要海投。"</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<!-- 底部：提醒与隐私 -->
+<div class="footer-section">
+  <div class="footer-card">
+    <h3>不让选择悬空，也不让原则蒙尘</h3>
+    <p>完成决策后可以设置复盘时间；长期未更新会被温柔提醒；分享时可以使用匿名洞察模式。</p>
+    <p>进行中超过 14 天没更新？你可以继续推进、标记过期，或选择 7 天后再提醒。</p>
+    <p style="font-size: 13px; color: #a09080; margin-top: 16px; padding-top: 12px; border-top: 1px solid #e0d8c8;">数据存在你自己的账号下，可随时导出；API Key 只存本地，不上传服务器。</p>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta">
+  <p class="cta-text">现在就记录一个正在纠结的选择吧</p>
+  <a href="/#/" class="cta-btn">开始使用摇摆志</a>
+</div>
+
 </body>
 </html>
