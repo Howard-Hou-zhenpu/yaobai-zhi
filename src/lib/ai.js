@@ -1,5 +1,6 @@
 import { getActiveConfig, incrementFreeUsage } from './apiKeyStore';
-import { buildPersonalityReportPrompt, buildDecisionAnalysisPrompt, buildReviewQuestionsPrompt, parseAIJson } from './aiPrompts';
+import { buildPersonalityReportPrompt, buildDecisionAnalysisPrompt, buildReviewQuestionsPrompt, buildHistoricalAnalysisPrompt, parseAIJson } from './aiPrompts';
+import { selectHistoricalDecisions, summarizeHistoryForPrompt, summarizeCurrentForPrompt } from './historicalAnalysis';
 
 const ENDPOINTS = {
   deepseek: 'https://api.deepseek.com/v1/chat/completions',
@@ -280,5 +281,63 @@ export async function generateStructuredReviewQuestions(decision) {
   return {
     ...parsed,
     rawResponse: text
+  };
+}
+
+/**
+ * 结合历史记录生成个性化决策分析
+ * @param {Object} currentDecision 当前决策（含 options）
+ * @param {Array}  allDecisions    所有决策
+ * @returns {Promise<Object>} { analysis, meta }
+ *   analysis: AI 返回的结构化结果
+ *   meta: { historyCount, sameCategoryCount, totalCandidates, fellBackToGeneric, references }
+ */
+export async function generateHistoricalAnalysis(currentDecision, allDecisions) {
+  const optionNames = (currentDecision.options || [])
+    .map((o) => (o && typeof o.name === 'string' ? o.name.trim() : ''))
+    .filter(Boolean);
+  if (optionNames.length < 2) {
+    throw new Error('当前决策至少需要 2 个选项');
+  }
+
+  const { selected, sameCategoryCount, totalCandidates } = selectHistoricalDecisions(
+    currentDecision,
+    allDecisions
+  );
+
+  const historySummary = selected
+    .map((d) => summarizeHistoryForPrompt(d, currentDecision.category))
+    .join('\n\n');
+
+  const currentSummary = summarizeCurrentForPrompt(currentDecision);
+
+  const prompt = buildHistoricalAnalysisPrompt({
+    currentSummary,
+    historySummary,
+    optionNames,
+    sameCategoryCount,
+    totalHistory: selected.length,
+  });
+
+  const text = await callAI(prompt, 1800);
+  const parsed = parseAIJson(text);
+  if (!parsed) {
+    throw new Error('AI 返回格式解析失败');
+  }
+
+  const referencedTitles = selected
+    .filter((d) => d.decisionPrinciple && d.decisionPrinciple.trim())
+    .map((d) => ({ title: d.title, principle: d.decisionPrinciple.trim() }));
+
+  return {
+    analysis: parsed,
+    meta: {
+      historyCount: selected.length,
+      sameCategoryCount,
+      totalCandidates,
+      fellBackToGeneric: selected.length === 0,
+      principleSources: referencedTitles,
+    },
+    rawResponse: text,
   };
 }

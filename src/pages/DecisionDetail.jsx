@@ -6,7 +6,7 @@ import { Badge } from '../components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Textarea } from '../components/ui/textarea';
 import { Label } from '../components/ui/label';
-import { useDecision, useUpdateDecision, useDeleteDecision } from '../hooks/useDecisions';
+import { useDecision, useUpdateDecision, useDeleteDecision, useDecisions } from '../hooks/useDecisions';
 import { STATUS_MAP, SATISFACTION_MAP, REGRET_REASONS } from '../lib/constants';
 import { getReviewGuide, getCompletionFeedback } from '../lib/prompts';
 import Timeline from '../components/Timeline';
@@ -14,6 +14,7 @@ import ShareCard from '../components/ShareCard';
 import ReviewTimeModal from '../components/ReviewTimeModal';
 import ReviewCompletedModal from '../components/ReviewCompletedModal';
 import AIInsights from '../components/AIInsights';
+import HistoricalAnalysis from '../components/HistoricalAnalysis';
 import NextActionHint from '../components/NextActionHint';
 import StaleDecisionHint from '../components/StaleDecisionHint';
 import { isStale } from '../lib/staleness';
@@ -47,6 +48,7 @@ export default function DecisionDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { data: decision } = useDecision(id);
+  const { data: allDecisions = [] } = useDecisions();
   const updateDecision = useUpdateDecision();
   const deleteMutation = useDeleteDecision();
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -527,6 +529,10 @@ export default function DecisionDetail() {
             确认选择 {selectedOptions.length > 0 && `(${selectedOptions.length})`}
           </Button>
         </div>
+      )}
+
+      {decision.status === 'active' && (
+        <HistoricalAnalysis decision={decision} allDecisions={allDecisions} />
       )}
 
       {decision.status === 'completed' && (

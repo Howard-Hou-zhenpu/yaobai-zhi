@@ -208,6 +208,78 @@ ${focusArea}
 }
 
 /**
+ * 结合个人历史记录的决策分析 prompt
+ * @param {Object} params
+ * @param {string} params.currentSummary 当前决策的描述（含选项）
+ * @param {string} params.historySummary 历史决策摘要（拼接好的多行字符串）
+ * @param {Array}  params.optionNames    当前决策的所有选项名（用于约束输出）
+ * @param {number} params.sameCategoryCount 同分类的历史条数
+ * @param {number} params.totalHistory   实际参考的历史总条数
+ * @returns {string}
+ */
+export function buildHistoricalAnalysisPrompt({
+  currentSummary,
+  historySummary,
+  optionNames,
+  sameCategoryCount,
+  totalHistory,
+}) {
+  const hasHistory = totalHistory > 0;
+  const crossCategoryNote = hasHistory && sameCategoryCount < totalHistory
+    ? `（注意：历史记录中只有 ${sameCategoryCount} 条与当前同分类，其余为跨分类参考，请在分析时区分对待。）`
+    : '';
+
+  return `你是一个温和的决策教练，不替用户做决定。请结合用户的"历史决策记录"，为用户当前正在思考的决策做一份个性化分析。
+
+—— 用户当前决策 ——
+${currentSummary}
+
+—— 用户的历史决策记录（共 ${totalHistory} 条，其中 ${sameCategoryCount} 条同分类）——
+${hasHistory ? historySummary : '（暂无可参考的历史记录）'}
+${crossCategoryNote}
+
+请严格按以下 JSON 格式返回，不要有任何 markdown 或多余文字：
+
+{
+  "pastPatterns": "总结用户过去类似/相关决策中的规律。比如哪些类型的选择更容易满意，哪些原因容易导致后悔。如历史不足请明说。（80-150 字）",
+  "optionAnalyses": [
+    {
+      "optionName": "${optionNames[0] || '选项名'}",
+      "pros": ["优点1", "优点2"],
+      "cons": ["缺点1", "缺点2"],
+      "risks": ["风险1", "风险2"],
+      "missingInfo": "如果信息不足以判断，写出缺什么；信息够则留空字符串"
+    }
+  ],
+  "historicalConnection": [
+    {
+      "optionName": "选项名",
+      "matchesSatisfied": "这个选项符合你过去哪种容易满意的模式（没有可写空字符串）",
+      "matchesRegret": "这个选项是否可能重复你过去后悔过的模式（没有可写空字符串）"
+    }
+  ],
+  "questionsToAsk": ["在做决定前可补充思考的问题1", "问题2", "问题3"],
+  "softLeanings": [
+    {
+      "condition": "如果你现在更看重 X",
+      "suggestion": "Y 选项可能更值得考虑的理由"
+    }
+  ],
+  "referencedPrinciples": ["从历史复盘中引用的、和当前决策相关的提醒原话（最多 3 条；如无可写空数组）"]
+}
+
+要求：
+1. 必须严格返回 JSON，不要 markdown 代码块。
+2. optionAnalyses 必须覆盖所有候选选项：${optionNames.join('、')}。
+3. historicalConnection 中的 optionName 必须出自上述选项。
+4. softLeanings 至少 2 条，每条都必须以"如果……"这类条件句开头，**不要**使用"必须""一定""唯一正确""最佳答案"等绝对化词语。
+5. questionsToAsk 给 2-4 个，要具体、可执行。
+6. referencedPrinciples 只能引用确实出现在历史记录的"沉淀原则"中的原话，不能编造。
+7. 语气温和、像朋友陪聊，不替用户拍板。
+8. 如果历史记录不足或都不相关，pastPatterns 和 historicalConnection 可以坦诚说"参考有限"，但仍要完成 optionAnalyses 和 questionsToAsk。`;
+}
+
+/**
  * 解析 AI 返回的 JSON，带容错处理
  * @param {string} text - AI 返回的文本
  * @returns {Object|null}
