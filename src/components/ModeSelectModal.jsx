@@ -1,19 +1,45 @@
+import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Scale, History, ArrowRight } from 'lucide-react';
 
 export default function ModeSelectModal({ onClose, onSelect }) {
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [onClose]);
+
   const handlePick = (mode) => {
     onSelect(mode);
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40" onClick={onClose}>
+  const sheet = (
+    <div
+      className="fixed inset-0 z-[100] flex items-end justify-center bg-black/40 mode-sheet-overlay"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label="选择创建方式"
+    >
       <div
-        className="w-full max-w-[430px] bg-[var(--card-solid)] rounded-t-3xl p-6 pb-8 animate-in slide-in-from-bottom"
+        className="w-full max-w-[430px] bg-[var(--card-solid)] rounded-t-3xl px-6 pt-6 mode-sheet-panel"
+        style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 24px)' }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-5">
           <h3 className="text-base font-medium text-[#3d3428]">这次想做点什么？</h3>
-          <button onClick={onClose} className="text-[#a09080] hover:text-[#6b5d4f]">
+          <button
+            onClick={onClose}
+            className="text-[#a09080] hover:text-[#6b5d4f]"
+            aria-label="关闭"
+          >
             <X className="w-5 h-5" strokeWidth={1.5} />
           </button>
         </div>
@@ -50,4 +76,6 @@ export default function ModeSelectModal({ onClose, onSelect }) {
       </div>
     </div>
   );
+
+  return createPortal(sheet, document.body);
 }
