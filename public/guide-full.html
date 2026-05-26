@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>摇摆志 - 完整产品说明</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "LXGW WenKai", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", serif;
+      line-height: 1.8;
+      color: #3d3428;
+      background: #f5f1e8;
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1, h2, h3 { color: #8b7355; margin-top: 2em; margin-bottom: 0.8em; }
+    h1 { font-size: 2.5em; margin-top: 0; text-align: center; border-bottom: 3px solid #8b7355; padding-bottom: 0.5em; }
+    h2 { font-size: 1.8em; border-left: 5px solid #8b7355; padding-left: 15px; }
+    h3 { font-size: 1.3em; color: #6b5d4f; }
+    p { margin-bottom: 1em; }
+    ul, ol { margin-left: 2em; margin-bottom: 1em; }
+    li { margin-bottom: 0.5em; }
+    .hero {
+      background: linear-gradient(165deg, #f5f1e8 0%, #e8dfd0 100%);
+      border-radius: 20px;
+      padding: 40px;
+      text-align: center;
+      margin-bottom: 40px;
+      border: 1px solid #d4cbb8;
+    }
+    .hero svg { width: 80px; height: 80px; margin-bottom: 20px; }
+    .hero h1 { border: none; margin: 0; }
+    .hero p { font-size: 1.2em; color: #6b5d4f; margin-top: 10px; }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+    .feature-card {
+      background: white;
+      border: 1px solid #d4cbb8;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(61, 52, 40, 0.06);
+    }
+    .feature-card h3 { margin-top: 0; font-size: 1.1em; }
+    .badge {
+      display: inline-block;
+      background: #e8dfd0;
+      color: #6b5d4f;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.85em;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+    .badge.ai { background: #8b7355; color: white; }
+    .badge.core { background: #5a6b4f; color: white; }
+    .highlight {
+      background: #faf6ef;
+      border-left: 4px solid #8b7355;
+      padding: 15px 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+    }
+    .workflow {
+      background: white;
+      border: 2px solid #d4cbb8;
+      border-radius: 16px;
+      padding: 25px;
+      margin: 20px 0;
+    }
+    .workflow-step {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px dashed #d4cbb8;
+    }
+    .workflow-step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .workflow-step .number {
+      background: #8b7355;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-right: 15px;
+      flex-shrink: 0;
+    }
+    .workflow-step .content { flex: 1; }
+    .workflow-step h4 { margin: 0 0 8px 0; color: #3d3428; font-size: 1.05em; }
+    .workflow-step p { margin: 0; color: #6b5d4f; font-size: 0.95em; }
+    code {
+      background: #e8dfd0;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: "Consolas", "Monaco", monospace;
+      font-size: 0.9em;
+    }
+    .toc {
+      background: white;
+      border: 1px solid #d4cbb8;
+      border-radius: 16px;
+      padding: 25px;
+      margin: 30px 0;
+    }
+    .toc h2 { margin-top: 0; font-size: 1.3em; }
+    .toc ul { list-style: none; margin-left: 0; }
+    .toc li { margin-bottom: 8px; }
+    .toc a { color: #8b7355; text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <rect width="200" height="200" rx="20" fill="#f5f1e8"/>
+    <line x1="60" y1="80" x2="140" y2="80" stroke="#8b7355" stroke-width="3" stroke-linecap="round"/>
+    <line x1="100" y1="80" x2="100" y2="140" stroke="#8b7355" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="70" cy="120" r="15" fill="none" stroke="#8b7355" stroke-width="3"/>
+    <circle cx="130" cy="120" r="15" fill="none" stroke="#8b7355" stroke-width="3"/>
+    <line x1="100" y1="50" x2="100" y2="80" stroke="#8b7355" stroke-width="2" stroke-linecap="round"/>
+    <polygon points="100,45 95,55 105,55" fill="#8b7355"/>
+  </svg>
+  <h1>摇摆志</h1>
+  <p>个人决策记录与复盘工具 · AI 决策教练</p>
+</div>
+
+<div class="toc">
+  <h2>目录</h2>
+  <ul>
+    <li><a href="#intro">一、产品简介</a></li>
+    <li><a href="#core">二、核心理念</a></li>
+    <li><a href="#features">三、主要功能</a></li>
+    <li><a href="#workflow">四、完整使用流程</a></li>
+    <li><a href="#ai">五、AI 功能详解</a></li>
+    <li><a href="#analytics">六、数据分析与洞察</a></li>
+    <li><a href="#tips">七、使用建议</a></li>
+    <li><a href="#tech">八、技术说明</a></li>
+  </ul>
+</div>
+
+<h2 id="intro">一、产品简介</h2>
+
+<p><strong>摇摆志</strong>是一款帮助你记录、分析和复盘个人决策的 Web 应用。无论是职业选择、学习规划、生活消费还是人际关系，摇摆志都能帮你：</p>
+
+<ul>
+  <li><strong>记录决策过程</strong> — 从纠结到选择，完整保存你的思考轨迹</li>
+  <li><strong>AI 辅助分析</strong> — 基于历史数据和当前情况，提供个性化建议</li>
+  <li><strong>定期复盘反思</strong> — 追踪决策结果，识别自己的决策模式</li>
+  <li><strong>提炼个人原则</strong> — 从经验中学习,形成属于自己的决策智慧</li>
+</ul>
+
+<div class="highlight">
+  <strong>适合谁？</strong><br>
+  职场人士、学生、创业者、任何需要经常做选择的人。如果你常常在多个选项间摇摆不定，或者想要更清晰地了解自己的决策习惯，摇摆志就是为你设计的。
+</div>
+
+<h2 id="core">二、核心理念</h2>
+
+<h3>1. 决策不是终点，复盘才是成长</h3>
+<p>大多数人做完决策就忘了，摇摆志鼓励你在一段时间后回头看：当初的选择现在感觉如何？满意还是后悔？为什么？这个过程帮助你认识自己的决策模式。</p>
+
+<h3>2. 记录过程比结果更重要</h3>
+<p>不只是记录"我选了什么"，更要记录"我为什么这样选"、"我当时在纠结什么"、"我考虑了哪些因素"。这些过程信息才是真正的财富。</p>
+
+<h3>3. AI 是教练，不是替你决定</h3>
+<p>摇摆志的 AI 功能不会告诉你"应该选哪个"，而是帮你：</p>
+<ul>
+  <li>看到每个选项的利弊</li>
+  <li>发现你过去类似决策的模式</li>
+  <li>提出你可能没想到的反思角度</li>
+</ul>
+<p>最终的选择权始终在你手中。</p>
+
+<h3>4. 从后悔中学习，不是自责</h3>
+<p>后悔不是失败，而是学习的机会。摇摆志提供结构化的后悔原因分析（信息不足、情绪冲动、高估收益等），帮你看清问题出在哪里，而不是陷入自责。</p>
+
+<h2 id="features">三、主要功能</h2>
+
+<div class="feature-grid">
+  <div class="feature-card">
+    <h3>📝 快速记录</h3>
+    <p>首页输入框，一句话快速捕捉当下的纠结。可以先记下来，之后再慢慢补全细节。</p>
+  </div>
+
+  <div class="feature-card">
+    <h3>🎯 深度决策</h3>
+    <p>列出所有选项，为每个选项分析优点、缺点、风险、最坏情况和应对方案。支持模板快速填充。</p>
+  </div>
+
+  <div class="feature-card">
+    <h3>🤖 AI 选项分析 <span class="badge ai">AI</span></h3>
+    <p>输入标题和选项，AI 自动为每个选项生成优缺点和风险提示，帮你快速启动思考。</p>
+  </div>
+
+  <div class="feature-card">
+    <h3>🔍 AI 历史关联 <span class="badge ai">AI</span> <span class="badge core">核心</span></h3>
+    <p>AI 分析你过去的类似决策，找出模式和教训，结合当前情况给出个性化建议。这是摇摆志最独特的功能。</p>
+  </div>
+
+  <div class="feature-card">
+    <h3>💡 AI 反思追问 <span class="badge ai">AI</span></h3>
+    <p>完成决策后，AI 根据你的选择和复盘内容，生成 3-5 个深度反思问题，引导你更深入地理解自己。</p>
+  </div>
+
+  <div class="feature-card">
+    <h3>📊 决策性格报告 <span class="badge ai">AI</span></h3>
+    <p>基于你的历史决策数据，AI 生成个性化的决策风格分析报告，帮你认识自己的决策习惯。</p>
+  </div>
+
+  <div class="feature-card">
+    <h3>⏰ 智能复盘提醒</h3>
+    <p>完成决策时设置复盘时间（1天/3天/1周/1个月），到期后自动提醒。不同类别有不同推荐时长。</p>
+  </div>
+
+  <div class="feature-card">
+    <h3>🎭 后悔原因分析</h3>
+    <p>如果复盘时选择"后悔"，可以多选后悔原因（信息不足、情绪冲动等），还支持自定义具体原因。</p>
+  </div>
+
+  <div class="feature-card">
+    <h3>💎 个人原则提炼</h3>
+    <p>每次复盘都可以写下"给未来自己的提醒"，这些原则会汇总到"我的原则"页面，形成你的决策智慧库。</p>
+  </div>
+
+  <div class="feature-card">
+    <h3>📈 数据可视化</h3>
+    <p>满意度分布、决策趋势、后悔模式、分类统计、关键词云图等多维度图表，让你一目了然。</p>
+  </div>
+
+  <div class="feature-card">
+    <h3>🔖 补记过往决策</h3>
+    <p>不只记录新决策，也可以补记过去做过的重要选择，快速积累数据基础。</p>
+  </div>
+
+  <div class="feature-card">
+    <h3>🌙 长期未更新提醒</h3>
+    <p>超过 14 天未更新的决策会被标记为"搁置"，提醒你要么推进、要么归档，避免事情不了了之。</p>
+  </div>
+</div>
+
+<h2 id="workflow">四、完整使用流程</h2>
+
+<div class="workflow">
+  <div class="workflow-step">
+    <div class="number">1</div>
+    <div class="content">
+      <h4>捕捉纠结</h4>
+      <p>当你面临选择时，打开摇摆志首页，在"现在有什么选择让你纠结？"输入框里快速记下来。可以只写一句话，比如"要不要跳槽到新公司"。</p>
+    </div>
+  </div>
+
+  <div class="workflow-step">
+    <div class="number">2</div>
+    <div class="content">
+      <h4>补全信息</h4>
+      <p>点击刚才记录的决策，进入详情页，点击"继续编辑"。补充：</p>
+      <ul style="margin-top: 8px;">
+        <li>决策类型（快速/深度）</li>
+        <li>分类（职业发展/学习教育等）</li>
+        <li>具体选项（至少 2 个）</li>
+        <li>纠结程度（1-5 级）</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="workflow-step">
+    <div class="number">3</div>
+    <div class="content">
+      <h4>深度分析（可选）</h4>
+      <p>如果选择"深度决策"，可以为每个选项填写优点、缺点、风险、最坏情况和应对方案。也可以点击"AI 帮我分析各选项"让 AI 自动生成初稿。</p>
+    </div>
+  </div>
+
+  <div class="workflow-step">
+    <div class="number">4</div>
+    <div class="content">
+      <h4>AI 历史关联（推荐）</h4>
+      <p>如果你已经有 3 条以上复盘过的决策，点击"获取 AI 历史分析"。AI 会找出你过去类似决策的模式，结合当前情况给出建议。这是摇摆志最强大的功能。</p>
+    </div>
+  </div>
+
+  <div class="workflow-step">
+    <div class="number">5</div>
+    <div class="content">
+      <h4>做出选择</h4>
+      <p>经过思考后，勾选你最终的选择（可以多选），设置信心值（1-5），点击"确定这个选择"。系统会提示你设置复盘时间。</p>
+    </div>
+  </div>
+
+  <div class="workflow-step">
+    <div class="number">6</div>
+    <div class="content">
+      <h4>等待复盘时间</h4>
+      <p>根据决策类型，建议设置不同的复盘时间：</p>
+      <ul style="margin-top: 8px;">
+        <li>人际关系、健康运动：3 天</li>
+        <li>生活消费、学习教育：7 天</li>
+        <li>职业发展、投资理财：30 天</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="workflow-step">
+    <div class="number">7</div>
+    <div class="content">
+      <h4>复盘反思</h4>
+      <p>到期后，首页会提示"N 条决策到了复盘时间"。打开决策，填写：</p>
+      <ul style="margin-top: 8px;">
+        <li>满意度（满意/一般/后悔/还不确定）</li>
+        <li>如果后悔，选择后悔原因（可多选+自定义）</li>
+        <li>经验总结（自由文本）</li>
+        <li>给未来自己的提醒（提炼为原则）</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="workflow-step">
+    <div class="number">8</div>
+    <div class="content">
+      <h4>AI 反思追问（可选）</h4>
+      <p>保存复盘后，可以点击"获取 AI 反思建议"，AI 会根据你的复盘内容生成 3-5 个深度问题，帮你进一步思考。</p>
+    </div>
+  </div>
+
+  <div class="workflow-step">
+    <div class="number">9</div>
+    <div class="content">
+      <h4>查看统计与原则</h4>
+      <p>进入"复盘"页面，查看：</p>
+      <ul style="margin-top: 8px;">
+        <li>概览：满意度分布、决策趋势、后悔模式等图表</li>
+        <li>我的原则：你积累的所有决策智慧</li>
+        <li>记录：所有决策的列表，支持搜索和筛选</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<h2 id="ai">五、AI 功能详解</h2>
+
+<h3>1. AI 选项分析</h3>
+<p><strong>使用场景：</strong>创建决策时，已经列出了选项，但不知道从哪些角度分析。</p>
+<p><strong>如何使用：</strong>在创建决策页面，选择"深度决策"，输入标题、描述和选项名称后，点击"AI 帮我分析各选项"。</p>
+<p><strong>AI 会做什么：</strong>为每个选项生成简短的优点、缺点、风险提示（各 15 字以内），作为你深入思考的起点。</p>
+<p><strong>注意：</strong>AI 生成的是启发性提示，不是替你做决定。你需要根据自己的实际情况补充和修改。</p>
+
+<h3>2. AI 历史关联分析 <span class="badge core">核心功能</span></h3>
+<p><strong>使用场景：</strong>你已经用摇摆志记录并复盘过至少 3 个决策，现在面临新的选择。</p>
+<p><strong>如何使用：</strong>在决策详情页（已添加选项后），点击"获取 AI 历史分析"。</p>
+<p><strong>AI 会做什么：</strong></p>
+<ul>
+  <li>从你的历史决策中找出与当前决策相似的案例（同类别优先）</li>
+  <li>分析你过去在类似情况下的选择模式和结果</li>
+  <li>结合你的个人原则，给出针对当前每个选项的分析</li>
+  <li>指出可能的风险点（基于你过去的后悔经验）</li>
+  <li>提出需要特别注意的问题</li>
+  <li>给出倾向性建议（但不直接告诉你选哪个）</li>
+</ul>
+<p><strong>为什么重要：</strong>这是摇摆志最独特的功能。大多数决策工具只能提供通用建议，但摇摆志的 AI 是基于<strong>你自己的历史数据</strong>，给出<strong>个性化</strong>的分析。你用得越多，AI 越了解你。</p>
+
+<div class="highlight">
+  <strong>示例：</strong><br>
+  假设你过去记录过 5 次跳槽决策，其中 3 次选择了高薪但加班多的公司，结果都后悔了（后悔原因：忽略长期目标、低估成本）。<br><br>
+  现在你又面临类似选择时，AI 会提醒你："根据你过去的 3 次类似决策，高薪选项虽然短期收益明显，但你往往会因为工作强度而后悔。建议重点评估这次的工作强度是否在你的承受范围内。"
+</div>
+
+<h3>3. AI 反思追问</h3>
+<p><strong>使用场景：</strong>完成决策并保存复盘后，想要更深入地理解这次决策。</p>
+<p><strong>如何使用：</strong>在决策详情页（已复盘状态），点击"获取 AI 反思建议"。</p>
+<p><strong>AI 会做什么：</strong>根据你的决策内容、选择、满意度、后悔原因（如果有）、复盘总结，生成 3-5 个反思问题。这些问题不是评判你，而是帮你发现自己的决策模式。</p>
+<p><strong>示例问题：</strong></p>
+<ul>
+  <li>"你提到当时情绪冲动，回想一下，是什么触发了这种情绪？"
+  <li>"如果再给你一次机会，你会在决策前做哪些准备？"
+  <li>"这次决策中，哪些信息是你事后才发现很重要的？"
+</ul>
+
+<h3>4. AI 决策性格报告</h3>
+<p><strong>使用场景：</strong>你已经复盘过至少 3 个决策，想要了解自己的决策风格。</p>
+<p><strong>如何使用：</strong>进入"复盘"页面，点击右上角"决策性格报告"。</p>
+<p><strong>AI 会做什么：</strong>分析你的所有决策数据，生成一份报告，包括：</p>
+<ul>
+  <li>决策类型（保守型/冒险型/犹豫型/果断型等）</li>
+  <li>决策风格总结（150 字左右）</li>
+  <li>有趣的发现（比如"你在职业决策上满意度最高"）</li>
+  <li>一句鼓励性建议</li>
+</ul>
+<p><strong>可以分享：</strong>报告支持生成图片或复制文本，可以分享到社交媒体。</p>
+
+<h3>AI 额度说明</h3>
+<p>摇摆志提供两种 AI 使用方式：</p>
+<ol>
+  <li><strong>免费额度：</strong>每月 3 次 AI 调用（所有 AI 功能共享），使用默认模型（DeepSeek）</li>
+  <li><strong>自定义 API Key：</strong>在设置页面填入你自己的 DeepSeek 或 Kimi API Key，无限次使用</li>
+</ol>
+<p>API Key 仅保存在你的浏览器本地，不会上传到服务器。</p>
+
+<h2 id="analytics">六、数据分析与洞察</h2>
+
+<h3>复盘中心 - 概览</h3>
+<p>进入"复盘"页面，默认显示概览，包含以下图表：</p>
+
+<ul>
+  <li><strong>快速统计：</strong>总决策数、已完成数、已复盘数、本周新增（带趋势箭头）</li>
+  <li><strong>满意度分布：</strong>饼图显示满意/一般/后悔的比例</li>
+  <li><strong>决策趋势：</strong>折线图显示最近 30 天的决策数量变化</li>
+  <li><strong>后悔模式：</strong>柱状图显示最常见的后悔原因（前 5 名），以及最近的自定义后悔原因</li>
+  <li><strong>分类分布：</strong>饼图显示各类别决策的占比</li>
+  <li><strong>关键词云：</strong>从你的决策标题和描述中提取高频词汇</li>
+</ul>
+
+<h3>复盘中心 - 我的原则</h3>
+<p>汇总你在每次复盘时写下的"给未来自己的提醒"。每条原则显示：</p>
+<ul>
+  <li>原则内容</li>
+  <li>来源决策（点击可跳转）</li>
+  <li>决策类别</li>
+  <li>满意度标记</li>
+</ul>
+<p>这是你的个人决策智慧库，会随着使用不断积累。</p>
+
+<h3>复盘中心 - 记录</h3>
+<p>所有决策的列表视图，支持：</p>
+<ul>
+  <li><strong>搜索：</strong>按标题、描述、分类搜索</li>
+  <li><strong>状态筛选：</strong>全部/进行中/已完成/已复盘/已归档</li>
+  <li><strong>快捷筛选：</strong>收藏、到期复盘、长期未更新</li>
+  <li><strong>高级筛选：</strong>按分类、时间范围（7/30/90 天）</li>
+</ul>
+
+<h2 id="tips">七、使用建议</h2>
+
+<h3>新手入门</h3>
+<ol>
+  <li><strong>先补记 3-5 个过往决策</strong>：点击首页"开始新的决策" → 选择"补记一个决定"，快速记录你过去做过的重要选择（比如上一次跳槽、上一次买房等）。这样可以快速积累数据，让 AI 历史分析更有效。</li>
+  <li><strong>从快速记录开始</strong>：不要一开始就追求完美的深度分析，先养成记录的习惯。可以只写标题，之后再补充。</li>
+  <li><strong>设置合理的复盘时间</strong>：不要所有决策都设 1 天后复盘，根据决策类型选择合适的时长。职业决策建议 30 天，日常消费建议 3-7 天。</li>
+</ol>
+
+<h3>进阶技巧</h3>
+<ol>
+  <li><strong>善用 AI 历史分析</strong>：这是摇摆志最强大的功能。当你积累了 5+ 条复盘记录后，每次新决策都尝试使用这个功能。</li>
+  <li><strong>认真写后悔原因</strong>：如果复盘时选择"后悔"，不要只勾选预设原因，尽量在"其他"里写下具体原因。这些信息会让 AI 分析更准确。</li>
+  <li><strong>提炼个人原则</strong>：每次复盘都尝试写一句"给未来自己的提醒"。这些原则会成为你的决策指南。</li>
+  <li><strong>定期查看统计</strong>：每月看一次"后悔模式"图表，识别自己最常犯的错误。</li>
+  <li><strong>使用模板</strong>：创建决策时，如果是常见类型（跳槽、买房等），可以选择模板快速填充。</li>
+</ol>
+
+<h3>常见问题</h3>
+
+<p><strong>Q: 我的决策很私密，数据安全吗？</strong></p>
+<p>A: 所有数据保存在 Supabase 云端，只有你自己能访问。AI 分析时，数据仅用于生成建议，不会被存储或用于训练模型。如果使用自定义 API Key，你的 Key 仅保存在浏览器本地。</p>
+
+<p><strong>Q: 免费额度用完了怎么办？</strong></p>
+<p>A: 可以在设置页面填入自己的 DeepSeek 或 Kimi API Key（注册即送免费额度），之后就可以无限使用 AI 功能。</p>
+
+<p><strong>Q: 我可以删除或修改已保存的决策吗？</strong></p>
+<p>A: 可以。在决策详情页点击右上角删除按钮（需确认），或者点击"继续编辑"修改内容。复盘后也可以点击"修改"重新编辑复盘内容。</p>
+
+<p><strong>Q: 如果我不想复盘某个决策怎么办？</strong></p>
+<p>A: 可以直接归档。在决策详情页或记录列表中选择归档，该决策会从主列表隐藏，但数据仍保留。</p>
+
+<p><strong>Q: AI 分析的建议我不认同怎么办？</strong></p>
+<p>A: AI 的建议仅供参考，不是标准答案。你完全可以忽略 AI 的建议，按自己的判断做决定。AI 的价值在于提供一个不同的视角。</p>
+
+<h2 id="tech">八、技术说明</h2>
+
+<h3>技术栈</h3>
+<ul>
+  <li><strong>前端：</strong>React 19, React Router 7, Tailwind CSS 4, Shadcn UI</li>
+  <li><strong>后端：</strong>Supabase (PostgreSQL + Auth)</li>
+  <li><strong>数据管理：</strong>TanStack Query (React Query)</li>
+  <li><strong>图表：</strong>Recharts</li>
+  <li><strong>AI：</strong>DeepSeek / Kimi (Moonshot) API</li>
+  <li><strong>本地存储：</strong>LocalStorage (API Key, 免费额度), IndexedDB (AI 分析缓存)</li>
+</ul>
+
+<h3>浏览器兼容性</h3>
+<p>支持所有现代浏览器（Chrome, Firefox, Safari, Edge 最新版）。推荐使用 Chrome 以获得最佳体验。</p>
+
+<h3>移动端适配</h3>
+<p>完全响应式设计，最佳显示宽度 375-430px。支持 PWA 安装（添加到主屏幕）。</p>
+
+<h3>数据导出</h3>
+<p>目前支持：</p>
+<ul>
+  <li>单个决策分享（图片/文本）</li>
+  <li>决策性格报告分享（图片/文本）</li>
+</ul>
+<p>未来计划支持批量导出为 JSON 或 CSV。</p>
+
+<h3>隐私政策</h3>
+<ul>
+  <li>所有决策数据仅你本人可见</li>
+  <li>AI 分析时数据仅用于生成建议，不会被 AI 服务商存储</li>
+  <li>自定义 API Key 仅保存在浏览器本地，不上传服务器</li>
+  <li>不会向第三方分享你的任何数据</li>
+</ul>
+
+<hr style="margin: 40px 0; border: none; border-top: 2px solid #d4cbb8;">
+
+<p style="text-align: center; color: #a09080; font-size: 0.9em;">
+  <strong>摇摆志</strong> · 记录每一次选择，成就更好的决策<br>
+  版本 1.0 · 2025
+</p>
+
+</body>
+</html>
