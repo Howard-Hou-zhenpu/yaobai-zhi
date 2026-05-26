@@ -9,12 +9,16 @@ export default function RegretAnalysis({ decisions }) {
       (d) => d.status === 'reviewed' && d.satisfaction === 'regret'
     );
     const counts = new Map();
+    const customReasons = [];
     regrets.forEach((d) => {
       const reasons = String(d.regretReasons || '')
         .split(',')
         .map((s) => s.trim())
         .filter(Boolean);
       reasons.forEach((r) => counts.set(r, (counts.get(r) || 0) + 1));
+      if (reasons.includes('其他') && d.customRegretReason) {
+        customReasons.push(d.customRegretReason);
+      }
     });
     const sorted = [...counts.entries()].sort((a, b) => b[1] - a[1]);
     return {
@@ -22,6 +26,7 @@ export default function RegretAnalysis({ decisions }) {
       withReasonCount: regrets.filter((d) => String(d.regretReasons || '').trim()).length,
       top: sorted.slice(0, 5),
       total: sorted.reduce((sum, [, n]) => sum + n, 0),
+      customReasons: customReasons.slice(0, 3),
     };
   }, [decisions]);
 
@@ -62,6 +67,14 @@ export default function RegretAnalysis({ decisions }) {
                 </div>
               );
             })}
+            {stats.customReasons.length > 0 && (
+              <div className="mt-2 pt-2 border-t border-[#e5d5c8]">
+                <p className="text-[10px] text-[#a09080] mb-1">最近的自定义原因：</p>
+                {stats.customReasons.map((r, i) => (
+                  <p key={i} className="text-[11px] text-[#7a4a2d] leading-relaxed">· {r}</p>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </CardContent>

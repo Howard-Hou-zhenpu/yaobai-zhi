@@ -19,6 +19,15 @@ function buildPrompt(decision) {
   if (decision.description) parts.push(`决策描述：${decision.description}`);
   if (decision.selectedOption) parts.push(`选择的选项：${decision.selectedOption}`);
   if (decision.satisfaction) parts.push(`满意度：${SATISFACTION_LABELS[decision.satisfaction] || decision.satisfaction}`);
+  if (decision.satisfaction === 'regret' && decision.regretReasons) {
+    const reasons = String(decision.regretReasons).split(',').map(s => s.trim()).filter(Boolean);
+    if (reasons.length > 0) {
+      const display = reasons.map(r =>
+        r === '其他' && decision.customRegretReason ? `其他：${decision.customRegretReason}` : r
+      );
+      parts.push(`后悔原因：${display.join('、')}`);
+    }
+  }
   if (decision.review) parts.push(`用户的复盘总结：${decision.review}`);
 
   return `你是一个温和的决策复盘引导者。用户完成了一个决策，请根据以下信息生成 3-5 个反思问题，帮助用户更深入地理解自己的决策过程。

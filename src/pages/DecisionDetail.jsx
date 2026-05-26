@@ -67,6 +67,7 @@ export default function DecisionDetail() {
   const [savingPrinciple, setSavingPrinciple] = useState(false);
   const [principleText, setPrincipleText] = useState('');
   const [regretReasons, setRegretReasons] = useState([]);
+  const [customRegretReason, setCustomRegretReason] = useState('');
   const [reviewGuide] = useState(getReviewGuide);
 
   if (!decision) {
@@ -156,6 +157,7 @@ export default function DecisionDetail() {
   const handleReview = () => {
     if (!satisfaction) { toast.error('请选择满意度'); return; }
     const finalRegret = satisfaction === 'regret' ? regretReasons.join(',') : '';
+    const finalCustomRegret = satisfaction === 'regret' && regretReasons.includes('其他') ? customRegretReason.trim() : '';
     const wasEditing = editing;
     updateDecision.mutate(
       {
@@ -166,6 +168,7 @@ export default function DecisionDetail() {
           review: reviewText.trim(),
           decisionPrinciple: principleText.trim(),
           regretReasons: finalRegret,
+          customRegretReason: finalCustomRegret,
           reviewedAt: new Date().toISOString(),
         },
       },
@@ -204,6 +207,7 @@ export default function DecisionDetail() {
     setReviewText(decision.review || '');
     setPrincipleText(decision.decisionPrinciple || '');
     setRegretReasons(parseRegretReasons(decision.regretReasons));
+    setCustomRegretReason(decision.customRegretReason || '');
     setEditing(true);
   };
 
@@ -234,6 +238,7 @@ export default function DecisionDetail() {
           satisfaction: '',
           review: '',
           regretReasons: '',
+          customRegretReason: '',
           reviewedAt: null,
         },
       },
@@ -578,6 +583,19 @@ export default function DecisionDetail() {
                     );
                   })}
                 </div>
+                {regretReasons.includes('其他') && (
+                  <div className="mt-3">
+                    <input
+                      type="text"
+                      value={customRegretReason}
+                      onChange={(e) => setCustomRegretReason(e.target.value)}
+                      placeholder="比如：时间太赶、没有提前准备、身体状态不好……"
+                      className="w-full px-3 py-2 rounded-lg border border-[#d4cbb8] bg-white text-sm text-[#3d3428] placeholder:text-[#b5a896] focus:outline-none focus:border-[#a0522d]"
+                      maxLength={100}
+                    />
+                    <p className="text-[10px] text-[#a09080] mt-1 ml-0.5">写得越具体，之后复盘和 AI 反思会越有帮助。</p>
+                  </div>
+                )}
               </div>
             )}
             <div>
@@ -624,7 +642,9 @@ export default function DecisionDetail() {
                 <div className="flex flex-wrap gap-1.5">
                   {parseRegretReasons(decision.regretReasons).map((reason) => (
                     <Badge key={reason} className="rounded-lg text-xs bg-[#f3e2d4] text-[#7a4a2d] border-[#e5d5c8]">
-                      {reason}
+                      {reason === '其他' && decision.customRegretReason
+                        ? `其他：${decision.customRegretReason}`
+                        : reason}
                     </Badge>
                   ))}
                 </div>
@@ -688,6 +708,19 @@ export default function DecisionDetail() {
                     );
                   })}
                 </div>
+                {regretReasons.includes('其他') && (
+                  <div className="mt-3">
+                    <input
+                      type="text"
+                      value={customRegretReason}
+                      onChange={(e) => setCustomRegretReason(e.target.value)}
+                      placeholder="比如：时间太赶、没有提前准备、身体状态不好……"
+                      className="w-full px-3 py-2 rounded-lg border border-[#d4cbb8] bg-white text-sm text-[#3d3428] placeholder:text-[#b5a896] focus:outline-none focus:border-[#a0522d]"
+                      maxLength={100}
+                    />
+                    <p className="text-[10px] text-[#a09080] mt-1 ml-0.5">写得越具体，之后复盘和 AI 反思会越有帮助。</p>
+                  </div>
+                )}
               </div>
             )}
             <div>

@@ -29,6 +29,7 @@ function transformDecision(d) {
     isFavorite: d.is_favorite || false,
     decisionPrinciple: d.decision_principle || '',
     regretReasons: d.regret_reasons || '',
+    customRegretReason: d.custom_regret_reason || '',
     options: (d.options || [])
       .sort((a, b) => a.position - b.position)
       .map((o) => ({
@@ -145,6 +146,7 @@ export async function updateDecision(id, updates) {
   if (updates.isFavorite !== undefined) dbUpdates.is_favorite = updates.isFavorite;
   if (updates.decisionPrinciple !== undefined) dbUpdates.decision_principle = updates.decisionPrinciple;
   if (updates.regretReasons !== undefined) dbUpdates.regret_reasons = updates.regretReasons;
+  if (updates.customRegretReason !== undefined) dbUpdates.custom_regret_reason = updates.customRegretReason;
   if (updates.snoozeUntil !== undefined) dbUpdates.snooze_until = updates.snoozeUntil;
   if (updates.completedAt) dbUpdates.completed_at = updates.completedAt;
   if (updates.reviewedAt) dbUpdates.reviewed_at = updates.reviewedAt;
