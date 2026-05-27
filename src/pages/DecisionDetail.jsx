@@ -155,28 +155,32 @@ export default function DecisionDetail() {
   };
 
   const handleReview = () => {
-    if (!satisfaction) { toast.error('请选择满意度'); return; }
+    if (!satisfaction) { toast.error('请先选择这次决策的满意度'); return; }
     const finalRegret = satisfaction === 'regret' ? regretReasons.join(',') : '';
     const finalCustomRegret = satisfaction === 'regret' && regretReasons.includes('其他') ? customRegretReason.trim() : '';
     const wasEditing = editing;
+    const updates = {
+      status: 'reviewed',
+      satisfaction,
+      review: reviewText.trim(),
+      decisionPrinciple: principleText.trim(),
+      regretReasons: finalRegret,
+      reviewedAt: new Date().toISOString(),
+    };
+    if (finalCustomRegret) {
+      updates.customRegretReason = finalCustomRegret;
+    }
     updateDecision.mutate(
-      {
-        id,
-        updates: {
-          status: 'reviewed',
-          satisfaction,
-          review: reviewText.trim(),
-          decisionPrinciple: principleText.trim(),
-          regretReasons: finalRegret,
-          customRegretReason: finalCustomRegret,
-          reviewedAt: new Date().toISOString(),
-        },
-      },
+      { id, updates },
       {
         onSuccess: () => {
           toast.success('复盘已保存', { description: getCompletionFeedback() });
           setEditing(false);
           if (!wasEditing) setShowCompletedModal(true);
+        },
+        onError: (err) => {
+          console.error('保存复盘失败:', err);
+          toast.error('保存失败，请稍后再试');
         },
       }
     );
@@ -606,7 +610,9 @@ export default function DecisionDetail() {
               <Label className="mb-2 block text-muted-foreground tracking-wide text-xs uppercase">写给未来自己的提醒</Label>
               <Textarea placeholder="下次遇到类似选择时，我要提醒自己……" value={principleText} onChange={(e) => setPrincipleText(e.target.value)} rows={2} />
             </div>
-            <Button className="w-full rounded-2xl" onClick={handleReview}>保存复盘</Button>
+            <Button className="w-full rounded-2xl" onClick={handleReview} disabled={updateDecision.isPending}>
+              {updateDecision.isPending ? '保存中…' : '保存复盘'}
+            </Button>
           </CardContent>
         </Card>
         <AIInsights decision={decision} />
@@ -733,7 +739,9 @@ export default function DecisionDetail() {
             </div>
             <div className="flex gap-2">
               <Button variant="outline" className="flex-1 rounded-2xl" onClick={() => setEditing(false)}>取消</Button>
-              <Button className="flex-1 rounded-2xl" onClick={handleReview}>保存修改</Button>
+              <Button className="flex-1 rounded-2xl" onClick={handleReview} disabled={updateDecision.isPending}>
+                {updateDecision.isPending ? '保存中…' : '保存修改'}
+              </Button>
             </div>
           </CardContent>
         </Card>

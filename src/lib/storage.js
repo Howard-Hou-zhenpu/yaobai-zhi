@@ -152,12 +152,27 @@ export async function updateDecision(id, updates) {
   if (updates.reviewedAt) dbUpdates.reviewed_at = updates.reviewedAt;
   if (updates.reviewDueAt !== undefined) dbUpdates.review_due_at = updates.reviewDueAt;
 
-  const { data, error } = await supabase
+  let { data, error } = await supabase
     .from('decisions')
     .update(dbUpdates)
     .eq('id', id)
     .select()
     .single();
+
+  if (error && error.message) {
+    const msg = error.message;
+    if (msg.includes('custom_regret_reason') || msg.includes('regret_reasons') || msg.includes('decision_principle')) {
+      delete dbUpdates.custom_regret_reason;
+      delete dbUpdates.regret_reasons;
+      delete dbUpdates.decision_principle;
+      ({ data, error } = await supabase
+        .from('decisions')
+        .update(dbUpdates)
+        .eq('id', id)
+        .select()
+        .single());
+    }
+  }
 
   if (error) throw error;
   return data;
