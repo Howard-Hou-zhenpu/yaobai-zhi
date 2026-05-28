@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, X, FileText, Sparkles, Loader2, ChevronDown, ChevronUp, Zap, Layers } from 'lucide-react';
+import { ArrowLeft, Plus, X, FileText, Sparkles, Loader2, ChevronDown, ChevronUp, Zap, Layers, Check } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
@@ -15,6 +15,8 @@ import { cn } from '../lib/utils';
 import { toast } from 'sonner';
 
 const HESITATION_LABELS = ['', '很轻松', '有点想法', '有些纠结', '很纠结', '极度纠结'];
+
+const CATEGORY_COLOR_MAP = CATEGORIES.reduce((acc, c) => { acc[c.value] = c.color; return acc; }, {});
 
 function SectionTitle({ title, hint, action }) {
   return (
@@ -93,12 +95,24 @@ export default function CreateDecision() {
   const [aiLoading, setAiLoading] = useState(false);
   const [aiHints, setAiHints] = useState([]);
   const [description, setDescription] = useState('');
+  const [appliedTemplateName, setAppliedTemplateName] = useState('');
   const [options, setOptions] = useState([
     { name: '', pros: '', cons: '', risks: '', worstCase: '', solution: '' },
     { name: '', pros: '', cons: '', risks: '', worstCase: '', solution: '' },
   ]);
 
+  const hasUserContent = !!(
+    title.trim() ||
+    description.trim() ||
+    category ||
+    options.some((o) => o.name.trim())
+  );
+
   const applyTemplate = (tpl) => {
+    if (hasUserContent && appliedTemplateName !== tpl.name) {
+      const ok = window.confirm('套用模板会覆盖当前已填写内容，是否继续？');
+      if (!ok) return;
+    }
     setTitle(tpl.name);
     setCategory(tpl.category);
     setType(tpl.type);
@@ -107,7 +121,8 @@ export default function CreateDecision() {
     setShowTemplates(false);
     setShowCustomInput(false);
     setCustomCategory('');
-    toast.success('已应用模板，可以根据实际情况修改');
+    setAppliedTemplateName(tpl.name);
+    toast.success(`已套用「${tpl.name}」模板，可以继续修改。`);
   };
 
   const addOption = () => {
@@ -169,13 +184,18 @@ export default function CreateDecision() {
           <h1 className="text-lg font-medium text-[#3d3428]">创建决策</h1>
         </div>
         <Button
-          variant="outline"
+          variant="ghost"
           size="sm"
-          className="gap-1 rounded-xl shrink-0"
+          className={cn(
+            'gap-1 rounded-xl shrink-0 h-8 px-2.5 text-xs',
+            showTemplates
+              ? 'text-[#8b7355] bg-[#faf6ef] border border-[#d4cbb8]'
+              : 'text-muted-foreground border border-border/50'
+          )}
           onClick={() => setShowTemplates(!showTemplates)}
         >
           <FileText className="w-3.5 h-3.5" strokeWidth={1.5} />
-          模板
+          {showTemplates ? '收起模板' : '模板'}
         </Button>
       </div>
 
@@ -189,23 +209,52 @@ export default function CreateDecision() {
             title="从模板开始"
             hint="常见选择可以直接套用模板，之后再修改。"
           />
-          <Card>
-            <CardContent className="p-3">
-              <div className="grid grid-cols-2 gap-2">
-                {TEMPLATES.map((tpl) => (
-                  <Button
-                    key={tpl.name}
-                    variant="outline"
-                    className="h-auto py-2 px-3 flex-col items-start text-left rounded-xl"
-                    onClick={() => applyTemplate(tpl)}
+          <div className="grid grid-cols-2 gap-2">
+            {TEMPLATES.map((tpl) => {
+              const isApplied = appliedTemplateName === tpl.name;
+              const catColor = CATEGORY_COLOR_MAP[tpl.category] || 'bg-secondary text-muted-foreground';
+              return (
+                <button
+                  key={tpl.name}
+                  type="button"
+                  onClick={() => applyTemplate(tpl)}
+                  className={cn(
+                    'relative text-left rounded-xl border p-3 transition-all bg-card',
+                    isApplied
+                      ? 'border-[#8b7355] bg-[#faf6ef]'
+                      : 'border-border/50 hover:border-[#d4cbb8]'
+                  )}
+                >
+                  {isApplied && (
+                    <span className="absolute top-2 right-2 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-[#dde5d4] text-[#5a6b4f] text-[10px]">
+                      <Check className="w-2.5 h-2.5" strokeWidth={2} />
+                      已套用
+                    </span>
+                  )}
+                  <p className={cn(
+                    'text-sm font-medium leading-snug line-clamp-2 break-words',
+                    isApplied ? 'text-[#3d3428]' : 'text-[#3d3428]',
+                    isApplied && 'pr-14'
+                  )}>
+                    {tpl.name}
+                  </p>
+                  <span
+                    className={cn(
+                      'inline-block mt-2 px-1.5 py-0.5 rounded-md text-[10px] tracking-wide',
+                      catColor
+                    )}
                   >
-                    <span className="text-sm font-medium">{tpl.name}</span>
-                    <span className="text-[11px] text-muted-foreground">{tpl.category}</span>
-                  </Button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                    {tpl.category}
+                  </span>
+                  {tpl.description && (
+                    <p className="text-[11px] text-muted-foreground mt-2 leading-relaxed line-clamp-2">
+                      {tpl.description}
+                    </p>
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
       )}
 
