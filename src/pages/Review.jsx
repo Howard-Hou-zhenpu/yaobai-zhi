@@ -22,7 +22,6 @@ const STATUS_FILTERS = [
   { value: 'active', label: '进行中' },
   { value: 'completed', label: '已完成' },
   { value: 'reviewed', label: '已复盘' },
-  { value: 'archived', label: '已过期' },
 ];
 
 const TIME_FILTERS = [
@@ -225,7 +224,14 @@ export default function Review() {
       )}
 
       {tab === 'records' && (
-        <div className="space-y-3">
+        <div className="space-y-4">
+          <div>
+            <h2 className="text-base font-medium text-[#3d3428] mb-1">记录</h2>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              查看所有决策，按状态和时间筛选。
+            </p>
+          </div>
+
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#a09080]" strokeWidth={1.5} />
             <Input className="pl-9" placeholder="搜索决策..." value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -265,7 +271,7 @@ export default function Review() {
               className={`h-6 px-2 text-xs gap-1 shrink-0 ${hasActiveFilters ? 'text-[#8b7355]' : 'text-[#a09080]'}`}
               onClick={() => setShowFilters(!showFilters)}
             >
-              筛选 {showFilters ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+              更多筛选 {showFilters ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
               {hasActiveFilters && <span className="w-1.5 h-1.5 rounded-full bg-[#4F9D8B]" />}
             </Button>
           </div>
@@ -273,6 +279,17 @@ export default function Review() {
           {showFilters && (
             <Card>
               <CardContent className="p-4 space-y-3">
+                <div>
+                  <p className="text-xs text-[#a09080] tracking-wide uppercase mb-2">状态</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    <Badge
+                      className={`cursor-pointer rounded-full text-xs ${statusFilter === 'archived' ? 'bg-[#8b7355] text-[#f5f1e8]' : 'bg-[#e8dfd0] text-[#6b5d4f] border-[#d4cbb8]'}`}
+                      onClick={() => setStatusFilter('archived')}
+                    >
+                      已过期
+                    </Badge>
+                  </div>
+                </div>
                 <div>
                   <p className="text-xs text-[#a09080] tracking-wide uppercase mb-2">分类</p>
                   <div className="flex flex-wrap gap-1.5">
@@ -311,6 +328,20 @@ export default function Review() {
             </Card>
           )}
 
+          {sortedFiltered.length > 0 && (
+            <p className="text-xs text-muted-foreground/80">
+              {statusFilter === 'active' && '进行中'}
+              {statusFilter === 'completed' && '已完成'}
+              {statusFilter === 'reviewed' && '已复盘'}
+              {statusFilter === 'archived' && '已过期'}
+              {!statusFilter && favoriteOnly && '收藏'}
+              {!statusFilter && dueOnly && '到期复盘'}
+              {!statusFilter && staleOnly && '长期未更新'}
+              {!statusFilter && !favoriteOnly && !dueOnly && !staleOnly && '全部记录'}
+              {' · '}{sortedFiltered.length} 条
+            </p>
+          )}
+
           <div className="space-y-3">
             {sortedFiltered.map((d) => (
               <div key={d.id} className="space-y-1.5">
@@ -330,16 +361,33 @@ export default function Review() {
               </div>
             ))}
             {sortedFiltered.length === 0 && (
-              dueOnly ? (
+              statusFilter === 'reviewed' ? (
+                <div className="text-center py-12 text-[#a09080]">
+                  <p className="text-sm">还没有完成复盘的决策。</p>
+                </div>
+              ) : dueOnly ? (
                 <div className="text-center py-12 text-[#a09080]">
                   <CalendarClock className="w-8 h-8 mx-auto mb-3 opacity-30" strokeWidth={1.5} />
-                  <p className="text-sm leading-relaxed px-6">
-                    现在没有到期复盘的决定。<br />
-                    做完选择后设置复盘时间，会在这里出现。
-                  </p>
+                  <p className="text-sm leading-relaxed">现在没有到期复盘的决定。</p>
+                  <p className="text-xs mt-1.5 opacity-70">做完选择后设置复盘时间，会在这里出现。</p>
+                </div>
+              ) : staleOnly ? (
+                <div className="text-center py-12 text-[#a09080]">
+                  <Hourglass className="w-8 h-8 mx-auto mb-3 opacity-30" strokeWidth={1.5} />
+                  <p className="text-sm">没有长期未更新的决策。</p>
+                </div>
+              ) : statusFilter === 'archived' ? (
+                <div className="text-center py-12 text-[#a09080]">
+                  <p className="text-sm">没有已过期的决策。</p>
+                </div>
+              ) : decisions.length === 0 ? (
+                <div className="text-center py-12 text-[#a09080]">
+                  <p className="text-sm">还没有记录决策。</p>
                 </div>
               ) : (
-                <p className="text-center text-sm text-[#a09080] py-8">没有找到匹配的决策</p>
+                <div className="text-center py-12 text-[#a09080]">
+                  <p className="text-sm">没有找到匹配的决策。</p>
+                </div>
               )
             )}
           </div>
