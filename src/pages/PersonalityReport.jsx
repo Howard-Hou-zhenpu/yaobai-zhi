@@ -55,7 +55,7 @@ export default function PersonalityReport() {
   };
 
   return (
-    <div className="pb-24 px-4 max-w-[430px] mx-auto">
+    <div className="pb-[calc(6rem+env(safe-area-inset-bottom))] px-4 max-w-[430px] mx-auto">
       <div className="flex items-center gap-3 py-5">
         <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="text-[#a09080] hover:text-[#6b5d4f]">
           <ArrowLeft className="w-5 h-5" strokeWidth={1.5} />

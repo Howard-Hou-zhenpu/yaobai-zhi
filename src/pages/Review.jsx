@@ -104,7 +104,7 @@ export default function Review() {
   const hasActiveFilters = categoryFilter || timeFilter || favoriteOnly;
 
   return (
-    <div className="pb-24 px-4 max-w-[430px] mx-auto">
+    <div className="pb-[calc(6rem+env(safe-area-inset-bottom))] px-4 max-w-[430px] mx-auto">
       <div className="py-6">
         <h1 className="text-[28px] font-bold text-[#3d3428]">复盘中心</h1>
         <p className="text-[14px] text-[#6b5d4f] mt-1.5">回顾决策，总结经验</p>

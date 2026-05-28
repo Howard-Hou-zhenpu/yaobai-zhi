@@ -115,7 +115,7 @@ export default function BackfillDecision() {
   const submitting = addDecision.isPending || updateDecision.isPending;
 
   return (
-    <div className="pb-20 px-5 max-w-[430px] mx-auto">
+    <div className="pb-[calc(5rem+env(safe-area-inset-bottom))] px-5 max-w-[430px] mx-auto">
       <div className="flex items-center gap-3 py-5">
         <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
           <ArrowLeft className="w-5 h-5" strokeWidth={1.5} />

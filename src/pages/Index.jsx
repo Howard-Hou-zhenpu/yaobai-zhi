@@ -37,7 +37,7 @@ export default function Index() {
   };
 
   return (
-    <div className="pb-24 px-4 max-w-[430px] mx-auto">
+    <div className="pb-[calc(6rem+env(safe-area-inset-bottom))] px-4 max-w-[430px] mx-auto">
       <div className="flex justify-end pt-3 pb-1">
         <Button
           variant="ghost"
