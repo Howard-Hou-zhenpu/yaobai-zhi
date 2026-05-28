@@ -98,21 +98,9 @@ export default function TrendChart({ decisions }) {
             ))}
           </div>
         </div>
-        <div className="mt-2 space-y-1">
-          <p className="text-[11px] text-muted-foreground/80 leading-relaxed">
-            每周分数由该周复盘结果换算而来：满意 3 分，一般 2 分，后悔 1 分。
-          </p>
-          <p className="text-[11px] text-muted-foreground/80 leading-relaxed">
-            分数越高，说明当周复盘结果越满意。
-          </p>
-        </div>
-        <div className="flex items-center justify-end gap-3 mt-2 text-[10px] text-muted-foreground/80 tabular-nums">
-          <span>满意 = 3</span>
-          <span className="text-border">·</span>
-          <span>一般 = 2</span>
-          <span className="text-border">·</span>
-          <span>后悔 = 1</span>
-        </div>
+        <p className="text-[11px] text-muted-foreground/80 mt-2 leading-relaxed">
+          每周分数按复盘结果换算：满意 3 分、一般 2 分、后悔 1 分；分数越高，说明当周整体越满意。
+        </p>
       </CardContent>
     </Card>
   );
