@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Trash2, CheckCircle2, AlertCircle, LayoutList, Columns2, Pencil, Square, CheckSquare, Star, MessageSquarePlus, RotateCcw, ChevronDown, ChevronUp, Share2, CalendarClock, Lightbulb, Plus, Archive } from 'lucide-react';
+import { ArrowLeft, Trash2, CheckCircle2, AlertCircle, LayoutList, Columns2, Pencil, Square, CheckSquare, Star, MessageSquarePlus, RotateCcw, ChevronDown, ChevronUp, Share2, CalendarClock, Lightbulb, Plus, Archive, Loader2 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -127,7 +127,10 @@ export default function DecisionDetail() {
           reviewDueAt,
         },
       },
-      { onSuccess: () => toast.success('决策已完成') }
+      {
+        onSuccess: () => toast.success('已确认选择。'),
+        onError: () => toast.error('保存失败，请稍后再试。'),
+      }
     );
   };
 
@@ -330,7 +333,7 @@ export default function DecisionDetail() {
   };
 
   return (
-    <div className="pb-20 px-5">
+    <div className="pb-[calc(6rem+env(safe-area-inset-bottom))] px-5 max-w-[430px] mx-auto">
       <div className="flex items-center justify-between py-5">
         <div className="flex items-center gap-3 min-w-0">
           <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
@@ -380,40 +383,42 @@ export default function DecisionDetail() {
       )}
 
       <Card className="mb-5">
-        <CardContent className="p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Badge variant="outline" className="rounded-lg">{decision.category || '未分类'}</Badge>
-            <Badge variant="secondary" className="rounded-lg">{decision.type === 'deep' ? '深度决策' : '快速决策'}</Badge>
-            {decision.hesitation > 0 && (
-              <span className="text-xs text-muted-foreground">纠结度 {decision.hesitation}/5</span>
-            )}
-          </div>
+        <CardContent className="p-4 space-y-3">
           {decision.description ? (
-            <p className="text-sm text-muted-foreground mt-3 leading-relaxed">{decision.description}</p>
+            <p className="text-sm text-foreground leading-relaxed">{decision.description}</p>
           ) : decision.status === 'active' ? (
             <button
               type="button"
               onClick={() => navigate(`/decision/${id}/edit`)}
-              className="mt-3 text-sm text-[#a09080] italic hover:text-[#6b5d4f] text-left"
+              className="text-sm text-[#a09080] italic hover:text-[#6b5d4f] text-left"
             >
               还没有补充背景，可以之后再写。
             </button>
           ) : null}
-          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border/50 text-xs text-muted-foreground">
-            <span>创建于 {new Date(decision.createdAt).toLocaleString('zh-CN')}</span>
+
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 pt-2 border-t border-border/40">
+            <Badge variant="outline" className="rounded-md text-xs">{decision.category || '未分类'}</Badge>
+            <Badge variant="secondary" className="rounded-md text-xs">{decision.type === 'deep' ? '深度决策' : '快速决策'}</Badge>
+            {decision.hesitation > 0 && (
+              <span className="text-xs text-muted-foreground">纠结度 {decision.hesitation}/5</span>
+            )}
           </div>
-          {decision.completedAt && (
-            <p className="text-xs text-muted-foreground mt-1">
-              完成于 {new Date(decision.completedAt).toLocaleString('zh-CN')}
-              {decision.confidence > 0 && ` · 信心值 ${decision.confidence}/5`}
-            </p>
-          )}
-          {decision.reviewDueAt && (
-            <p className="text-xs mt-1 flex items-center gap-1 text-[#8b7355]">
-              <CalendarClock className="w-3 h-3" strokeWidth={1.5} />
-              预计复盘：{new Date(decision.reviewDueAt).toLocaleDateString('zh-CN')}
-            </p>
-          )}
+
+          <div className="flex flex-col gap-1 text-xs text-muted-foreground pt-2 border-t border-border/40">
+            <span>创建于 {new Date(decision.createdAt).toLocaleString('zh-CN')}</span>
+            {decision.completedAt && (
+              <span>
+                完成于 {new Date(decision.completedAt).toLocaleString('zh-CN')}
+                {decision.confidence > 0 && ` · 信心值 ${decision.confidence}/5`}
+              </span>
+            )}
+            {decision.reviewDueAt && (
+              <span className="flex items-center gap-1 text-[#8b7355]">
+                <CalendarClock className="w-3 h-3" strokeWidth={1.5} />
+                预计复盘：{new Date(decision.reviewDueAt).toLocaleDateString('zh-CN')}
+              </span>
+            )}
+          </div>
         </CardContent>
       </Card>
 
@@ -468,12 +473,17 @@ export default function DecisionDetail() {
 
       <NextActionHint decision={decision} onAction={handleNextAction} />
 
-      <div className="flex items-center gap-3 mb-4" id="decision-options-section">
-        <div className="h-px flex-1 bg-border" />
-        <h2 className="text-sm font-medium text-muted-foreground tracking-widest uppercase">决策选项</h2>
-        <div className="h-px flex-1 bg-border" />
-        {decision.type === 'deep' && (
-          <div className="flex gap-1">
+      <div className="flex items-end justify-between mb-3" id="decision-options-section">
+        <div className="min-w-0">
+          <h2 className="text-sm font-medium text-[#3d3428]">决策选项</h2>
+          {decision.status === 'active' && validOptionNames.length > 0 && (
+            <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+              选择当前更倾向的方案，也可以之后重新打开修改。
+            </p>
+          )}
+        </div>
+        {decision.type === 'deep' && validOptionNames.length > 0 && (
+          <div className="flex gap-1 shrink-0">
             <Button variant={viewMode === 'list' ? 'secondary' : 'ghost'} size="icon" className="w-7 h-7" onClick={() => setViewMode('list')}>
               <LayoutList className="w-3.5 h-3.5" strokeWidth={1.5} />
             </Button>
@@ -485,7 +495,7 @@ export default function DecisionDetail() {
       </div>
 
       {decision.status === 'active' && validOptionNames.length > 0 && selectedOptions.length > 0 && (
-        <p className="text-xs text-muted-foreground mb-3">
+        <p className="text-xs text-[#5a6b4f] mb-3 px-2 py-1.5 rounded-md bg-[#dde5d4]/50">
           已选 {selectedOptions.length} 项：{selectedOptions.join('、')}
         </p>
       )}
@@ -522,26 +532,56 @@ export default function DecisionDetail() {
       {decision.status === 'active' && validOptionNames.length > 0 && (
         <div className="space-y-4">
           <div>
-            <Label className="text-muted-foreground tracking-wide text-xs uppercase">你对这个选择有多确定？</Label>
-            <div className="mt-2">
+            <h3 className="text-sm font-medium text-[#3d3428]">信心值</h3>
+            <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+              记录你现在有多确定，没有对错。
+            </p>
+            <div className="mt-3">
               <input type="range" min="1" max="5" value={confidence} onChange={(e) => setConfidence(Number(e.target.value))}
                 className="w-full h-1.5 bg-secondary rounded-full appearance-none cursor-pointer accent-primary" />
-              <div className="flex justify-between text-xs text-muted-foreground mt-1">
+              <div className="flex justify-between items-center text-xs text-muted-foreground mt-2">
                 <span>不太确定</span>
-                <span className="font-medium text-foreground">{['', '很犹豫', '有点犹豫', '还行', '比较确定', '非常确定'][confidence]}</span>
+                <span className="font-medium text-foreground px-2">{['', '很犹豫', '有点犹豫', '还行', '比较确定', '非常确定'][confidence]}</span>
                 <span>非常确定</span>
               </div>
             </div>
           </div>
-          <Button className="w-full h-12 text-base rounded-2xl" onClick={handleComplete}>
-            <CheckCircle2 className="w-5 h-5 mr-1" strokeWidth={1.5} />
-            确认选择 {selectedOptions.length > 0 && `(${selectedOptions.length})`}
+          <Button
+            className="w-full h-12 text-base rounded-2xl"
+            onClick={handleComplete}
+            disabled={updateDecision.isPending || selectedOptions.length === 0}
+          >
+            {updateDecision.isPending ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" strokeWidth={1.5} />
+                确认中…
+              </>
+            ) : (
+              <>
+                <CheckCircle2 className="w-5 h-5 mr-1" strokeWidth={1.5} />
+                确认选择 {selectedOptions.length > 0 && `(${selectedOptions.length})`}
+              </>
+            )}
           </Button>
+          {selectedOptions.length === 0 && (
+            <p className="text-xs text-muted-foreground/80 text-center">
+              请先选择一个选项。
+            </p>
+          )}
         </div>
       )}
 
       {decision.status === 'active' && (
-        <HistoricalAnalysis decision={decision} allDecisions={allDecisions} />
+        <div className="mt-6">
+          <div className="flex items-center gap-2 mb-1">
+            <Lightbulb className="w-4 h-4 text-[#8b7355]" strokeWidth={1.5} />
+            <h3 className="text-sm font-medium text-[#3d3428]">AI 决策教练</h3>
+          </div>
+          <p className="text-xs text-muted-foreground leading-relaxed mb-2">
+            结合你的历史记录分析当前选择，仅作为思考辅助。
+          </p>
+          <HistoricalAnalysis decision={decision} allDecisions={allDecisions} />
+        </div>
       )}
 
       {decision.status === 'completed' && (
@@ -656,7 +696,7 @@ export default function DecisionDetail() {
                 </div>
               </div>
             )}
-            {decision.review && <p className="text-sm text-muted-foregroundleading-relaxed">{decision.review}</p>}
+            {decision.review && <p className="text-sm text-muted-foreground leading-relaxed">{decision.review}</p>}
             <p className="text-xs text-muted-foreground mt-3 pt-3 border-t border-border/50">
               复盘于 {new Date(decision.reviewedAt).toLocaleString('zh-CN')}
             </p>
