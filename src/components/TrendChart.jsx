@@ -99,10 +99,15 @@ export default function TrendChart({ decisions }) {
             ))}
           </div>
         </div>
-        <p className="text-[11px] text-muted-foreground/80 mt-2 leading-relaxed">
-          分数越高，说明当周复盘结果越满意。
-        </p>
-        <div className="flex items-center justify-end gap-3 mt-1 text-[10px] text-muted-foreground/80">
+        <div className="mt-2 space-y-1">
+          <p className="text-[11px] text-muted-foreground/80 leading-relaxed">
+            每周分数由该周复盘结果换算而来：满意 3 分，一般 2 分，后悔 1 分。
+          </p>
+          <p className="text-[11px] text-muted-foreground/80 leading-relaxed">
+            分数越高，说明当周复盘结果越满意。
+          </p>
+        </div>
+        <div className="flex items-center justify-end gap-3 mt-2 text-[10px] text-muted-foreground/80">
           <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm" style={{ backgroundColor: SCORE_COLOR[3] }} />满意</span>
           <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm" style={{ backgroundColor: SCORE_COLOR[2] }} />一般</span>
           <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm" style={{ backgroundColor: SCORE_COLOR[1] }} />后悔</span>
