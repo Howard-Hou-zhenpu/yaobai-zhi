@@ -158,7 +158,7 @@ export default function DecisionDetail() {
   };
 
   const handleReview = () => {
-    if (!satisfaction) { toast.error('请先选择这次决策的满意度'); return; }
+    if (!satisfaction) { toast.error('请先选择这次决策的满意度。'); return; }
     const finalRegret = satisfaction === 'regret' ? regretReasons.join(',') : '';
     const finalCustomRegret = satisfaction === 'regret' && regretReasons.includes('其他') ? customRegretReason.trim() : '';
     const wasEditing = editing;
@@ -177,13 +177,13 @@ export default function DecisionDetail() {
       { id, updates },
       {
         onSuccess: () => {
-          toast.success('复盘已保存', { description: getCompletionFeedback() });
+          toast.success('复盘已保存。', { description: getCompletionFeedback() });
           setEditing(false);
           if (!wasEditing) setShowCompletedModal(true);
         },
         onError: (err) => {
           console.error('保存复盘失败:', err);
-          toast.error('保存失败，请稍后再试');
+          toast.error('保存失败，请稍后再试。');
         },
       }
     );
@@ -595,19 +595,33 @@ export default function DecisionDetail() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Label className="mb-2 block text-muted-foreground tracking-wide text-xs uppercase">满意度评价 *</Label>
-              <div className="flex gap-2">
-                {Object.entries(SATISFACTION_MAP).map(([key, val]) => (
-                  <Button key={key} variant={satisfaction === key ? 'default' : 'outline'} className="flex-1 rounded-xl" onClick={() => setSatisfaction(key)}>
-                    <span className={satisfaction === key ? '' : val.color}>{val.emoji}</span> {val.label}
-                  </Button>
-                ))}
+              <Label className="mb-2 block text-muted-foreground tracking-wide text-xs uppercase">这次决策让你感觉如何？ *</Label>
+              <div className="grid grid-cols-3 gap-2">
+                {Object.entries(SATISFACTION_MAP).map(([key, val]) => {
+                  const active = satisfaction === key;
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setSatisfaction(key)}
+                      className={cn(
+                        'rounded-xl border h-12 flex items-center justify-center gap-1.5 text-sm transition-all',
+                        active
+                          ? 'border-[#8b7355] bg-[#faf6ef] font-medium text-[#3d3428]'
+                          : 'border-border/60 bg-card text-[#6b5d4f] hover:border-[#d4cbb8]'
+                      )}
+                    >
+                      <span className={cn('text-base leading-none', val.color)}>{val.emoji}</span>
+                      <span>{val.label}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
             {satisfaction === 'regret' && (
               <div className="rounded-xl border border-[#e5d5c8] bg-[#faf2eb] p-3.5">
-                <Label className="mb-1 block text-[#a0522d] tracking-wide text-xs uppercase">这次后悔，可能因为……</Label>
-                <p className="text-[11px] text-[#a09080] mb-2.5 leading-relaxed">不是责怪自己，只是看清楚发生了什么，下次会更清晰。可以多选。</p>
+                <Label className="mb-1 block text-sm font-medium text-[#7a4a2d]">这次后悔主要来自哪里？</Label>
+                <p className="text-[11px] text-[#a09080] mb-3 leading-relaxed">不是责怪自己，只是看清楚发生了什么，下次会更清晰。可以多选。</p>
                 <div className="flex flex-wrap gap-1.5">
                   {REGRET_REASONS.map((reason) => {
                     const active = regretReasons.includes(reason);
@@ -615,10 +629,10 @@ export default function DecisionDetail() {
                       <Badge
                         key={reason}
                         className={cn(
-                          'cursor-pointer rounded-lg text-xs transition-all',
+                          'cursor-pointer rounded-lg text-xs px-2.5 py-1 transition-all',
                           active
                             ? 'bg-[#a0522d] text-[#faf2eb] border-[#a0522d]'
-                            : 'bg-card text-[#7a6245] border-[#d4cbb8]'
+                            : 'bg-card text-[#7a6245] border-[#d4cbb8] hover:border-[#a0522d]/50'
                         )}
                         onClick={() => toggleRegretReason(reason)}
                       >
@@ -629,6 +643,7 @@ export default function DecisionDetail() {
                 </div>
                 {regretReasons.includes('其他') && (
                   <div className="mt-3">
+                    <Label className="mb-1.5 block text-[11px] text-[#7a4a2d]">具体是什么原因？</Label>
                     <input
                       type="text"
                       value={customRegretReason}
@@ -722,19 +737,33 @@ export default function DecisionDetail() {
           <CardHeader><CardTitle className="text-base font-medium">修改复盘</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Label className="mb-2 block text-muted-foreground tracking-wide text-xs uppercase">满意度评价 *</Label>
-              <div className="flex gap-2">
-                {Object.entries(SATISFACTION_MAP).map(([key, val]) => (
-                  <Button key={key} variant={satisfaction === key ? 'default' : 'outline'} className="flex-1 rounded-xl" onClick={() => setSatisfaction(key)}>
-                    <span className={satisfaction === key ? '' : val.color}>{val.emoji}</span> {val.label}
-                  </Button>
-                ))}
+              <Label className="mb-2 block text-muted-foreground tracking-wide text-xs uppercase">这次决策让你感觉如何？ *</Label>
+              <div className="grid grid-cols-3 gap-2">
+                {Object.entries(SATISFACTION_MAP).map(([key, val]) => {
+                  const active = satisfaction === key;
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setSatisfaction(key)}
+                      className={cn(
+                        'rounded-xl border h-12 flex items-center justify-center gap-1.5 text-sm transition-all',
+                        active
+                          ? 'border-[#8b7355] bg-[#faf6ef] font-medium text-[#3d3428]'
+                          : 'border-border/60 bg-card text-[#6b5d4f] hover:border-[#d4cbb8]'
+                      )}
+                    >
+                      <span className={cn('text-base leading-none', val.color)}>{val.emoji}</span>
+                      <span>{val.label}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
             {satisfaction === 'regret' && (
               <div className="rounded-xl border border-[#e5d5c8] bg-[#faf2eb] p-3.5">
-                <Label className="mb-1 block text-[#a0522d] tracking-wide text-xs uppercase">这次后悔，可能因为……</Label>
-                <p className="text-[11px] text-[#a09080] mb-2.5 leading-relaxed">不是责怪自己，只是看清楚发生了什么，下次会更清晰。可以多选。</p>
+                <Label className="mb-1 block text-sm font-medium text-[#7a4a2d]">这次后悔主要来自哪里？</Label>
+                <p className="text-[11px] text-[#a09080] mb-3 leading-relaxed">不是责怪自己，只是看清楚发生了什么，下次会更清晰。可以多选。</p>
                 <div className="flex flex-wrap gap-1.5">
                   {REGRET_REASONS.map((reason) => {
                     const active = regretReasons.includes(reason);
@@ -742,10 +771,10 @@ export default function DecisionDetail() {
                       <Badge
                         key={reason}
                         className={cn(
-                          'cursor-pointer rounded-lg text-xs transition-all',
+                          'cursor-pointer rounded-lg text-xs px-2.5 py-1 transition-all',
                           active
                             ? 'bg-[#a0522d] text-[#faf2eb] border-[#a0522d]'
-                            : 'bg-card text-[#7a6245] border-[#d4cbb8]'
+                            : 'bg-card text-[#7a6245] border-[#d4cbb8] hover:border-[#a0522d]/50'
                         )}
                         onClick={() => toggleRegretReason(reason)}
                       >
@@ -756,6 +785,7 @@ export default function DecisionDetail() {
                 </div>
                 {regretReasons.includes('其他') && (
                   <div className="mt-3">
+                    <Label className="mb-1.5 block text-[11px] text-[#7a4a2d]">具体是什么原因？</Label>
                     <input
                       type="text"
                       value={customRegretReason}
