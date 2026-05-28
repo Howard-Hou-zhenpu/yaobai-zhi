@@ -135,22 +135,22 @@ export default function Review() {
       {tab === 'overview' && (
         <div className="space-y-4">
           <div className="grid grid-cols-3 gap-2.5">
-            <Card className="border border-border/40 shadow-none"><CardContent className="p-4">
+            <Card className="border border-border/40 shadow-none"><CardContent className="p-3.5">
               <p className="text-[11px] text-[#a09080] tracking-wide leading-none">已复盘</p>
               <p className="text-[26px] font-semibold text-[#6b5570] mt-2 leading-none tabular-nums">{reviewed}</p>
-              <p className="text-[11px] text-muted-foreground/80 mt-2 leading-snug">总 {total} 条</p>
+              <p className="text-xs text-muted-foreground/80 mt-2 leading-none whitespace-nowrap">总 {total} 条</p>
             </CardContent></Card>
-            <Card className="border border-border/40 shadow-none"><CardContent className="p-4">
+            <Card className="border border-border/40 shadow-none"><CardContent className="p-3.5">
               <p className="text-[11px] text-[#a09080] tracking-wide leading-none">复盘率</p>
               <p className="text-[26px] font-semibold text-[#5a6b4f] mt-2 leading-none tabular-nums">{reviewRate}<span className="text-base font-normal">%</span></p>
-              <p className="text-[11px] text-muted-foreground/80 mt-2 leading-snug">完成后复盘占比</p>
+              <p className="text-xs text-muted-foreground/80 mt-2 leading-none whitespace-nowrap">已完成占比</p>
             </CardContent></Card>
-            <Card className="border border-border/40 shadow-none"><CardContent className="p-4">
+            <Card className="border border-border/40 shadow-none"><CardContent className="p-3.5">
               <p className="text-[11px] text-[#a09080] tracking-wide leading-none">后悔率</p>
               <p className={cn('text-[26px] font-semibold mt-2 leading-none tabular-nums', regretRate > 30 ? 'text-[#a0522d]' : 'text-[#7a6245]')}>
                 {regretRate}<span className="text-base font-normal">%</span>
               </p>
-              <p className="text-[11px] text-muted-foreground/80 mt-2 leading-snug">复盘后后悔占比</p>
+              <p className="text-xs text-muted-foreground/80 mt-2 leading-none whitespace-nowrap">已复盘占比</p>
             </CardContent></Card>
           </div>
 
