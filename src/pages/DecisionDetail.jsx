@@ -424,13 +424,16 @@ export default function DecisionDetail() {
 
       {draftMode && (
         <Card className="mb-4 border-[#dde5d4] bg-[#f5f8f0]">
-          <CardContent className="p-4 flex items-center justify-between gap-3">
-            <p className="text-sm text-[#5a6b4f] leading-relaxed flex-1">
-              这条决策是先记下来的，你可以继续补充分类、描述、选项和复盘时间。
-            </p>
+          <CardContent className="p-4 space-y-2.5">
+            <div>
+              <p className="text-sm font-medium text-[#3d3428]">速记草稿</p>
+              <p className="text-xs text-[#5a6b4f] leading-relaxed mt-1">
+                你已经先把这个选择记下来了。接下来可以补充背景、分类和候选选项，让它变成一条完整决策。
+              </p>
+            </div>
             <Button
               size="sm"
-              className="rounded-xl shrink-0"
+              className="rounded-xl"
               onClick={() => navigate(`/decision/${id}/edit`)}
             >
               继续补全
@@ -471,7 +474,7 @@ export default function DecisionDetail() {
         </Card>
       )}
 
-      <NextActionHint decision={decision} onAction={handleNextAction} />
+      {!draftMode && <NextActionHint decision={decision} onAction={handleNextAction} />}
 
       <div className="flex items-end justify-between mb-3" id="decision-options-section">
         <div className="min-w-0">
@@ -502,17 +505,20 @@ export default function DecisionDetail() {
 
       {validOptionNames.length === 0 ? (
         <Card className="mb-5 border-dashed border-[#d4cbb8]">
-          <CardContent className="p-6 text-center space-y-3">
-            <p className="text-sm text-[#a09080]">还没有选项，可以先添加几个可选方案。</p>
+          <CardContent className="p-6 text-center space-y-2">
+            <p className="text-sm font-medium text-[#6b5d4f]">还没有候选选项</p>
+            <p className="text-xs text-[#a09080] leading-relaxed">
+              先添加几个可能的选择，比如「吃沙拉」「点外卖」「回家做饭」。
+            </p>
             {decision.status === 'active' && (
               <Button
                 size="sm"
                 variant="outline"
-                className="rounded-xl gap-1"
+                className="rounded-xl gap-1 mt-1"
                 onClick={() => navigate(`/decision/${id}/edit`)}
               >
                 <Plus className="w-3.5 h-3.5" strokeWidth={1.5} />
-                添加选项
+                添加第一个选项
               </Button>
             )}
           </CardContent>
@@ -577,10 +583,18 @@ export default function DecisionDetail() {
             <Lightbulb className="w-4 h-4 text-[#8b7355]" strokeWidth={1.5} />
             <h3 className="text-sm font-medium text-[#3d3428]">AI 决策教练</h3>
           </div>
-          <p className="text-xs text-muted-foreground leading-relaxed mb-2">
-            结合你的历史记录分析当前选择，仅作为思考辅助。
-          </p>
-          <HistoricalAnalysis decision={decision} allDecisions={allDecisions} />
+          {validOptionNames.length < 2 ? (
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              补充至少 2 个选项后，可以结合历史记录分析当前选择。
+            </p>
+          ) : (
+            <>
+              <p className="text-xs text-muted-foreground leading-relaxed mb-2">
+                结合你的历史记录分析当前选择，仅作为思考辅助。
+              </p>
+              <HistoricalAnalysis decision={decision} allDecisions={allDecisions} />
+            </>
+          )}
         </div>
       )}
 
