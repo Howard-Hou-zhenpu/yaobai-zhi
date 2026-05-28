@@ -1,44 +1,161 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Eye, EyeOff, Trash2 } from 'lucide-react';
+import { ArrowLeft, Trash2, Lock, ExternalLink, Check } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
+import { Card, CardContent } from '../components/ui/card';
 import { getApiConfig, saveApiConfig, clearApiConfig, getFreeRemaining, getPreferCustom, setPreferCustom } from '../lib/apiKeyStore';
 import { toast } from 'sonner';
+import { cn } from '../lib/utils';
 
 const PROVIDERS = [
-  { value: 'deepseek', label: 'DeepSeek', url: 'https://platform.deepseek.com/api_keys' },
-  { value: 'kimi', label: 'Kimi (Moonshot)', url: 'https://platform.moonshot.cn/console/api-keys' },
+  { value: 'deepseek', label: 'DeepSeek', url: 'https://platform.deepseek.com/api_keys', placeholder: '请输入 DeepSeek API Key' },
+  { value: 'kimi', label: 'Kimi (Moonshot)', url: 'https://platform.moonshot.cn/console/api-keys', placeholder: '请输入 Kimi API Key' },
 ];
 
-export default function Settings() {
-  const navigate = useNavigate();
-  const existing = getApiConfig();
-  const [provider, setProvider] = useState(existing?.provider || 'deepseek');
-  const [apiKey, setApiKey] = useState(existing?.apiKey || '');
-  const [showKey, setShowKey] = useState(false);
-  const [preferCustom, setPrefer] = useState(getPreferCustom());
-  const freeRemaining = getFreeRemaining();
+const FREE_LIMIT = 3;
+
+function maskKey(key) {
+  if (!key) return '';
+  if (key.length <= 8) return '••••••••';
+  return `${key.slice(0, 3)}••••••••${key.slice(-4)}`;
+}
+
+function ProviderCard({ provider, savedConfig, onSaved, onCleared }) {
+  const isActive = savedConfig?.provider === provider.value && !!savedConfig?.apiKey;
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState('');
+  const [confirmingClear, setConfirmingClear] = useState(false);
 
   const handleSave = () => {
-    if (!apiKey.trim()) { toast.error('请输入 API Key'); return; }
-    saveApiConfig({ provider, apiKey: apiKey.trim() });
-    toast.success('API Key 已保存');
+    const trimmed = draft.trim();
+    if (!trimmed) {
+      toast.error('请输入 API Key');
+      return;
+    }
+    try {
+      saveApiConfig({ provider: provider.value, apiKey: trimmed });
+      toast.success('已保存。');
+      setDraft('');
+      setEditing(false);
+      onSaved?.();
+    } catch {
+      toast.error('保存失败，请稍后再试');
+    }
   };
 
   const handleClear = () => {
+    if (!confirmingClear) {
+      setConfirmingClear(true);
+      return;
+    }
     clearApiConfig();
-    setApiKey('');
-    toast.success('已清除自定义 Key，将使用免费额度');
+    toast.success('已清除。');
+    setConfirmingClear(false);
+    onCleared?.();
   };
 
-  const currentProvider = PROVIDERS.find((p) => p.value === provider);
+  return (
+    <Card className="border border-border/50">
+      <CardContent className="p-4 space-y-3">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-sm font-medium text-[#3d3428] truncate">{provider.label}</span>
+            {isActive && (
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-[#dde5d4] text-[#5a6b4f] text-[10px] shrink-0">
+                <Check className="w-2.5 h-2.5" strokeWidth={2} />
+                当前启用
+              </span>
+            )}
+          </div>
+        </div>
+
+        {isActive && !editing ? (
+          <>
+            <div className="rounded-lg bg-[#f5f1e8] border border-border/40 px-3 py-2 text-xs text-[#6b5d4f]">
+              <span className="text-muted-foreground">已保存：</span>
+              <span className="font-mono tabular-nums">{maskKey(savedConfig.apiKey)}</span>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                className="flex-1 rounded-full h-10"
+                onClick={() => { setEditing(true); setDraft(''); }}
+              >
+                替换
+              </Button>
+              <Button
+                variant="ghost"
+                className={cn(
+                  'rounded-full h-10 gap-1.5',
+                  confirmingClear ? 'text-destructive border border-destructive/40' : 'text-[#a09080]'
+                )}
+                onClick={handleClear}
+              >
+                <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
+                {confirmingClear ? '确认清除' : '清除'}
+              </Button>
+            </div>
+          </>
+        ) : (
+          <>
+            <Input
+              type="password"
+              autoComplete="off"
+              spellCheck={false}
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              placeholder={provider.placeholder}
+            />
+            <div className="flex gap-2">
+              <Button className="flex-1 rounded-full h-10 font-medium" onClick={handleSave}>保存</Button>
+              {editing && (
+                <Button
+                  variant="ghost"
+                  className="rounded-full h-10 text-[#a09080]"
+                  onClick={() => { setEditing(false); setDraft(''); }}
+                >
+                  取消
+                </Button>
+              )}
+            </div>
+          </>
+        )}
+
+        <p className="text-[11px] text-muted-foreground/80 leading-relaxed">
+          还没有 API Key？可以前往
+          <a
+            href={provider.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#8b7355] underline underline-offset-2 mx-1 inline-flex items-center gap-0.5"
+          >
+            {provider.label} 官网
+            <ExternalLink className="w-2.5 h-2.5" strokeWidth={1.5} />
+          </a>
+          申请。
+        </p>
+      </CardContent>
+    </Card>
+  );
+}
+
+export default function Settings() {
+  const navigate = useNavigate();
+  const [savedConfig, setSavedConfig] = useState(getApiConfig());
+  const [preferCustom, setPrefer] = useState(getPreferCustom());
+  const freeRemaining = getFreeRemaining();
+  const hasCustom = !!savedConfig?.apiKey;
+
+  const refresh = () => setSavedConfig(getApiConfig());
+
+  const handlePriorityChange = (value) => {
+    setPrefer(value);
+    setPreferCustom(value);
+  };
 
   return (
-    <div className="pb-24 px-4 max-w-[430px] mx-auto">
+    <div className="pb-[calc(6rem+env(safe-area-inset-bottom))] px-4 max-w-[430px] mx-auto">
       <div className="flex items-center gap-3 py-5">
         <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="text-[#a09080] hover:text-[#6b5d4f]">
           <ArrowLeft className="w-5 h-5" strokeWidth={1.5} />
@@ -47,103 +164,114 @@ export default function Settings() {
       </div>
 
       <Card className="mb-4">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-[14px] font-semibold text-[#6b5d4f] tracking-wide">免费额度</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-[32px] font-bold text-[#3d3428]">{freeRemaining}<span className="text-[15px] text-[#a09080] font-normal"> / 3 次</span></p>
-          <p className="text-[13px] text-[#a09080] mt-2">每月重置，使用默认 AI 模型</p>
+        <CardContent className="p-4">
+          <p className="text-[11px] text-[#a09080] tracking-wide leading-none">免费额度</p>
+          <p className="text-[28px] font-semibold text-[#3d3428] mt-2 leading-none tabular-nums">
+            {freeRemaining}<span className="text-base font-normal text-muted-foreground"> / {FREE_LIMIT} 次可用</span>
+          </p>
+          <p className="text-xs text-muted-foreground mt-2.5 leading-relaxed">
+            {freeRemaining > 0
+              ? '每月自动重置，用于默认 AI 分析。'
+              : '本月免费额度已用完。你可以等待下月重置，或使用自定义 API Key。'}
+          </p>
         </CardContent>
       </Card>
 
-      {existing?.apiKey && (
+      {hasCustom && (
         <Card className="mb-4">
-          <CardContent className="p-5">
-            <div className="mb-3">
-              <p className="text-[15px] font-semibold text-[#3d3428]">优先使用</p>
-              <p className="text-[13px] text-[#a09080] mt-1">
-                {preferCustom ? '优先使用自定义 Key' : '优先使用免费额度，用完再切换'}
+          <CardContent className="p-4 space-y-3">
+            <div>
+              <p className="text-sm font-medium text-[#3d3428]">使用优先级</p>
+              <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                有自定义 Key 时，可以选择优先使用哪一种。
               </p>
             </div>
-            <div className="flex gap-2">
-              <Badge
-                className={`cursor-pointer rounded-full flex-1 justify-center py-2 text-[13px] font-medium ${!preferCustom ? 'bg-[#8b7355] text-[#f5f1e8]' : 'bg-[#e8dfd0] text-[#6b5d4f] border-[#d4cbb8]'}`}
-                onClick={() => { setPrefer(false); setPreferCustom(false); }}
+            <div className="space-y-2">
+              <button
+                type="button"
+                onClick={() => handlePriorityChange(false)}
+                className={cn(
+                  'w-full text-left rounded-xl border p-3 transition-all',
+                  !preferCustom
+                    ? 'border-[#8b7355] bg-[#faf6ef]'
+                    : 'border-border/50 bg-card hover:border-[#d4cbb8]'
+                )}
               >
-                免费优先
-              </Badge>
-              <Badge
-                className={`cursor-pointer rounded-full flex-1 justify-center py-2 text-[13px] font-medium ${preferCustom ? 'bg-[#8b7355] text-[#f5f1e8]' : 'bg-[#e8dfd0] text-[#6b5d4f] border-[#d4cbb8]'}`}
-                onClick={() => { setPrefer(true); setPreferCustom(true); }}
+                <div className="flex items-center gap-2">
+                  <span
+                    className={cn(
+                      'w-3.5 h-3.5 rounded-full border-2 shrink-0 flex items-center justify-center',
+                      !preferCustom ? 'border-[#8b7355]' : 'border-[#d4cbb8]'
+                    )}
+                  >
+                    {!preferCustom && <span className="w-1.5 h-1.5 rounded-full bg-[#8b7355]" />}
+                  </span>
+                  <span className="text-sm font-medium text-[#3d3428]">免费额度优先</span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1.5 ml-5 leading-relaxed">
+                  优先使用每月免费额度，用完后再使用自定义 Key。
+                </p>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handlePriorityChange(true)}
+                className={cn(
+                  'w-full text-left rounded-xl border p-3 transition-all',
+                  preferCustom
+                    ? 'border-[#8b7355] bg-[#faf6ef]'
+                    : 'border-border/50 bg-card hover:border-[#d4cbb8]'
+                )}
               >
-                自定义优先
-              </Badge>
+                <div className="flex items-center gap-2">
+                  <span
+                    className={cn(
+                      'w-3.5 h-3.5 rounded-full border-2 shrink-0 flex items-center justify-center',
+                      preferCustom ? 'border-[#8b7355]' : 'border-[#d4cbb8]'
+                    )}
+                  >
+                    {preferCustom && <span className="w-1.5 h-1.5 rounded-full bg-[#8b7355]" />}
+                  </span>
+                  <span className="text-sm font-medium text-[#3d3428]">自定义 Key 优先</span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1.5 ml-5 leading-relaxed">
+                  优先使用你填写的 API Key，不消耗免费额度。
+                </p>
+              </button>
             </div>
           </CardContent>
         </Card>
       )}
 
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-[14px] font-semibold text-[#6b5d4f] tracking-wide">自定义 API Key</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-[14px] text-[#6b5d4f] leading-relaxed">填写自己的 Key 后不限次数使用，Key 仅保存在本地浏览器中。</p>
+      <div className="mb-2">
+        <h2 className="text-sm font-medium text-[#3d3428]">自定义 API Key</h2>
+        <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+          填写自己的 Key 后，可使用对应模型。
+        </p>
+      </div>
 
-          <div>
-            <Label className="text-[#a09080] tracking-wide text-[11px] uppercase mb-2 block">选择模型</Label>
-            <div className="flex gap-2">
-              {PROVIDERS.map((p) => (
-                <Badge
-                  key={p.value}
-                  className={`cursor-pointer rounded-full flex-1 justify-center py-2 text-[13px] font-medium ${provider === p.value ? 'bg-[#8b7355] text-[#f5f1e8]' : 'bg-[#e8dfd0] text-[#6b5d4f] border-[#d4cbb8]'}`}
-                  onClick={() => setProvider(p.value)}
-                >
-                  {p.label}
-                </Badge>
-              ))}
-            </div>
-          </div>
+      <div className="rounded-xl border border-[#dde5d4] bg-[#f5f8f0] px-3 py-2 mb-3 flex items-start gap-2">
+        <Lock className="w-3.5 h-3.5 text-[#5a6b4f] shrink-0 mt-0.5" strokeWidth={1.5} />
+        <p className="text-[11px] text-[#5a6b4f] leading-relaxed">
+          你的 API Key 只保存在当前浏览器本地，不会上传到服务器。
+        </p>
+      </div>
 
-          <div>
-            <Label className="text-[#a09080] tracking-wide text-[11px] uppercase mb-2 block">API Key</Label>
-            <div className="flex gap-2">
-              <div className="relative flex-1">
-                <Input
-                  type={showKey ? 'text' : 'password'}
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                  placeholder="sk-..."
-                  className="pr-10"
-                />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute right-1 top-1/2 -translate-y-1/2 w-8 h-8 text-[#a09080] hover:text-[#6b5d4f]"
-                  onClick={() => setShowKey(!showKey)}
-                >
-                  {showKey ? <EyeOff className="w-4 h-4" strokeWidth={1.5} /> : <Eye className="w-4 h-4" strokeWidth={1.5} />}
-                </Button>
-              </div>
-            </div>
-          </div>
+      <p className="text-[11px] text-muted-foreground/80 mb-3 leading-relaxed">
+        目前同一时间只能启用一个模型 Key，保存新的会替换之前的。
+      </p>
 
-          <div className="flex gap-2">
-            <Button className="flex-1 rounded-full h-11 font-medium" onClick={handleSave}>保存</Button>
-            {existing?.apiKey && (
-              <Button variant="destructive" className="rounded-full gap-1.5 h-11 font-medium" onClick={handleClear}>
-                <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} /> 清除
-              </Button>
-            )}
-          </div>
-
-          <div className="pt-3 border-t border-[#d4cbb8]">
-            <p className="text-[13px] text-[#a09080]">
-              还没有 Key？去 <a href={currentProvider?.url} target="_blank" rel="noopener noreferrer" className="text-[#8b7355] underline">{currentProvider?.label} 官网</a> 免费申请
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="space-y-3">
+        {PROVIDERS.map((p) => (
+          <ProviderCard
+            key={p.value}
+            provider={p}
+            savedConfig={savedConfig}
+            onSaved={refresh}
+            onCleared={refresh}
+          />
+        ))}
+      </div>
     </div>
   );
 }
