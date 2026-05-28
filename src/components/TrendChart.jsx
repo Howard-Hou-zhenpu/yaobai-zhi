@@ -73,27 +73,36 @@ export default function TrendChart({ decisions }) {
         <CardTitle className="text-sm font-medium text-muted-foreground tracking-wide">决策质量趋势</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex items-end gap-1.5 h-28">
-          {data.map((d, i) => {
-            const heightPct = (d.score / 3) * 100;
-            const colorIdx = Math.round(d.score);
-            const color = SCORE_COLOR[colorIdx] || '#c9b896';
-            return (
-              <div key={i} className="flex-1 flex flex-col items-center gap-1 min-w-0">
-                <div className="text-[10px] text-muted-foreground tabular-nums">{d.score}</div>
-                <div className="w-full flex-1 flex items-end">
+        <div className="rounded-xl bg-[#f7f1e4]/60 px-3 pt-3 pb-2">
+          <div className="flex items-end gap-2 h-32">
+            {data.map((d, i) => {
+              const heightPct = Math.max((d.score / 3) * 100, 18);
+              const colorIdx = Math.round(d.score);
+              const color = SCORE_COLOR[colorIdx] || '#c9b896';
+              return (
+                <div key={i} className="flex-1 flex flex-col items-center justify-end gap-1.5 min-w-0 h-full">
+                  <span className="text-[11px] font-medium text-[#3d3428] tabular-nums leading-none">{d.score}</span>
                   <div
-                    className="w-full rounded-t-md transition-all"
-                    style={{ height: `${Math.max(heightPct, 8)}%`, backgroundColor: color, opacity: 0.85 }}
+                    className="w-full max-w-[28px] mx-auto rounded-t-md shadow-[inset_0_-2px_0_rgba(0,0,0,0.04)]"
+                    style={{ height: `${heightPct}%`, backgroundColor: color }}
                     title={`${d.week} · 平均 ${SCORE_LABEL[colorIdx] || ''} (${d.count} 条)`}
                   />
                 </div>
-                <div className="text-[10px] text-muted-foreground truncate w-full text-center">{d.week}</div>
+              );
+            })}
+          </div>
+          <div className="flex items-end gap-2 mt-1.5">
+            {data.map((d, i) => (
+              <div key={i} className="flex-1 text-[10px] text-muted-foreground text-center truncate">
+                {d.week}
               </div>
-            );
-          })}
+            ))}
+          </div>
         </div>
-        <div className="flex items-center justify-end gap-3 mt-3 text-[10px] text-muted-foreground">
+        <p className="text-[11px] text-muted-foreground/80 mt-2 leading-relaxed">
+          分数越高，说明当周复盘结果越满意。
+        </p>
+        <div className="flex items-center justify-end gap-3 mt-1 text-[10px] text-muted-foreground/80">
           <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm" style={{ backgroundColor: SCORE_COLOR[3] }} />满意</span>
           <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm" style={{ backgroundColor: SCORE_COLOR[2] }} />一般</span>
           <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm" style={{ backgroundColor: SCORE_COLOR[1] }} />后悔</span>

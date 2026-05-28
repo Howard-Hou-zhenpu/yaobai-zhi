@@ -38,8 +38,8 @@ export default function KeywordCloud({ decisions }) {
     );
   }
 
-  const top = keywords.slice(0, 3);
-  const rest = keywords.slice(3);
+  const top = keywords.slice(0, 4);
+  const rest = keywords.slice(4);
 
   return (
     <Card className="mt-4">
@@ -47,11 +47,11 @@ export default function KeywordCloud({ decisions }) {
         <CardTitle className="text-sm font-medium text-muted-foreground tracking-wide">你反复思考的话题</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 gap-2">
           {top.map(([word, count]) => (
-            <div key={word} className="rounded-xl border border-border/50 bg-card/60 p-3 text-center">
-              <p className="text-sm font-medium text-[#3d3428] truncate">{word}</p>
-              <p className="text-[11px] text-muted-foreground mt-1 tabular-nums">出现 {count} 次</p>
+            <div key={word} className="rounded-xl border border-border/50 bg-card/60 p-3">
+              <p className="text-sm font-medium text-[#3d3428] leading-snug line-clamp-2 break-words">{word}</p>
+              <p className="text-[11px] text-muted-foreground mt-1.5 tabular-nums">出现 {count} 次</p>
             </div>
           ))}
         </div>
