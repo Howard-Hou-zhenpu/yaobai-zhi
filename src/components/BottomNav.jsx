@@ -13,7 +13,7 @@ export default function BottomNav() {
   const navigate = useNavigate();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-[#f5f1e8]/95 backdrop-blur-md border-t border-[#d4cbb8] z-50">
+    <nav className="fixed bottom-0 left-0 right-0 bg-[#f5f1e8]/95 backdrop-blur-md border-t border-[#d4cbb8] z-50 pb-[env(safe-area-inset-bottom)]">
       <div className="max-w-[430px] mx-auto flex">
         {tabs.map((tab) => {
           const isActive = location.pathname === tab.path;

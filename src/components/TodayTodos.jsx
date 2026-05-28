@@ -41,10 +41,10 @@ export default function TodayTodos({ decisions }) {
     return (
       <div className="mb-6">
         <h2 className="text-sm font-medium text-[#6b5d4f] mb-3">今日待处理</h2>
-        <Card className="border-dashed border-[#d4cbb8]">
-          <CardContent className="p-4 flex items-center justify-between">
-            <p className="text-sm text-[#a09080]">最近有没有一个让你纠结的小选择？先记一句也可以。</p>
-            <Button size="sm" className="rounded-xl shrink-0 ml-3 gap-1" onClick={() => navigate('/create')}>
+        <Card className="border-dashed border-[#d4cbb8] bg-card/40">
+          <CardContent className="p-4 flex items-center justify-between gap-3">
+            <p className="text-sm text-[#a09080] leading-relaxed flex-1">今天没有待处理的决策，可以先记下一个新的纠结。</p>
+            <Button size="sm" className="rounded-xl shrink-0 gap-1" onClick={() => navigate('/create')}>
               <Plus className="w-3.5 h-3.5" strokeWidth={2} />
               开始记录
             </Button>
@@ -58,36 +58,45 @@ export default function TodayTodos({ decisions }) {
     <div className="mb-6">
       <h2 className="text-sm font-medium text-[#6b5d4f] mb-3">今日待处理</h2>
       <div className="space-y-2.5">
-        {items.map((item) => (
-          <Card key={item.id} className="card-hover hover:shadow-[0_4px_16px_rgba(139,115,85,0.12)] transition-all">
-            <CardContent className="p-4">
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm text-[#3d3428] leading-relaxed">
-                    <span className="font-medium">「{item.title}」</span>
-                    {item.reason}
-                  </p>
-                  <div className="flex items-center gap-2 mt-1.5 text-xs text-[#a09080]">
-                    {item.action === 'review' ? (
-                      <><CalendarClock className="w-3 h-3" strokeWidth={1.5} /><span>待复盘</span></>
-                    ) : (
-                      <><Clock className="w-3 h-3" strokeWidth={1.5} /><span>进行中</span></>
-                    )}
+        {items.map((item) => {
+          const isReview = item.action === 'review';
+          return (
+            <Card key={item.id} className="card-hover hover:shadow-[0_4px_16px_rgba(139,115,85,0.12)] transition-all">
+              <CardContent className="p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span
+                        className={
+                          isReview
+                            ? 'inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#ddd8e0] text-[#6b5570] text-[11px] font-medium'
+                            : 'inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#e8ddd0] text-[#7a6245] text-[11px] font-medium'
+                        }
+                      >
+                        {isReview ? (
+                          <><CalendarClock className="w-3 h-3" strokeWidth={1.5} />待复盘</>
+                        ) : (
+                          <><Clock className="w-3 h-3" strokeWidth={1.5} />进行中</>
+                        )}
+                      </span>
+                    </div>
+                    <p className="text-sm font-medium text-[#3d3428] truncate">{item.title}</p>
+                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{item.reason}</p>
                   </div>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="rounded-xl shrink-0 gap-1 text-[#8b7355] border-[#d4cbb8] hover:bg-[#f5f1e8]"
+                    onClick={() => navigate(`/decision/${item.id}`)}
+                  >
+                    {isReview ? '去复盘' : '继续编辑'}
+                    <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
+                  </Button>
                 </div>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="rounded-xl shrink-0 gap-1 text-[#8b7355] border-[#d4cbb8] hover:bg-[#f5f1e8]"
-                  onClick={() => navigate(`/decision/${item.id}`)}
-                >
-                  {item.action === 'review' ? '去复盘' : '继续编辑'}
-                  <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );

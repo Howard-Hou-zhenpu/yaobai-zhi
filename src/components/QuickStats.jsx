@@ -1,5 +1,5 @@
 import { Card, CardContent } from './ui/card';
-import { ListChecks, CheckCircle2, BarChart3, CalendarDays, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { ListChecks, CheckCircle2, BarChart3, CalendarDays } from 'lucide-react';
 
 export default function QuickStats({ decisions }) {
   const total = decisions.length;
@@ -19,10 +19,15 @@ export default function QuickStats({ decisions }) {
     return date >= prevWeekStart && date < weekStart;
   }).length;
 
-  const completionRate = total > 0 ? completed / total : 0;
-  const reviewRate = completed > 0 ? reviewed / completed : 0;
-  const weeklyBar = Math.max(thisWeek, lastWeek, 1);
+  const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
+  const reviewRate = completed > 0 ? Math.round((reviewed / completed) * 100) : 0;
   const weeklyDelta = thisWeek - lastWeek;
+
+  const weeklyHint = weeklyDelta === 0
+    ? '与上周持平'
+    : weeklyDelta > 0
+      ? `较上周多 ${weeklyDelta}`
+      : `较上周少 ${Math.abs(weeklyDelta)}`;
 
   const stats = [
     {
@@ -30,7 +35,6 @@ export default function QuickStats({ decisions }) {
       value: total,
       icon: ListChecks,
       color: 'text-[#8b7355] bg-[#e8dfd0]',
-      bar: total > 0 ? 1 : 0,
       hint: total > 0 ? '全部记录' : '等待开始',
     },
     {
@@ -38,53 +42,38 @@ export default function QuickStats({ decisions }) {
       value: completed,
       icon: CheckCircle2,
       color: 'text-[#5a6b4f] bg-[#dde5d4]',
-      bar: completionRate,
-      hint: `${Math.round(completionRate * 100)}%`,
+      hint: `完成率 ${completionRate}%`,
     },
     {
       label: '已复盘',
       value: reviewed,
       icon: BarChart3,
       color: 'text-[#6b5570] bg-[#ddd8e0]',
-      bar: reviewRate,
-      hint: completed > 0 ? `${Math.round(reviewRate * 100)}%` : '0%',
+      hint: `复盘率 ${reviewRate}%`,
     },
     {
       label: '本周新增',
       value: thisWeek,
       icon: CalendarDays,
       color: 'text-[#7a6245] bg-[#e8ddd0]',
-      bar: thisWeek / weeklyBar,
-      hint: weeklyDelta === 0 ? '持平' : `${weeklyDelta > 0 ? '+' : ''}${weeklyDelta}`,
-      trend: weeklyDelta > 0 ? TrendingUp : weeklyDelta < 0 ? TrendingDown : Minus,
+      hint: weeklyHint,
     },
   ];
 
   return (
-    <div className="grid grid-cols-4 gap-2">
+    <div className="grid grid-cols-2 gap-3">
       {stats.map((stat) => (
         <Card key={stat.label} className="border border-border/40 bg-card/70 shadow-none">
-          <CardContent className="p-3 flex flex-col gap-2">
-            <div className="flex items-center justify-center">
-              <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${stat.color}`}>
-                <stat.icon className="w-4 h-4" strokeWidth={1.5} />
-              </div>
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${stat.color}`}>
+              <stat.icon className="w-4 h-4" strokeWidth={1.5} />
             </div>
-            <div className="text-center">
-              <div className="text-xl font-medium leading-none">{stat.value}</div>
-              <div className="text-[11px] text-muted-foreground tracking-wide mt-1">{stat.label}</div>
-            </div>
-            <div className="space-y-1">
-              <div className="h-1.5 rounded-full bg-secondary/70 overflow-hidden">
-                <div
-                  className="h-full rounded-full bg-primary/70 transition-all duration-300"
-                  style={{ width: `${Math.max(0, Math.min(100, stat.bar * 100))}%` }}
-                />
+            <div className="min-w-0 flex-1">
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-2xl font-semibold leading-none text-[#3d3428]">{stat.value}</span>
+                <span className="text-xs text-muted-foreground">{stat.label}</span>
               </div>
-              <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground">
-                {stat.trend && <stat.trend className="w-3 h-3" strokeWidth={1.8} />}
-                <span>{stat.hint}</span>
-              </div>
+              <div className="text-[11px] text-muted-foreground mt-1.5 truncate">{stat.hint}</div>
             </div>
           </CardContent>
         </Card>
