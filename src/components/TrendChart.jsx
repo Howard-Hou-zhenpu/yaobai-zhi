@@ -13,7 +13,7 @@ function formatWeekLabel(key) {
 }
 
 const SCORE_LABEL = ['', '后悔', '一般', '满意'];
-const SCORE_COLOR = ['', '#a0522d', '#c9b896', '#7a9b6a'];
+const BAR_COLOR = '#a8916b';
 
 export default function TrendChart({ decisions }) {
   const reviewed = decisions.filter((d) => d.status === 'reviewed' && d.satisfaction && d.reviewedAt);
@@ -77,15 +77,14 @@ export default function TrendChart({ decisions }) {
           <div className="flex items-end gap-2 h-32">
             {data.map((d, i) => {
               const heightPct = Math.max((d.score / 3) * 100, 18);
-              const colorIdx = Math.round(d.score);
-              const color = SCORE_COLOR[colorIdx] || '#c9b896';
+              const nearest = SCORE_LABEL[Math.round(d.score)] || '';
               return (
                 <div key={i} className="flex-1 flex flex-col items-center justify-end gap-1.5 min-w-0 h-full">
                   <span className="text-[11px] font-medium text-[#3d3428] tabular-nums leading-none">{d.score}</span>
                   <div
                     className="w-full max-w-[28px] mx-auto rounded-t-md shadow-[inset_0_-2px_0_rgba(0,0,0,0.04)]"
-                    style={{ height: `${heightPct}%`, backgroundColor: color }}
-                    title={`${d.week} · 平均 ${SCORE_LABEL[colorIdx] || ''} (${d.count} 条)`}
+                    style={{ height: `${heightPct}%`, backgroundColor: BAR_COLOR }}
+                    title={`${d.week} · 平均 ${d.score} 分${nearest ? `（接近${nearest}）` : ''} · ${d.count} 条`}
                   />
                 </div>
               );
@@ -107,10 +106,12 @@ export default function TrendChart({ decisions }) {
             分数越高，说明当周复盘结果越满意。
           </p>
         </div>
-        <div className="flex items-center justify-end gap-3 mt-2 text-[10px] text-muted-foreground/80">
-          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm" style={{ backgroundColor: SCORE_COLOR[3] }} />满意</span>
-          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm" style={{ backgroundColor: SCORE_COLOR[2] }} />一般</span>
-          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm" style={{ backgroundColor: SCORE_COLOR[1] }} />后悔</span>
+        <div className="flex items-center justify-end gap-3 mt-2 text-[10px] text-muted-foreground/80 tabular-nums">
+          <span>满意 = 3</span>
+          <span className="text-border">·</span>
+          <span>一般 = 2</span>
+          <span className="text-border">·</span>
+          <span>后悔 = 1</span>
         </div>
       </CardContent>
     </Card>
