@@ -404,19 +404,19 @@ export default function DecisionDetail() {
             )}
           </div>
 
-          <div className="flex flex-col gap-1 text-xs text-muted-foreground pt-2 border-t border-border/40">
-            <span>创建于 {new Date(decision.createdAt).toLocaleString('zh-CN')}</span>
+          <div className="flex flex-col space-y-1 text-xs text-muted-foreground pt-2 border-t border-border/40">
+            <p className="block">创建于 {new Date(decision.createdAt).toLocaleString('zh-CN')}</p>
             {decision.completedAt && (
-              <span>
+              <p className="block">
                 完成于 {new Date(decision.completedAt).toLocaleString('zh-CN')}
                 {decision.confidence > 0 && ` · 信心值 ${decision.confidence}/5`}
-              </span>
+              </p>
             )}
             {decision.reviewDueAt && (
-              <span className="flex items-center gap-1 text-[#8b7355]">
-                <CalendarClock className="w-3 h-3" strokeWidth={1.5} />
-                预计复盘：{new Date(decision.reviewDueAt).toLocaleDateString('zh-CN')}
-              </span>
+              <p className="flex items-center gap-1 text-[#8b7355]">
+                <CalendarClock className="w-3 h-3 shrink-0" strokeWidth={1.5} />
+                <span>预计复盘：{new Date(decision.reviewDueAt).toLocaleDateString('zh-CN')}</span>
+              </p>
             )}
           </div>
         </CardContent>
