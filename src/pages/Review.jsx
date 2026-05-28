@@ -164,45 +164,62 @@ export default function Review() {
       )}
 
       {tab === 'principles' && (
-        <div className="space-y-3">
+        <div className="space-y-4">
+          <div>
+            <h2 className="text-base font-medium text-[#3d3428] mb-1">我的原则</h2>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              这些提醒来自你的复盘，会在以后做类似选择时帮你想起过去的经验。
+            </p>
+            {decisions.filter((d) => d.decisionPrinciple).length > 0 && (
+              <p className="text-xs text-muted-foreground/80 mt-1.5">
+                已沉淀 {decisions.filter((d) => d.decisionPrinciple).length} 条原则
+              </p>
+            )}
+          </div>
+
           {decisions.filter((d) => d.decisionPrinciple).length === 0 ? (
             <div className="text-center py-12 text-[#a09080]">
               <Lightbulb className="w-8 h-8 mx-auto mb-3 opacity-30" strokeWidth={1.5} />
-              <p className="text-sm">还没有沉淀任何原则</p>
-              <p className="text-xs mt-1.5 opacity-70">复盘时写下"给未来自己的提醒"，就会出现在这里</p>
+              <p className="text-sm">还没有沉淀原则。</p>
+              <p className="text-xs mt-1.5 opacity-70 leading-relaxed">
+                完成复盘时写一句给未来自己的提醒，它会出现在这里。
+              </p>
             </div>
           ) : (
-            decisions.filter((d) => d.decisionPrinciple).map((d) => (
-              <Card
-                key={d.id}
-                className="cursor-pointer border-[#d4cbb8] bg-[#faf6ef] hover:shadow-[0_4px_16px_rgba(139,115,85,0.12)] transition-all"
-                onClick={() => navigate(`/decision/${d.id}`)}
-              >
-                <CardContent className="p-4">
-                  <div className="flex items-start gap-2.5">
-                    <Lightbulb className="w-4 h-4 text-[#8b7355] mt-0.5 shrink-0" strokeWidth={1.5} />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm text-[#3d3428] leading-relaxed">{d.decisionPrinciple}</p>
-                      <div className="flex items-center gap-2 mt-2.5 text-xs text-[#a09080] flex-wrap">
-                        <span className="truncate max-w-[140px]">来自「{d.title}」</span>
-                        <span className="text-[#d4cbb8]">·</span>
-                        <span>{d.category}</span>
-                        {d.satisfaction && SATISFACTION_MAP[d.satisfaction] && (
-                          <span
-                            className={cn(
-                              'inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-card border border-border/60',
-                              SATISFACTION_MAP[d.satisfaction].color
-                            )}
-                          >
-                            {SATISFACTION_MAP[d.satisfaction].emoji} {SATISFACTION_MAP[d.satisfaction].label}
-                          </span>
-                        )}
-                      </div>
+            <div className="space-y-3">
+              {decisions.filter((d) => d.decisionPrinciple).map((d) => (
+                <Card
+                  key={d.id}
+                  className="cursor-pointer border-[#d4cbb8] bg-[#faf6ef] hover:shadow-[0_4px_16px_rgba(139,115,85,0.12)] transition-all active:scale-[0.99]"
+                  onClick={() => navigate(`/decision/${d.id}`)}
+                >
+                  <CardContent className="p-4">
+                    <p className="text-sm text-[#3d3428] leading-relaxed font-medium mb-2.5">
+                      {d.decisionPrinciple}
+                    </p>
+                    <div className="flex items-center gap-1.5 text-xs text-[#a09080] mb-2">
+                      <Lightbulb className="w-3 h-3 shrink-0" strokeWidth={1.5} />
+                      <span className="truncate">来自「{d.title}」</span>
+                      <span className="text-[#d4cbb8] shrink-0">·</span>
+                      <span className="shrink-0">{d.category || '未分类'}</span>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
+                    {d.satisfaction && SATISFACTION_MAP[d.satisfaction] && (
+                      <div className="flex">
+                        <span
+                          className={cn(
+                            'inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-xs border',
+                            SATISFACTION_MAP[d.satisfaction].color,
+                            'bg-card/60 border-border/60'
+                          )}
+                        >
+                          {SATISFACTION_MAP[d.satisfaction].emoji} {SATISFACTION_MAP[d.satisfaction].label}
+                        </span>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           )}
         </div>
       )}
