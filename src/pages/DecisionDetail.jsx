@@ -677,32 +677,40 @@ export default function DecisionDetail() {
       {decision.status === 'reviewed' && !editing && (
         <>
         <Card className="mt-5">
-          <CardHeader>
+          <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base font-medium">复盘记录</CardTitle>
               <div className="flex items-center gap-1">
                 <Button variant="ghost" size="icon" className={cn('w-8 h-8', decision.isFavorite ? 'text-[#c9a84c]' : 'text-muted-foreground')} onClick={toggleFavorite}>
                   <Star className="w-4 h-4" strokeWidth={1.5} fill={decision.isFavorite ? 'currentColor' : 'none'} />
                 </Button>
-                <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground" onClick={startEditReview}>
+                <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground/80 h-8" onClick={startEditReview}>
                   <Pencil className="w-3.5 h-3.5" strokeWidth={1.5} /> 修改
                 </Button>
               </div>
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2 mb-3">
-              <span className={cn('text-2xl', SATISFACTION_MAP[decision.satisfaction]?.color)}>{SATISFACTION_MAP[decision.satisfaction]?.emoji}</span>
-              <span className={cn('font-medium', SATISFACTION_MAP[decision.satisfaction]?.color)}>
-                {SATISFACTION_MAP[decision.satisfaction]?.label}
-              </span>
-            </div>
+          <CardContent className="space-y-4">
+            {SATISFACTION_MAP[decision.satisfaction] && (
+              <div>
+                <span
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border bg-card/60',
+                    SATISFACTION_MAP[decision.satisfaction].color
+                  )}
+                >
+                  <span className="text-base leading-none">{SATISFACTION_MAP[decision.satisfaction].emoji}</span>
+                  <span className="text-sm font-medium">{SATISFACTION_MAP[decision.satisfaction].label}</span>
+                </span>
+              </div>
+            )}
+
             {decision.satisfaction === 'regret' && parseRegretReasons(decision.regretReasons).length > 0 && (
-              <div className="mb-3 rounded-xl border border-[#e5d5c8] bg-[#faf2eb] p-3">
+              <div>
                 <p className="text-[11px] text-[#a0522d] tracking-wide uppercase mb-2">后悔原因</p>
                 <div className="flex flex-wrap gap-1.5">
                   {parseRegretReasons(decision.regretReasons).map((reason) => (
-                    <Badge key={reason} className="rounded-lg text-xs bg-[#f3e2d4] text-[#7a4a2d] border-[#e5d5c8]">
+                    <Badge key={reason} className="rounded-lg text-xs px-2.5 py-1 bg-[#f3e2d4] text-[#7a4a2d] border-[#e5d5c8]">
                       {reason === '其他' && decision.customRegretReason
                         ? `其他：${decision.customRegretReason}`
                         : reason}
@@ -711,20 +719,27 @@ export default function DecisionDetail() {
                 </div>
               </div>
             )}
-            {decision.review && <p className="text-sm text-muted-foreground leading-relaxed">{decision.review}</p>}
-            <p className="text-xs text-muted-foreground mt-3 pt-3 border-t border-border/50">
+
+            {decision.review && decision.review.trim() && (
+              <div>
+                <p className="text-[11px] text-muted-foreground tracking-wide uppercase mb-1.5">复盘总结</p>
+                <p className="text-sm text-[#3d3428] leading-relaxed whitespace-pre-wrap">{decision.review}</p>
+              </div>
+            )}
+
+            <p className="text-xs text-muted-foreground pt-3 border-t border-border/50">
               复盘于 {new Date(decision.reviewedAt).toLocaleString('zh-CN')}
             </p>
           </CardContent>
         </Card>
-        {decision.decisionPrinciple && (
+        {decision.decisionPrinciple && decision.decisionPrinciple.trim() && (
           <Card className="mt-3 border-[#d4cbb8] bg-[#faf6ef]">
             <CardContent className="p-4">
               <div className="flex items-center gap-2 mb-2">
-                <Lightbulb className="w-4 h-4 text-[#8b7355]" strokeWidth={1.5} />
-                <span className="text-sm font-medium text-[#6b5d4f]">这次学到的原则</span>
+                <Lightbulb className="w-4 h-4 text-[#8b7355] shrink-0" strokeWidth={1.5} />
+                <span className="text-sm font-medium text-[#6b5d4f]">写给未来自己的提醒</span>
               </div>
-              <p className="text-sm text-[#3d3428] leading-relaxed pl-6">{decision.decisionPrinciple}</p>
+              <p className="text-sm text-[#3d3428] leading-relaxed pl-6 whitespace-pre-wrap">{decision.decisionPrinciple}</p>
             </CardContent>
           </Card>
         )}
@@ -836,8 +851,8 @@ export default function DecisionDetail() {
 
       {decision.status === 'reviewed' && (
         <div className="mt-4 pt-4 border-t border-border/50">
-          <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground" onClick={handleReopen}>
-            <RotateCcw className="w-3.5 h-3.5" strokeWidth={1.5} />
+          <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground/80 hover:text-[#7a6245] text-xs" onClick={handleReopen}>
+            <RotateCcw className="w-3 h-3" strokeWidth={1.5} />
             重新打开这个决策
           </Button>
         </div>
