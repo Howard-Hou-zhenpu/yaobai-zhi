@@ -71,28 +71,25 @@ export default function DecisionCard({ decision }) {
             )}
           </div>
         </div>
-        <div className="flex items-center gap-3 mt-3 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <Clock className="w-3 h-3" strokeWidth={1.5} />
-            {new Date(decision.createdAt).toLocaleDateString('zh-CN')}
-          </span>
-          <span className="w-1 h-1 rounded-full bg-border" />
+        <div className="flex items-center gap-2 mt-3 text-xs text-muted-foreground">
+          <Clock className="w-3 h-3 shrink-0" strokeWidth={1.5} />
+          <span>{new Date(decision.createdAt).toLocaleDateString('zh-CN')}</span>
+          <span className="text-border">·</span>
           <span>{decision.category}</span>
           {decision.type === 'deep' && (
             <>
-              <span className="w-1 h-1 rounded-full bg-border" />
+              <span className="text-border">·</span>
               <span className="italic">深度分析</span>
             </>
           )}
-          {satisfaction && (
-            <>
-              <span className="w-1 h-1 rounded-full bg-border" />
-              <span className={satisfaction.color}>
-                {satisfaction.emoji} {satisfaction.label}
-              </span>
-            </>
-          )}
         </div>
+        {satisfaction && (
+          <div className="mt-2">
+            <Badge className={`rounded-lg ${satisfaction.color} bg-card border border-border/60`}>
+              {satisfaction.emoji} {satisfaction.label}
+            </Badge>
+          </div>
+        )}
         {decision.status === 'completed' && selectedOptions.length > 0 && (
           <div className="mt-2.5 flex items-start gap-1.5 text-sm text-[#5a6b4f]">
             <CheckCircle2 className="w-3.5 h-3.5 mt-0.5 shrink-0" strokeWidth={1.5} />

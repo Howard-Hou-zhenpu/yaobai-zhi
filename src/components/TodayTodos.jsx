@@ -30,12 +30,13 @@ function getTodoItems(decisions) {
   }
 
   const items = [...priority1, ...priority2, ...priority3];
-  return items.slice(0, 3);
+  return { items: items.slice(0, 3), totalCount: items.length };
 }
 
 export default function TodayTodos({ decisions }) {
   const navigate = useNavigate();
-  const items = getTodoItems(decisions);
+  const { items, totalCount } = getTodoItems(decisions);
+  const overflowCount = totalCount - items.length;
 
   if (items.length === 0) {
     return (
@@ -98,6 +99,20 @@ export default function TodayTodos({ decisions }) {
           );
         })}
       </div>
+      {overflowCount > 0 && (
+        <div className="mt-2.5 flex items-center justify-between px-1">
+          <span className="text-xs text-muted-foreground">还有 {overflowCount} 条待处理</span>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 px-2 text-xs gap-0.5 text-[#8b7355]"
+            onClick={() => navigate('/review')}
+          >
+            查看全部
+            <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
