@@ -99,6 +99,9 @@ export default function Review() {
   const total = decisions.length;
   const completed = decisions.filter((d) => d.status === 'completed' || d.status === 'reviewed').length;
   const reviewed = decisions.filter((d) => d.status === 'reviewed').length;
+  const regretCount = decisions.filter((d) => d.status === 'reviewed' && d.satisfaction === 'regret').length;
+  const reviewRate = completed > 0 ? Math.round((reviewed / completed) * 100) : 0;
+  const regretRate = reviewed > 0 ? Math.round((regretCount / reviewed) * 100) : 0;
   const hasActiveFilters = categoryFilter || timeFilter || favoriteOnly;
 
   return (
@@ -108,44 +111,46 @@ export default function Review() {
         <p className="text-[14px] text-[#6b5d4f] mt-1.5">回顾决策，总结经验</p>
       </div>
 
-      <div className="flex gap-2 mb-6">
-        <Button
-          variant={tab === 'overview' ? 'default' : 'outline'}
-          className="flex-1 rounded-full h-10 font-medium"
-          onClick={() => setTab('overview')}
-        >
-          概览
-        </Button>
-        <Button
-          variant={tab === 'principles' ? 'default' : 'outline'}
-          className="flex-1 rounded-full h-10 font-medium"
-          onClick={() => setTab('principles')}
-        >
-          我的原则
-        </Button>
-        <Button
-          variant={tab === 'records' ? 'default' : 'outline'}
-          className="flex-1 rounded-full h-10 font-medium"
-          onClick={() => setTab('records')}
-        >
-          记录
-        </Button>
+      <div className="mb-6 p-1 rounded-full bg-[#ece4d4] border border-[#d4cbb8] flex">
+        {[
+          { value: 'overview', label: '概览' },
+          { value: 'principles', label: '我的原则' },
+          { value: 'records', label: '记录' },
+        ].map((t) => (
+          <button
+            key={t.value}
+            onClick={() => setTab(t.value)}
+            className={cn(
+              'flex-1 h-9 rounded-full text-sm font-medium transition-all',
+              tab === t.value
+                ? 'bg-[#f5f1e8] text-[#3d3428] shadow-sm'
+                : 'text-[#a09080] hover:text-[#6b5d4f]'
+            )}
+          >
+            {t.label}
+          </button>
+        ))}
       </div>
 
       {tab === 'overview' && (
         <div className="space-y-4">
           <div className="grid grid-cols-3 gap-2.5">
-            <Card><CardContent className="p-4 text-center">
-              <p className="text-[28px] font-bold text-[#3d3428]">{total}</p>
-              <p className="text-[11px] text-[#a09080] tracking-wide mt-1">总决策</p>
+            <Card className="border border-border/40 shadow-none"><CardContent className="p-4">
+              <p className="text-[11px] text-[#a09080] tracking-wide leading-none">已复盘</p>
+              <p className="text-[26px] font-semibold text-[#6b5570] mt-2 leading-none tabular-nums">{reviewed}</p>
+              <p className="text-[11px] text-muted-foreground/80 mt-2 truncate">总 {total} 条</p>
             </CardContent></Card>
-            <Card><CardContent className="p-4 text-center">
-              <p className="text-[28px] font-bold text-[#5a6b4f]">{completed}</p>
-              <p className="text-[11px] text-[#a09080] tracking-wide mt-1">已完成</p>
+            <Card className="border border-border/40 shadow-none"><CardContent className="p-4">
+              <p className="text-[11px] text-[#a09080] tracking-wide leading-none">复盘率</p>
+              <p className="text-[26px] font-semibold text-[#5a6b4f] mt-2 leading-none tabular-nums">{reviewRate}<span className="text-base font-normal">%</span></p>
+              <p className="text-[11px] text-muted-foreground/80 mt-2 truncate">完成后是否复盘</p>
             </CardContent></Card>
-            <Card><CardContent className="p-4 text-center">
-              <p className="text-[28px] font-bold text-[#6b5570]">{reviewed}</p>
-              <p className="text-[11px] text-[#a09080] tracking-wide mt-1">已复盘</p>
+            <Card className="border border-border/40 shadow-none"><CardContent className="p-4">
+              <p className="text-[11px] text-[#a09080] tracking-wide leading-none">后悔率</p>
+              <p className={cn('text-[26px] font-semibold mt-2 leading-none tabular-nums', regretRate > 30 ? 'text-[#a0522d]' : 'text-[#7a6245]')}>
+                {regretRate}<span className="text-base font-normal">%</span>
+              </p>
+              <p className="text-[11px] text-muted-foreground/80 mt-2 truncate">复盘中后悔占比</p>
             </CardContent></Card>
           </div>
 
@@ -178,17 +183,19 @@ export default function Review() {
                     <Lightbulb className="w-4 h-4 text-[#8b7355] mt-0.5 shrink-0" strokeWidth={1.5} />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-[#3d3428] leading-relaxed">{d.decisionPrinciple}</p>
-                      <div className="flex items-center gap-2 mt-2.5 text-xs text-[#a09080]">
+                      <div className="flex items-center gap-2 mt-2.5 text-xs text-[#a09080] flex-wrap">
                         <span className="truncate max-w-[140px]">来自「{d.title}」</span>
-                        <span className="w-1 h-1 rounded-full bg-[#d4cbb8]" />
+                        <span className="text-[#d4cbb8]">·</span>
                         <span>{d.category}</span>
                         {d.satisfaction && SATISFACTION_MAP[d.satisfaction] && (
-                          <>
-                            <span className="w-1 h-1 rounded-full bg-[#d4cbb8]" />
-                            <span className={SATISFACTION_MAP[d.satisfaction].color}>
-                              {SATISFACTION_MAP[d.satisfaction].emoji} {SATISFACTION_MAP[d.satisfaction].label}
-                            </span>
-                          </>
+                          <span
+                            className={cn(
+                              'inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-card border border-border/60',
+                              SATISFACTION_MAP[d.satisfaction].color
+                            )}
+                          >
+                            {SATISFACTION_MAP[d.satisfaction].emoji} {SATISFACTION_MAP[d.satisfaction].label}
+                          </span>
                         )}
                       </div>
                     </div>

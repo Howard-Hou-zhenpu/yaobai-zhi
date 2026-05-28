@@ -1,4 +1,3 @@
-import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 
 function getWeekKey(date) {
@@ -9,13 +8,30 @@ function getWeekKey(date) {
 }
 
 function formatWeekLabel(key) {
-  const [year, w] = key.split('-W');
+  const [, w] = key.split('-W');
   return `第${parseInt(w)}周`;
 }
 
+const SCORE_LABEL = ['', '后悔', '一般', '满意'];
+const SCORE_COLOR = ['', '#a0522d', '#c9b896', '#7a9b6a'];
+
 export default function TrendChart({ decisions }) {
   const reviewed = decisions.filter((d) => d.status === 'reviewed' && d.satisfaction && d.reviewedAt);
-  if (reviewed.length < 3) return null;
+
+  if (reviewed.length < 3) {
+    return (
+      <Card className="mt-4">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium text-muted-foreground tracking-wide">决策质量趋势</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground text-center py-4 leading-relaxed">
+            复盘数据再多一些后，会显示你的满意度变化。
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   const scoreMap = { satisfied: 3, neutral: 2, regret: 1 };
 
@@ -36,7 +52,20 @@ export default function TrendChart({ decisions }) {
       count,
     }));
 
-  if (data.length < 3) return null;
+  if (data.length < 3) {
+    return (
+      <Card className="mt-4">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium text-muted-foreground tracking-wide">决策质量趋势</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground text-center py-4 leading-relaxed">
+            复盘数据再多一些后，会显示你的满意度变化。
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="mt-4">
@@ -44,19 +73,31 @@ export default function TrendChart({ decisions }) {
         <CardTitle className="text-sm font-medium text-muted-foreground tracking-wide">决策质量趋势</CardTitle>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={140}>
-          <LineChart data={data}>
-            <XAxis dataKey="week" tick={{ fontSize: 10, fill: '#6b5d4f' }} axisLine={false} tickLine={false} />
-            <YAxis domain={[0, 3]} ticks={[1, 2, 3]} tick={{ fontSize: 10, fill: '#6b5d4f' }} axisLine={false} tickLine={false} width={28}
-              tickFormatter={(v) => ['', '后悔', '一般', '满意'][v] || ''} />
-            <Tooltip
-              contentStyle={{ borderRadius: 12, border: '1px solid #d4cbb8', background: '#f5f1e8', fontSize: 12 }}
-              formatter={(value) => [`${value} 分`, '平均满意度']}
-              labelFormatter={(label) => label}
-            />
-            <Line type="monotone" dataKey="score" stroke="#8b7355" strokeWidth={2} dot={{ fill: '#8b7355', r: 3 }} activeDot={{ r: 5 }} />
-          </LineChart>
-        </ResponsiveContainer>
+        <div className="flex items-end gap-1.5 h-28">
+          {data.map((d, i) => {
+            const heightPct = (d.score / 3) * 100;
+            const colorIdx = Math.round(d.score);
+            const color = SCORE_COLOR[colorIdx] || '#c9b896';
+            return (
+              <div key={i} className="flex-1 flex flex-col items-center gap-1 min-w-0">
+                <div className="text-[10px] text-muted-foreground tabular-nums">{d.score}</div>
+                <div className="w-full flex-1 flex items-end">
+                  <div
+                    className="w-full rounded-t-md transition-all"
+                    style={{ height: `${Math.max(heightPct, 8)}%`, backgroundColor: color, opacity: 0.85 }}
+                    title={`${d.week} · 平均 ${SCORE_LABEL[colorIdx] || ''} (${d.count} 条)`}
+                  />
+                </div>
+                <div className="text-[10px] text-muted-foreground truncate w-full text-center">{d.week}</div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="flex items-center justify-end gap-3 mt-3 text-[10px] text-muted-foreground">
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm" style={{ backgroundColor: SCORE_COLOR[3] }} />满意</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm" style={{ backgroundColor: SCORE_COLOR[2] }} />一般</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm" style={{ backgroundColor: SCORE_COLOR[1] }} />后悔</span>
+        </div>
       </CardContent>
     </Card>
   );
