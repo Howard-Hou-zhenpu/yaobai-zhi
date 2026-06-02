@@ -1,19 +1,19 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Shield } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 
 const ITERATIONS = [
   {
-    version: 'v0.1',
-    title: 'MVP 上线',
-    date: '2024年12月',
-    userSignal: '个人长期使用和朋友测试显示，用户需要一种更结构化的方式来梳理决策。',
-    problem: '很多决策一开始背景模糊、选项不清晰。',
-    changeMade: '搭建快速记录、深度分析、选项对比和反思提问功能。',
-    whyItMatters: '更清晰的决策结构能让 AI 反馈更有用。',
-    status: 'shipped',
+    version: 'v0.3',
+    title: '加入反馈闭环',
+    date: '2025年6月',
+    userSignal: '为了持续改进 MVP，需要一个轻量方式收集真实用户反馈。',
+    problem: '此前反馈分散在聊天和非正式交流中。',
+    changeMade: '加入反馈表单和公开产品迭代记录。',
+    whyItMatters: '用户反馈可以被收集、整理，并转化为后续产品迭代。',
+    status: 'in_progress',
   },
   {
     version: 'v0.2',
@@ -26,37 +26,19 @@ const ITERATIONS = [
     status: 'shipped',
   },
   {
-    version: 'v0.3',
-    title: '加入反馈闭环',
-    date: '2025年6月',
-    userSignal: '为了持续改进 MVP，需要一个轻量方式收集真实用户反馈。',
-    problem: '此前反馈分散在聊天和非正式交流中。',
-    changeMade: '加入反馈表单和公开产品迭代记录。',
-    whyItMatters: '用户反馈可以被收集、整理，并转化为后续产品迭代。',
-    status: 'in_progress',
+    version: 'v0.1',
+    title: 'MVP 上线',
+    date: '2024年12月',
+    userSignal: '个人长期使用和朋友测试显示，用户需要一种更结构化的方式来梳理决策。',
+    problem: '很多决策一开始背景模糊、选项不清晰。',
+    changeMade: '搭建快速记录、深度分析、选项对比和反思提问功能。',
+    whyItMatters: '更清晰的决策结构能让 AI 反馈更有用。',
+    status: 'shipped',
   },
 ];
 
 export default function IterationLog() {
   const navigate = useNavigate();
-
-  const getStatusBadge = (status) => {
-    if (status === 'shipped') {
-      return (
-        <Badge className="bg-[#dde5d4] text-[#5a6b4f] border-[#c8d4bb] rounded-lg text-[10px]">
-          已上线
-        </Badge>
-      );
-    }
-    if (status === 'in_progress') {
-      return (
-        <Badge className="bg-[#fbf6e6] text-[#a8893a] border-[#e6d49a] rounded-lg text-[10px]">
-          进行中
-        </Badge>
-      );
-    }
-    return null;
-  };
 
   return (
     <div className="pb-[calc(6rem+env(safe-area-inset-bottom))] px-4 max-w-[430px] mx-auto">
@@ -72,68 +54,84 @@ export default function IterationLog() {
         <h1 className="text-[20px] font-bold text-[#3d3428]">产品迭代记录</h1>
       </div>
 
-      <Card className="mb-5 border-[#dde5d4] bg-[#f5f8f0]">
-        <CardContent className="p-4 text-xs text-[#5a6b4f] leading-relaxed">
-          记录摇摆志如何根据真实使用、用户反馈和产品判断持续迭代。
-        </CardContent>
-      </Card>
-
-      <div className="space-y-4">
-        {ITERATIONS.map((iteration) => (
-          <Card key={iteration.version} className="border-border/50">
-            <CardContent className="p-4 space-y-3">
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <Badge
-                    variant="outline"
-                    className="rounded-lg text-[10px] font-mono bg-[#faf6ef] text-[#8b7355] border-[#d4cbb8]"
-                  >
-                    {iteration.version}
-                  </Badge>
-                  {getStatusBadge(iteration.status)}
-                </div>
-                <span className="text-[10px] text-muted-foreground shrink-0">
-                  {iteration.date}
-                </span>
-              </div>
-
-              <h3 className="text-sm font-medium text-[#3d3428]">
-                {iteration.title}
-              </h3>
-
-              <div className="space-y-2 text-xs text-[#6b5d4f] leading-relaxed">
-                <div>
-                  <span className="font-medium text-[#8b7355]">用户信号：</span>
-                  {iteration.userSignal}
-                </div>
-
-                <div>
-                  <span className="font-medium text-[#8b7355]">问题：</span>
-                  {iteration.problem}
-                </div>
-
-                <div>
-                  <span className="font-medium text-[#8b7355]">改动：</span>
-                  {iteration.changeMade}
-                </div>
-
-                <div>
-                  <span className="font-medium text-[#8b7355]">价值：</span>
-                  {iteration.whyItMatters}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      <div className="mt-6 text-center">
-        <p className="text-xs text-muted-foreground leading-relaxed">
-          这是一个公开的产品迭代记录。
-          <br />
-          更多迭代会持续更新。
+      <div className="mb-4">
+        <p className="text-sm text-[#6b5d4f] leading-relaxed">
+          摇摆志仍在早期阶段。这里记录真实使用中发现的问题，以及它如何一步步变成新的产品改进。
         </p>
       </div>
+
+      <div className="flex items-start gap-2 px-3 py-2.5 rounded-xl border border-border/40 bg-card/60 mb-6">
+        <Shield className="w-3.5 h-3.5 text-[#a09080] shrink-0 mt-0.5" strokeWidth={1.5} />
+        <p className="text-[11px] text-muted-foreground leading-relaxed">
+          这里不会公开原始反馈、联系方式或任何隐私信息，只记录产品如何被持续改进。
+        </p>
+      </div>
+
+      <div className="relative">
+        <div className="absolute left-[15px] top-4 bottom-4 w-px bg-border/60" />
+
+        <div className="space-y-5">
+          {ITERATIONS.map((iteration) => (
+            <div key={iteration.version} className="relative pl-9">
+              <div className="absolute left-[11px] top-5 w-[9px] h-[9px] rounded-full border-2 border-[#d4cbb8] bg-[#faf6ef]" />
+
+              <Card className="border-border/50 rounded-2xl">
+                <CardContent className="p-4 space-y-2.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <Badge
+                        variant="outline"
+                        className="rounded-md text-[10px] font-mono bg-[#faf6ef] text-[#8b7355] border-[#d4cbb8] px-1.5"
+                      >
+                        {iteration.version}
+                      </Badge>
+                      {iteration.status === 'shipped' ? (
+                        <Badge className="bg-[#dde5d4] text-[#5a6b4f] border-[#c8d4bb] rounded-md text-[10px]">
+                          已上线
+                        </Badge>
+                      ) : (
+                        <Badge className="bg-[#fbf6e6] text-[#a8893a] border-[#e6d49a] rounded-md text-[10px]">
+                          进行中
+                        </Badge>
+                      )}
+                    </div>
+                    <span className="text-[10px] text-muted-foreground shrink-0">
+                      {iteration.date}
+                    </span>
+                  </div>
+
+                  <h3 className="text-[13px] font-medium text-[#3d3428]">
+                    {iteration.title}
+                  </h3>
+
+                  <div className="space-y-1.5 text-[12px] leading-relaxed">
+                    <p>
+                      <span className="text-[#a09080]">用户信号：</span>
+                      <span className="text-[#6b5d4f]">{iteration.userSignal}</span>
+                    </p>
+                    <p>
+                      <span className="text-[#a09080]">问题：</span>
+                      <span className="text-[#6b5d4f]">{iteration.problem}</span>
+                    </p>
+                    <p>
+                      <span className="text-[#a09080]">改动：</span>
+                      <span className="text-[#6b5d4f]">{iteration.changeMade}</span>
+                    </p>
+                    <p>
+                      <span className="text-[#a09080]">价值：</span>
+                      <span className="text-[#6b5d4f]">{iteration.whyItMatters}</span>
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <p className="text-xs text-muted-foreground text-center mt-8 leading-relaxed">
+        更多迭代会持续更新。
+      </p>
     </div>
   );
 }
