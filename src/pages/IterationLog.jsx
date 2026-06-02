@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, GitBranch } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
@@ -69,10 +69,7 @@ export default function IterationLog() {
         >
           <ArrowLeft className="w-5 h-5" strokeWidth={1.5} />
         </Button>
-        <div className="flex items-center gap-2">
-          <GitBranch className="w-5 h-5 text-[#8b7355]" strokeWidth={1.5} />
-          <h1 className="text-[20px] font-bold text-[#3d3428]">产品迭代记录</h1>
-        </div>
+        <h1 className="text-[20px] font-bold text-[#3d3428]">产品迭代记录</h1>
       </div>
 
       <Card className="mb-5 border-[#dde5d4] bg-[#f5f8f0]">
