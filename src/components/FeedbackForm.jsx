@@ -92,7 +92,11 @@ export default function FeedbackForm() {
       }, 5000);
     } catch (error) {
       console.error('提交反馈失败:', error);
-      toast.error('提交失败，请稍后再试。');
+      const errorMsg = error?.message || error?.error_description || '未知错误';
+      toast.error('提交失败，请稍后再试。', {
+        description: errorMsg,
+        duration: 8000,
+      });
     } finally {
       setSubmitting(false);
     }
