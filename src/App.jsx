@@ -11,6 +11,7 @@ import EditDecision from './pages/EditDecision';
 import Review from './pages/Review';
 import Settings from './pages/Settings';
 import PersonalityReport from './pages/PersonalityReport';
+import IterationLog from './pages/IterationLog';
 
 export default function App() {
   return (
@@ -31,6 +32,7 @@ export default function App() {
                     <Route path="/decision/:id/edit" element={<EditDecision />} />
                     <Route path="/review" element={<Review />} />
                     <Route path="/personality-report" element={<PersonalityReport />} />
+                    <Route path="/iteration-log" element={<IterationLog />} />
                     <Route path="/settings" element={<Settings />} />
                   </Routes>
                 </PageTransition>

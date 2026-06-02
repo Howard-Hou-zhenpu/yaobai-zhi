@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Trash2, Lock, ExternalLink, Check } from 'lucide-react';
+import { ArrowLeft, Trash2, Lock, ExternalLink, Check, ArrowUpRight } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardContent } from '../components/ui/card';
 import { getApiConfig, saveApiConfig, clearApiConfig, getFreeRemaining, getPreferCustom, setPreferCustom } from '../lib/apiKeyStore';
 import { toast } from 'sonner';
 import { cn } from '../lib/utils';
+import FeedbackForm from '../components/FeedbackForm';
 
 const PROVIDERS = [
   { value: 'deepseek', label: 'DeepSeek', url: 'https://platform.deepseek.com/api_keys', placeholder: '请输入 DeepSeek API Key' },
@@ -271,6 +272,24 @@ export default function Settings() {
             onCleared={refresh}
           />
         ))}
+      </div>
+
+      <div className="mt-8 pt-6 border-t border-border/40">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-medium text-[#3d3428]">产品反馈</h2>
+          <button
+            type="button"
+            onClick={() => navigate('/iteration-log')}
+            className="text-xs text-[#8b7355] hover:text-[#6b5d4f] flex items-center gap-0.5"
+          >
+            查看迭代记录
+            <ArrowUpRight className="w-3 h-3" strokeWidth={1.5} />
+          </button>
+        </div>
+        <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
+          有什么想说的？告诉我，会用来改进这个产品。
+        </p>
+        <FeedbackForm />
       </div>
     </div>
   );
