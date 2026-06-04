@@ -177,7 +177,40 @@ export default function DecisionDetail() {
       { id, updates },
       {
         onSuccess: () => {
-          toast.success('复盘已保存。', { description: getCompletionFeedback() });
+          // 如果是后悔，统计同类别的后悔次数并引导
+          if (satisfaction === 'regret') {
+            const categoryRegretCount = (allDecisions || []).filter(
+              (d) => d.status === 'reviewed' &&
+                     d.satisfaction === 'regret' &&
+                     d.category === decision.category
+            ).length + 1; // +1 包含当前这次
+
+            const totalRegretCount = (allDecisions || []).filter(
+              (d) => d.status === 'reviewed' && d.satisfaction === 'regret'
+            ).length + 1;
+
+            let message = '复盘已保存。';
+            let description = '';
+
+            if (categoryRegretCount === 1 && totalRegretCount === 1) {
+              description = '之后可以在复盘中心看到你的后悔模式。';
+            } else if (categoryRegretCount > 1) {
+              description = `这是你第 ${categoryRegretCount} 次在【${decision.category}】类决策上标记后悔。`;
+            } else {
+              description = `这是你第 ${totalRegretCount} 次标记后悔。`;
+            }
+
+            toast.success(message, {
+              description,
+              action: totalRegretCount > 1 ? {
+                label: '看看之前的模式 →',
+                onClick: () => navigate('/review'),
+              } : undefined,
+            });
+          } else {
+            toast.success('复盘已保存。', { description: getCompletionFeedback() });
+          }
+
           setEditing(false);
           if (!wasEditing) setShowCompletedModal(true);
         },

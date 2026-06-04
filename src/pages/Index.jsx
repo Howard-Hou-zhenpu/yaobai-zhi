@@ -10,6 +10,7 @@ import TodayTodos from '../components/TodayTodos';
 import DecisionCard from '../components/DecisionCard';
 import QuickCaptureInput from '../components/QuickCaptureInput';
 import ModeSelectModal from '../components/ModeSelectModal';
+import RecentCompleted from '../components/RecentCompleted';
 import { countStale } from '../lib/staleness';
 
 export default function Index() {
@@ -76,6 +77,10 @@ export default function Index() {
 
       <div className="mt-6">
         <TodayTodos decisions={decisions} />
+      </div>
+
+      <div className="mt-4">
+        <RecentCompleted decisions={decisions} />
       </div>
 
       {staleCount > 0 && (
