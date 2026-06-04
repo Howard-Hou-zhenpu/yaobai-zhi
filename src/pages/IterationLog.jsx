@@ -6,6 +6,16 @@ import { Badge } from '../components/ui/badge';
 
 const ITERATIONS = [
   {
+    version: 'v0.4',
+    title: '后悔模式闭环',
+    date: '2025年6月',
+    userSignal: '使用中发现后悔数据藏太深，用户不知道自己在哪些决策上容易后悔；完成决策后需要等预设时间才能复盘，错过了"突然后悔"的情绪热度。',
+    problem: '后悔率等数据在复盘中心深处，用户标记后悔后没有下一步引导；复盘门槛高，用户想补复盘时找不到入口。',
+    changeMade: '后悔复盘后即时引导（显示后悔次数 + 跳转到模式分析）；首页增加"最近完成"快捷入口（最近 7 天内完成的决策，随时补复盘）。',
+    whyItMatters: '形成"遗憾 → 引导 → 看模式 → 沉淀原则"的完整闭环，让后悔成为学习的起点而不是终点。',
+    status: 'shipped',
+  },
+  {
     version: 'v0.3',
     title: '加入反馈闭环',
     date: '2025年6月',
@@ -13,7 +23,7 @@ const ITERATIONS = [
     problem: '此前反馈分散在聊天和非正式交流中。',
     changeMade: '加入反馈表单和公开产品迭代记录。',
     whyItMatters: '用户反馈可以被收集、整理，并转化为后续产品迭代。',
-    status: 'in_progress',
+    status: 'shipped',
   },
   {
     version: 'v0.2',
